@@ -23,11 +23,14 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $officeId = fake()->randomElement(\App\Models\Office::pluck('id')->toArray());
+
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
+            'office_id' => $officeId,
             'remember_token' => Str::random(10),
         ];
     }

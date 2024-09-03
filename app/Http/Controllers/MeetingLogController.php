@@ -36,10 +36,10 @@ class MeetingLogController extends Controller
         }
 
         if (request("title")) {
-            $query->where("title", "like", "%". request("title") ."%" );
+            $query->where("title", "like", "%" . request("title") . "%");
         }
 
-        if(request("office")) {
+        if (request("office")) {
             $query->select("meeting_logs.*", "offices.id as office_id")
                 ->leftJoin('members', 'meeting_logs.member_id', '=', 'members.id')
                 ->leftJoin('offices', 'members.office_id', '=', 'offices.id')
@@ -48,7 +48,7 @@ class MeetingLogController extends Controller
             $members = Member::where('office_id', '=', request("office"))->get();
         }
 
-        if(request("user")) {
+        if (request("user")) {
             $query->where("user_id", "=", request("user"));
 
             $officeId = User::select("office_id")->where("id", "=", request("user"));
@@ -56,7 +56,7 @@ class MeetingLogController extends Controller
             $members = Member::where("office_id", "=", $officeId)->get();
         }
 
-        if(request("member")) {
+        if (request("member")) {
             $query->where("member_id", "=", request("member"));
 
             $officeId = Member::select("office_id")->where("id", "=", request("member"));
@@ -64,12 +64,12 @@ class MeetingLogController extends Controller
             $users = User::where("office_id", "=", $officeId)->get();
         }
 
-        if(request("condition")) {
+        if (request("condition")) {
             $query->where("condition", "=", request("condition"));
         }
 
-        if($sortField == "office_id") {
-            if(!request("office")){
+        if ($sortField == "office_id") {
+            if (!request("office")) {
                 $query->select("meeting_logs.*", "offices.id as office_id")
                     ->leftJoin('members', 'meeting_logs.member_id', '=', 'members.id')
                     ->leftJoin('offices', 'members.office_id', '=', 'offices.id');
@@ -80,12 +80,12 @@ class MeetingLogController extends Controller
 
         $queryParams = json_decode(json_encode(request()->query()), false);
 
-        return inertia("MeetingLog/Index" , [
+        return inertia("MeetingLog/Index", [
             'meetingLogs' => MeetingLogResource::collection($meetingLogs),
             'offices' => OfficeResource::collection($offices),
             'users' => UserResource::collection($users),
             'members' => MemberResource::collection($members),
-            'queryParams' => $queryParams ? : null,
+            'queryParams' => $queryParams ?: null,
         ]);
     }
 
@@ -109,7 +109,7 @@ class MeetingLogController extends Controller
         return inertia("MeetingLog/Create", [
             'members' => MemberResource::collection($members),
             'meetingLogs' => MeetingLogResource::collection($meetingLogs) ?? [],
-            'queryParams' => $queryParams ? : null,
+            'queryParams' => $queryParams ?: null,
         ]);
     }
 
@@ -158,7 +158,7 @@ class MeetingLogController extends Controller
             'members' => MemberResource::collection($members),
             'currentLog' => new MeetingLogResource($meetingLog),
             'meetingLogs' => MeetingLogResource::collection($meetingLogs) ?? [],
-            'queryParams' => $queryParams ? : null,
+            'queryParams' => $queryParams ?: null,
         ]);
     }
 

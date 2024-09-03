@@ -18,8 +18,13 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'avatar',
         'email',
+        'office_id',
+        'email_verified_at',
         'password',
+        'is_admin',
+        'is_global_admin',
     ];
 
     /**
@@ -43,5 +48,10 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function office()
+    {
+        return $this->belongsTo(Office::class);
     }
 }

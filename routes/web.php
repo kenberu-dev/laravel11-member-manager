@@ -1,22 +1,42 @@
 <?php
 
+use App\Http\Controllers\MeetingLogController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
+Route::redirect('/', '/dashboard');
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', fn() => Inertia::render('Dashboard'))
+        ->name('dashboard');
+
+    Route::get('/meetinglog', [MeetingLogController::class, 'index'])
+        ->name('meetinglog.index');
+
+    Route::get('/meetinglog/show/{meetingLog}', [MeetingLogController::class, 'show'])
+        ->name('meetinglog.show');
+
+    Route::get('/meetinglog/create', [MeetingLogController::class, 'create'])
+        ->name('meetinglog.create');
+
+    Route::post('/meetinglog', [MeetingLogController::class, 'store'])
+        ->name('meetinglog.store');
+
+    Route::delete('/meetinglog/destroy/{meetingLog}', [MeetingLogController::class, 'destroy'])
+        ->name('meetinglog.destroy');
+
+    Route::get('/meetinglog/edit/{meetingLog}', [MeetingLogController::class, 'edit'])
+        ->name('meetinglog.edit');
+
+    Route::put('/meetinglog/update/{meetingLog}', [MeetingLogController::class, 'update'])
+        ->name('meetinglog.update');
+
+    Route::patch('/meetinglog/update/{meetingLog}', [MeetingLogController::class, 'update'])
+        ->name('meetinglog.update');
+
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -78,7 +78,7 @@ class MeetingLogController extends Controller
 
         $meetingLogs = $query->orderBy($sortField, $sortDirection)->paginate(10);
 
-        $queryParams = json_decode(json_encode(request()->query()), false);
+        $queryParams = request()->query();
 
         return inertia("MeetingLog/Index", [
             'meetingLogs' => MeetingLogResource::collection($meetingLogs),
@@ -146,10 +146,8 @@ class MeetingLogController extends Controller
         $members = Member::where('office_id', '=', $officeId)->get();
         if (request("member") || $meetingLog) {
             $memberId = request("member") ?? $meetingLog->member_id;
-            Log::info($memberId);
             $query->where("member_id", "=", $memberId);
             $meetingLogs = $query->orderBy("created_at", "desc")->paginate(1);
-            Log::info($meetingLogs);
         }
 
         $queryParams = request()->query();
@@ -179,7 +177,6 @@ class MeetingLogController extends Controller
      */
     public function destroy(MeetingLog $meetingLog)
     {
-        Log::info($meetingLog->id);
         $meetingLog->delete();
         return to_route('meetinglog.index');
     }

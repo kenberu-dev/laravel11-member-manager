@@ -99,6 +99,9 @@ export default function AuthenticatedLayout({ user, header, children }) {
                         <ResponsiveNavLink href={route('dashboard')} active={route().current('dashboard')}>
                             ダッシュボード
                         </ResponsiveNavLink>
+                        <ResponsiveNavLink href={route('meetinglog.index')} active={route().current('meetinglog.index')}>
+                            面談記録
+                        </ResponsiveNavLink>
                     </div>
 
                     <div className="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">

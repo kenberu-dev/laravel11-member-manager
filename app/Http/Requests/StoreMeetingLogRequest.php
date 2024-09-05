@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreMeetingLogRequest extends FormRequest
 {
@@ -11,7 +12,7 @@ class StoreMeetingLogRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +23,11 @@ class StoreMeetingLogRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            "title" => ['required', 'max:255'],
+            "user_id" => ['required', 'integer'],
+            "member_id" => ['required', 'integer'],
+            "condition" => ['required', 'integer', Rule::in(1, 2, 3, 4, 5)],
+            "meeting_log" => ['string', 'nullable'],
         ];
     }
 }

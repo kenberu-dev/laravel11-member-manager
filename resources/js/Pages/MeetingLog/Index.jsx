@@ -25,7 +25,6 @@ export default function Index({ auth, meetingLogs, offices, users, members,  que
   }
 
   const sortChanged = (name) => {
-    console.log(queryParams)
     if (name === queryParams.sort_field) {
       if (queryParams.sort_direction === 'asc') {
         queryParams.sort_direction = 'desc';
@@ -183,7 +182,7 @@ export default function Index({ auth, meetingLogs, offices, users, members,  que
                         >
                           <option value="">担当者名</option>
                           {users.data.map(user =>(
-                            <option value={user.id}>{user.name}</option>
+                            <option key={user.id} value={user.id}>{user.name}</option>
                           ))}
                         </SelectInput>
                       </th>
@@ -197,7 +196,7 @@ export default function Index({ auth, meetingLogs, offices, users, members,  que
                         >
                           <option value="">事業所名</option>
                           {offices.data.map(office =>(
-                            <option value={office.id}>{office.name}</option>
+                            <option key={office.id} value={office.id}>{office.name}</option>
                           ))}
                         </SelectInput>
                       </th>

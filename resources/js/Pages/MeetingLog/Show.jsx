@@ -1,7 +1,15 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link } from "@inertiajs/react";
+import { useEffect, useRef, useState } from "react";
 
-export default function Show({auth, meetingLog}) {
+export default function Show({auth, meetingLog, messages}) {
+  const [localMessages, setlocalMessages] = useState([]);
+  const messagesCtrRef = useRef(null);
+
+  useEffect(() => {
+    setlocalMessages(messages);
+  }, [messages]);
+
   return (
     <AuthenticatedLayout
       user={auth.user}
@@ -72,7 +80,9 @@ export default function Show({auth, meetingLog}) {
                 <div>
                   <div>
                     <label className="font-bold text-lg">チャット</label>
-                    <div className="mt-1 whitespace-pre-wrap">Message</div>
+                    <div className="mt-1 whitespace-pre-wrap">
+
+                    </div>
                   </div>
                 </div>
               </div>

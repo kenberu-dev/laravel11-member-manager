@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\SocketMessage;
 use App\Http\Requests\StoreMessageRequest;
 use App\Http\Resources\MessageResource;
 use App\Models\MeetingLog;
@@ -36,7 +37,14 @@ class MessageController extends Controller
     {
         $data = $request->validated();
         $data['sender_id'] = Auth::user()->id;
+        $meetinglogsId = $data['meeting_logs_id'];
         $message = Message::create($data);
+
+        if ($meetinglogsId) {
+            MeetingLog::updateMeetingLogWithMessage($meetinglogsId, $message);
+        }
+
+        SocketMessage::dispatch($message);
 
         return new MessageResource($message);
     }

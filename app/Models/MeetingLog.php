@@ -37,4 +37,12 @@ class MeetingLog extends Model
     {
         return $this->hasMany(Message::class);
     }
+
+    public static function updateMeetingLogWithMessage($meetinglogsId, $message)
+    {
+        return self::updateOrCreate(
+            ['id' => $meetinglogsId], 
+            ['last_message_id' => $message->id,]
+        );
+    }
 }

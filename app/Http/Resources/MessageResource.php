@@ -7,6 +7,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class MessageResource extends JsonResource
 {
+    public static $wrap = false;
     /**
      * Transform the resource into an array.
      *
@@ -17,7 +18,7 @@ class MessageResource extends JsonResource
         return [
             'id' => $this->id,
             'message' => $this->message,
-            'sender_id' => new UserResource($this->sender_id),
+            'sender' => new UserResource($this->sender),
             'meeting_logs_id' => $this->meeting_logs_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

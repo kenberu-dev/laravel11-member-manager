@@ -1,4 +1,6 @@
+import MessageItem from "@/Components/Message/MessageItem";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import { ChatBubbleLeftRightIcon } from "@heroicons/react/24/solid";
 import { Head, Link } from "@inertiajs/react";
 import { useEffect, useRef, useState } from "react";
 
@@ -7,7 +9,7 @@ export default function Show({auth, meetingLog, messages}) {
   const messagesCtrRef = useRef(null);
 
   useEffect(() => {
-    setlocalMessages(messages);
+    setlocalMessages(messages ? messages.data.reverse() : []);
   }, [messages]);
 
   return (
@@ -74,14 +76,41 @@ export default function Show({auth, meetingLog, messages}) {
                 <div>
                   <div>
                     <label className="font-bold text-lg">面談記録</label>
-                    <div className="mt-1 whitespace-pre-wrap">{meetingLog.meeting_log}</div>
+                    <div className="mt-1 whitespace-pre-wrap max-h-[450px] overflow-y-auto">
+                      {meetingLog.meeting_log}
+                    </div>
                   </div>
                 </div>
                 <div>
                   <div>
                     <label className="font-bold text-lg">チャット</label>
                     <div className="mt-1 whitespace-pre-wrap">
-
+                      <>
+                        <div
+                          ref={messagesCtrRef}
+                          className="flex-1 overflow-y-auto p-5 max-h-[450px]"
+                        >
+                          {/* {messages} */}
+                          {localMessages.length === 0 && (
+                            <div className="flex justify-center items-center h-full">
+                              <div className="text-lg text-gray-500">
+                                メッセージがありません
+                              </div>
+                            </div>
+                          )}
+                          {localMessages.length > 0 && (
+                            <div className="flex-1 flex flex-col">
+                              {localMessages.map((message) => (
+                                  <MessageItem
+                                  key={message.id}
+                                  message={message}
+                                />
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                        {/* <MessageInput /> */}
+                      </>
                     </div>
                   </div>
                 </div>

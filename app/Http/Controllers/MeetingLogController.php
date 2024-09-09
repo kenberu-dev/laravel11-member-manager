@@ -6,10 +6,12 @@ use App\Http\Requests\StoreMeetingLogRequest;
 use App\Http\Requests\UpdateMeetingLogRequest;
 use App\Http\Resources\MeetingLogResource;
 use App\Http\Resources\MemberResource;
+use App\Http\Resources\MessageResource;
 use App\Http\Resources\OfficeResource;
 use App\Http\Resources\UserResource;
 use App\Models\MeetingLog;
 use App\Models\Member;
+use App\Models\Message;
 use App\Models\Office;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -129,9 +131,13 @@ class MeetingLogController extends Controller
      */
     public function show(MeetingLog $meetingLog)
     {
+        $messages = Message::where('meeting_logs_id', $meetingLog->id)
+            ->latest()
+            ->paginate(10);
 
-        return inertia('MeetingLog/Show', [
+            return inertia('MeetingLog/Show', [
             'meetingLog' => new MeetingLogResource($meetingLog),
+            'messages' => MessageResource::collection($messages),
         ]);
     }
 

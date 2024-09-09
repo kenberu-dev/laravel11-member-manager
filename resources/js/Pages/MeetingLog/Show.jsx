@@ -1,3 +1,4 @@
+import MessageInput from "@/Components/Message/MessageInput";
 import MessageItem from "@/Components/Message/MessageItem";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { ChatBubbleLeftRightIcon } from "@heroicons/react/24/solid";
@@ -76,7 +77,7 @@ export default function Show({auth, meetingLog, messages}) {
                 <div>
                   <div>
                     <label className="font-bold text-lg">面談記録</label>
-                    <div className="mt-1 whitespace-pre-wrap max-h-[450px] overflow-y-auto">
+                    <div className="mt-1 whitespace-pre-wrap max-h-[400px] overflow-y-auto">
                       {meetingLog.meeting_log}
                     </div>
                   </div>
@@ -88,7 +89,7 @@ export default function Show({auth, meetingLog, messages}) {
                       <>
                         <div
                           ref={messagesCtrRef}
-                          className="flex-1 overflow-y-auto p-5 max-h-[450px]"
+                          className="flex-1 overflow-y-auto p-5 max-h-[400px]"
                         >
                           {/* {messages} */}
                           {localMessages.length === 0 && (
@@ -109,7 +110,7 @@ export default function Show({auth, meetingLog, messages}) {
                             </div>
                           )}
                         </div>
-                        {/* <MessageInput /> */}
+                        <MessageInput />
                       </>
                     </div>
                   </div>

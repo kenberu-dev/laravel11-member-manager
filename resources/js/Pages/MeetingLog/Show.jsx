@@ -110,7 +110,7 @@ export default function Show({auth, meetingLog, messages}) {
                             </div>
                           )}
                         </div>
-                        <MessageInput />
+                        <MessageInput meetingLogId={meetingLog.id} />
                       </>
                     </div>
                   </div>

@@ -37,9 +37,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/meetinglog/update/{meetingLog}', [MeetingLogController::class, 'update'])
         ->name('meetinglog.update');
 
-    Route::get('/meetinglog/{meetingLog}', [MessageController::class, 'byMeetingLog'])
-        ->name('chat.meetinglog');
-
     Route::post('/message',[MessageController::class, 'store'])
         ->name('message.store');
 

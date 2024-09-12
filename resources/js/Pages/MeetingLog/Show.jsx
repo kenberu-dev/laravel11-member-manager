@@ -1,16 +1,76 @@
 import MessageInput from "@/Components/Message/MessageInput";
 import MessageItem from "@/Components/Message/MessageItem";
+import { useEventBus } from "@/EventBus";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { ChatBubbleLeftRightIcon } from "@heroicons/react/24/solid";
-import { Head, Link } from "@inertiajs/react";
+import { Head, Link, usePage } from "@inertiajs/react";
 import { useEffect, useRef, useState } from "react";
 
-export default function Show({auth, meetingLog, messages}) {
-  const [localMessages, setlocalMessages] = useState([]);
+export default function Show({ auth, meetingLog, messages }) {
+  const [localMessages, setLocalMessages] = useState([]);
+  const { on, emit } = useEventBus();
+  const page = usePage();
+  const conversations = page.props.conversations;
   const messagesCtrRef = useRef(null);
 
+  const messageCreated = (message) => {
+    if (meetingLog && meetingLog.id == message.meeting_logs_id) {
+      setLocalMessages((prevMessages) => [...prevMessages, message]);
+    }
+  }
+
   useEffect(() => {
-    setlocalMessages(messages ? messages.data.reverse() : []);
+    let channel = `message.meetinglog.${meetingLog.id}`;
+
+    conversations.forEach((conversation) => {
+      if (channel === `message.meetinglog.${conversation.id}`) {
+        channel = [];
+        return;
+      }
+    });
+
+    if (channel.length != 0) {
+      Echo.private(channel)
+      .error((error) => {
+        console.error(error);
+      })
+      .listen("SocketMessage", (e) => {
+        console.log("SocketMessage", e);
+        const message = e.message;
+
+        emit("message.created", message);
+        if (message.sender_id === auth.id) {
+          return;
+        }
+        emit("newMessageNotification", {
+          user: message.sender,
+          meeting_logs_id: message.meeting_logs_id,
+          message: message.message
+        });
+      });
+
+      return () => {
+        let channel = `message.meetinglog.${meetingLog.id}`;
+        Echo.leave(channel);
+      }
+    }
+  }, [meetingLog]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (messagesCtrRef.current) {
+        messagesCtrRef.current.scrollTop = messagesCtrRef.current.scrollHeight;
+      }
+    }, 10);
+
+    const offCreated = on('message.created', messageCreated);
+
+    return () => {
+      offCreated();
+    }
+  }, [meetingLog]);
+
+  useEffect(() => {
+    setLocalMessages(messages ? messages.data.reverse() : []);
   }, [messages]);
 
   return (
@@ -83,36 +143,34 @@ export default function Show({auth, meetingLog, messages}) {
                   </div>
                 </div>
                 <div>
-                  <div>
-                    <label className="font-bold text-lg">チャット</label>
-                    <div className="mt-1 whitespace-pre-wrap">
-                      <>
-                        <div
-                          ref={messagesCtrRef}
-                          className="flex-1 overflow-y-auto p-5 max-h-[400px]"
-                        >
-                          {/* {messages} */}
-                          {localMessages.length === 0 && (
-                            <div className="flex justify-center items-center h-full">
-                              <div className="text-lg text-gray-500">
-                                メッセージがありません
-                              </div>
+                  <label className="font-bold text-lg">チャット</label>
+                  <div className="mt-1 whitespace-pre-wrap">
+                    <>
+                      <div
+                        ref={messagesCtrRef}
+                        className="flex-1 overflow-y-auto p-5 max-h-[400px]"
+                      >
+                        {/* {messages} */}
+                        {localMessages.length === 0 && (
+                          <div className="flex justify-center items-center h-full">
+                            <div className="text-lg text-gray-500">
+                              メッセージがありません
                             </div>
-                          )}
-                          {localMessages.length > 0 && (
-                            <div className="flex-1 flex flex-col">
-                              {localMessages.map((message) => (
-                                  <MessageItem
-                                  key={message.id}
-                                  message={message}
-                                />
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                        <MessageInput meetingLogId={meetingLog.id} />
-                      </>
-                    </div>
+                          </div>
+                        )}
+                        {localMessages.length > 0 && (
+                          <div className="flex-1 flex flex-col">
+                            {localMessages.map((message) => (
+                              <MessageItem
+                                key={message.id}
+                                message={message}
+                              />
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      <MessageInput meetingLogId={meetingLog.id} />
+                    </>
                   </div>
                 </div>
               </div>

@@ -1,13 +1,52 @@
-import { useState } from 'react';
-import ApplicationLogo from '@/Components/ApplicationLogo';
+import { useEffect, useState } from 'react';
 import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import { HomeIcon } from '@heroicons/react/24/solid'
+import { useEventBus } from '@/EventBus';
 
-export default function AuthenticatedLayout({ user, header, children }) {
+export default function AuthenticatedLayout({ header, children }) {
+    const page = usePage();
+    const user = page.props.auth.user;
+    const conversations = page.props.conversations;
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
+    const { emit } = useEventBus();
+
+
+    useEffect(() => {
+      conversations.forEach((conversation) => {
+        let channel = [];
+        if (user.id === conversation.user_id) {
+          channel = `message.meetinglog.${conversation.id}`
+        }
+        Echo.private(channel)
+            .error((error) => {
+              console.error(error);
+            })
+            .listen("SocketMessage", (e) => {
+              console.log("SocketMessage", e);
+              const message = e.message;
+
+              emit("message.created", message);
+              if (message.sender_id === user.id) {
+                return;
+              }
+              emit("newMessageNotification", {
+                user: message.sender,
+                meeting_logs_id: message.meeting_logs_id,
+                message: message.message
+              });
+            });
+      });
+
+      return () => {
+        conversations.forEach((conversation) => {
+          let channel = `message.meetinglog.${conversation.id}`;
+          Echo.leave(channel);
+        });
+      }
+    },[conversations]);
 
     return (
         <div className="min-h-screen bg-gray-100 dark:bg-gray-900">

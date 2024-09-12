@@ -12,17 +12,6 @@ use Illuminate\Support\Facades\Auth;
 
 class MessageController extends Controller
 {
-    public function byMeetingLog(MeetingLog $meetingLog)
-    {
-        $messages = Message::where('meeting_logs_id', $meetingLog->meeting_logs_id)
-            ->latest()
-            ->paginate(10);
-
-        return inertia('meetinglog.show', [
-            'messages' => MessageResource::collection($messages),
-        ]);
-    }
-
     public function loadOlder(Message $message)
     {
         $messages = Message::where('created_at', '<', $message->created_at)
@@ -37,11 +26,11 @@ class MessageController extends Controller
     {
         $data = $request->validated();
         $data['sender_id'] = Auth::user()->id;
-        $meetinglogsId = $data['meeting_logs_id'];
+        $meeting_logs_id = $data['meeting_logs_id'];
         $message = Message::create($data);
 
-        if ($meetinglogsId) {
-            MeetingLog::updateMeetingLogWithMessage($meetinglogsId, $message);
+        if ($meeting_logs_id) {
+            MeetingLog::updateMeetingLogWithMessage($meeting_logs_id, $message);
         }
 
         SocketMessage::dispatch($message);

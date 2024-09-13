@@ -13,6 +13,10 @@ const MessageInput = (meetingLogId = null) => {
   const id = Object.values(meetingLogId)
 
   const onSendClick = () => {
+    if (messageSending) {
+      return;
+    }
+
     if (newMessage.trim() === "") {
       setInputErrorMessage("メッセージを入力してください");
       setTimeout(() => {

@@ -2,9 +2,6 @@ import { formatMessageDateLong } from "@/helpers";
 import { usePage } from "@inertiajs/react";
 import UserAvatar from "./UserAvatar";
 
-
-
-
 const MessageItem = ({ message }) => {
     const currnetUser = usePage().props.auth.user;
 
@@ -12,8 +9,8 @@ const MessageItem = ({ message }) => {
         <div
             className={
                 "chat " +
-                (message.sender.id === currnetUser.id 
-                    ? "chat-end" 
+                (message.sender.id === currnetUser.id
+                    ? "chat-end"
                     : "chat-start")
             }
         >
@@ -29,8 +26,8 @@ const MessageItem = ({ message }) => {
             <div
                 className={
                     "chat-bubble relative " +
-                    (message.sender.id === currnetUser.id 
-                        ? "chat-bubble-info" 
+                    (message.sender.id === currnetUser.id
+                        ? "chat-bubble-info"
                         : "")
                 }
             >

@@ -30,23 +30,23 @@ export default function Show({ auth, meetingLog, messages }) {
 
     if (channel.length != 0) {
       Echo.private(channel)
-      .error((error) => {
-        console.error(error);
-      })
-      .listen("SocketMessage", (e) => {
-        console.log("SocketMessage", e);
-        const message = e.message;
+        .error((error) => {
+          console.error(error);
+        })
+        .listen("SocketMessage", (e) => {
+          console.log("SocketMessage", e);
+          const message = e.message;
 
-        emit("message.created", message);
-        if (message.sender_id === auth.id) {
-          return;
-        }
-        emit("newMessageNotification", {
-          user: message.sender,
-          meeting_logs_id: message.meeting_logs_id,
-          message: message.message
+          emit("message.created", message);
+          if (message.sender_id === auth.id) {
+            return;
+          }
+          emit("newMessageNotification", {
+            user: message.sender,
+            meeting_logs_id: message.meeting_logs_id,
+            message: message.message
+          });
         });
-      });
 
       return () => {
         let channel = `message.meetinglog.${meetingLog.id}`;

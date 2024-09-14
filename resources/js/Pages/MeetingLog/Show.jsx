@@ -14,15 +14,18 @@ export default function Show({ auth, meetingLog, messages }) {
 
   const messageCreated = (message) => {
     if (meetingLog && meetingLog.id == message.meeting_logs_id) {
+      console.log("Updated setLocalMessages");
       setLocalMessages((prevMessages) => [...prevMessages, message]);
     }
   }
 
   useEffect(() => {
     let channel = `message.meetinglog.${meetingLog.id}`;
+    console.log("channel created");
 
     conversations.forEach((conversation) => {
       if (channel === `message.meetinglog.${conversation.id}`) {
+        console.log("channel delted", channel);
         channel = [];
         return;
       }
@@ -65,11 +68,13 @@ export default function Show({ auth, meetingLog, messages }) {
     const offCreated = on('message.created', messageCreated);
 
     return () => {
+      console.log("offCreated");
       offCreated();
     }
   }, [meetingLog]);
 
   useEffect(() => {
+    console.log("This is setLocalMessages");
     setLocalMessages(messages ? messages.data.reverse() : []);
   }, [messages]);
 

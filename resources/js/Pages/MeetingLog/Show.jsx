@@ -3,13 +3,17 @@ import MessageItem from "@/Components/Message/MessageItem";
 import { useEventBus } from "@/EventBus";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, usePage } from "@inertiajs/react";
-import { useEffect, useRef, useState } from "react";
+import axios from "axios";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export default function Show({ auth, meetingLog, messages }) {
   const [localMessages, setLocalMessages] = useState([]);
+  const [noMoreMessages, setNoMoreMessages] = useState(false);
+  const [scrollFromBottom, setScrollFromBottom] = useState(0);
   const { on, emit } = useEventBus();
   const page = usePage();
   const conversations = page.props.conversations;
+  const loadMoreIntersect = useRef(null);
   const messagesCtrRef = useRef(null);
 
   const messageCreated = (message) => {
@@ -18,6 +22,34 @@ export default function Show({ auth, meetingLog, messages }) {
       setLocalMessages((prevMessages) => [...prevMessages, message]);
     }
   }
+
+  const loadMoreMessages = useCallback(() => {
+    if (noMoreMessages) {
+      return;
+    }
+
+    const firstMessage = localMessages[0];
+    axios
+      .get(route("message.loadOlder", firstMessage.id))
+      .then(({data}) => {
+        if(data.data.length === 0) {
+          console.log("No more Messages");
+          setNoMoreMessages(true);
+          return;
+        }
+        const scrollHeight = messagesCtrRef.current.scrollHeight;
+        const scrollTop = messagesCtrRef.current.scrollTop;
+        const clientHeight = messagesCtrRef.current.clientHeight;
+        const tmpScrollFromBottom =
+          scrollHeight - scrollTop - clientHeight;
+        console.log("tmpScrollFromBottom", tmpScrollFromBottom);
+        setScrollFromBottom(tmpScrollFromBottom);
+
+        setLocalMessages((prevMessages) => {
+          return [...data.data.reverse(), ...prevMessages];
+        });
+      })
+  }, [localMessages]);
 
   useEffect(() => {
     let channel = `message.meetinglog.${meetingLog.id}`;
@@ -67,6 +99,9 @@ export default function Show({ auth, meetingLog, messages }) {
 
     const offCreated = on('message.created', messageCreated);
 
+    setScrollFromBottom(0);
+    setNoMoreMessages(false);
+
     return () => {
       console.log("offCreated");
       offCreated();
@@ -77,6 +112,39 @@ export default function Show({ auth, meetingLog, messages }) {
     console.log("This is setLocalMessages");
     setLocalMessages(messages ? messages.data.reverse() : []);
   }, [messages]);
+
+  useEffect(() => {
+    if(messagesCtrRef.current && scrollFromBottom !== null) {
+      messagesCtrRef.current.scrollTop =
+        messagesCtrRef.current.scrollHeight -
+        messagesCtrRef.current.offsetHeight -
+        scrollFromBottom;
+    }
+
+    if (noMoreMessages) {
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) =>
+        entries.forEach(
+          (entry) => entry.isIntersecting && loadMoreMessages()
+        ),
+      {
+        rootMargin: "0px 0px 250px 0px",
+      }
+    );
+
+    if(loadMoreIntersect.current) {
+      setTimeout(() => {
+        observer.observe(loadMoreIntersect.current);
+      }, 100);
+    }
+
+    return () => {
+      observer.disconnect();
+    }
+  },[localMessages]);
 
   return (
     <AuthenticatedLayout
@@ -165,6 +233,7 @@ export default function Show({ auth, meetingLog, messages }) {
                         )}
                         {localMessages.length > 0 && (
                           <div className="flex-1 flex flex-col">
+                            <div ref={loadMoreIntersect}></div>
                             {localMessages.map((message) => (
                               <MessageItem
                                 key={message.id}

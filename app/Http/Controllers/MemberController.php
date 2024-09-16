@@ -4,10 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreMemberRequest;
 use App\Http\Requests\UpdateMemberRequest;
+use App\Http\Resources\MeetingLogResource;
 use App\Http\Resources\MemberResource;
 use App\Http\Resources\OfficeResource;
+use App\Http\Resources\UserResource;
+use App\Models\MeetingLog;
 use App\Models\Member;
 use App\Models\Office;
+use App\Models\User;
 
 class MemberController extends Controller
 {
@@ -18,14 +22,44 @@ class MemberController extends Controller
     {
         $query = Member::query();
 
+        $sortField = request("sort_field", "created_at");
+        $sortDirection = request("sort_direction", "desc");
+
         $offices = Office::all();
 
-        $members = $query->paginate(10);
+        if (request("id")) {
+            $query->where("id", "=", request("id"));
+        }
 
-        return [
+        if (request("name")) {
+            $query->where("name", "like", "%" . request("name") . "%");
+        }
+
+        if (request("sex")) {
+            $query->where("sex", "=", request("sex"));
+        }
+
+        if (request("office")) {
+            $query->where("office_id", "=", request("office"));
+        }
+
+        if (request("status")) {
+            $query->where("status", "=", request("status"));
+        }
+
+        if (request("characteristics")) {
+            $query->where("characteristics", "like", "%" . request("characteristics") . "%");
+        }
+
+        $members = $query->orderBy($sortField, $sortDirection)->paginate(10);
+
+        $queryParams = request()->query();
+
+        return inertia("Member/Index", [
             "members" => MemberResource::collection($members),
-            "officecs" => OfficeResource::collection($offices),
-        ];
+            "offices" => OfficeResource::collection($offices),
+            "queryParams" => $queryParams ?: null,
+        ]);
     }
 
     /**
@@ -49,7 +83,41 @@ class MemberController extends Controller
      */
     public function show(Member $member)
     {
-        //
+        $query = MeetingLog::where("member_id", "=", $member->id);
+
+        $sortField = request("sort_field", "created_at");
+        $sortDirection = request("sort_direction", "desc");
+
+        if (request("id")) {
+            $query->where("id", "=", request("id"));
+        }
+
+        if (request("title")) {
+            $query->where("title", "like", "%" . request("title") . "%");
+        }
+
+        if (request("user")) {
+            $query->where("user_id", "=", request("user"));
+        }
+
+        if (request("condition")) {
+            $query->where("condition", "=", request("condition"));
+        }
+
+        $meetingLogs = $query->orderBy($sortField, $sortDirection)->paginate(10);
+        $users = User::select("users.*")
+                    ->leftJoin("meeting_logs", "meeting_logs.user_id", "=", "users.id")
+                    ->where("meeting_logs.member_id", "=", $member->id)
+                    ->get();
+
+        $queryParams = request()->query();
+
+        return inertia('Member/Show', [
+            'member' => new MemberResource($member),
+            'users' => UserResource::collection($users),
+            'meetingLogs' => MeetingLogResource::collection($meetingLogs),
+            'queryParams' => $queryParams,
+        ]);
     }
 
     /**

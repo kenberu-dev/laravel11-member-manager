@@ -54,7 +54,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('member.show');
 
     Route::get('/member/create', [MemberController::class, 'create'])
-        ->name('meetinglog.create');
+        ->name('member.create');
 
     Route::post('/member', [MemberController::class, 'store'])
         ->name('member.store');

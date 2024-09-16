@@ -72,6 +72,9 @@ export default function AuthenticatedLayout({ header, children }) {
                 <NavLink href={route('meetinglog.index')} active={route().current('meetinglog.index')}>
                   面談記録
                 </NavLink>
+                <NavLink href={route('member.index')} active={route().current('member.index')}>
+                  利用者一覧
+                </NavLink>
               </div>
             </div>
 
@@ -145,6 +148,9 @@ export default function AuthenticatedLayout({ header, children }) {
             </ResponsiveNavLink>
             <ResponsiveNavLink href={route('meetinglog.index')} active={route().current('meetinglog.index')}>
               面談記録
+            </ResponsiveNavLink>
+            <ResponsiveNavLink href={route('member.index')} active={route().current('member.index')}>
+              利用者一覧
             </ResponsiveNavLink>
           </div>
 

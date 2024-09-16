@@ -56,6 +56,7 @@ const MessageInput = (meetingLogId = null) => {
           />
           <button
             onClick={onSendClick}
+            disabled={messageSending}
             className="btn btn-info rounded-l-none"
           >
             {messageSending && (

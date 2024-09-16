@@ -15,7 +15,7 @@ class MessageController extends Controller
     public function loadOlder(Message $message)
     {
         $messages = Message::where('created_at', '<', $message->created_at)
-            ->where('meeting_logs_id')
+            ->where('meeting_logs_id', '=', $message->meeting_logs_id)
             ->latest()
             ->paginate(10);
 

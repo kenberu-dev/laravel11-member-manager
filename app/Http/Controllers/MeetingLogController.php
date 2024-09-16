@@ -6,10 +6,12 @@ use App\Http\Requests\StoreMeetingLogRequest;
 use App\Http\Requests\UpdateMeetingLogRequest;
 use App\Http\Resources\MeetingLogResource;
 use App\Http\Resources\MemberResource;
+use App\Http\Resources\MessageResource;
 use App\Http\Resources\OfficeResource;
 use App\Http\Resources\UserResource;
 use App\Models\MeetingLog;
 use App\Models\Member;
+use App\Models\Message;
 use App\Models\Office;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -78,7 +80,7 @@ class MeetingLogController extends Controller
 
         $meetingLogs = $query->orderBy($sortField, $sortDirection)->paginate(10);
 
-        $queryParams = json_decode(json_encode(request()->query()), false);
+        $queryParams = request()->query();
 
         return inertia("MeetingLog/Index", [
             'meetingLogs' => MeetingLogResource::collection($meetingLogs),
@@ -129,9 +131,13 @@ class MeetingLogController extends Controller
      */
     public function show(MeetingLog $meetingLog)
     {
+        $messages = Message::where('meeting_logs_id', $meetingLog->id)
+            ->latest()
+            ->paginate(10);
 
-        return inertia('MeetingLog/Show', [
+            return inertia('MeetingLog/Show', [
             'meetingLog' => new MeetingLogResource($meetingLog),
+            'messages' => MessageResource::collection($messages),
         ]);
     }
 
@@ -146,10 +152,8 @@ class MeetingLogController extends Controller
         $members = Member::where('office_id', '=', $officeId)->get();
         if (request("member") || $meetingLog) {
             $memberId = request("member") ?? $meetingLog->member_id;
-            Log::info($memberId);
             $query->where("member_id", "=", $memberId);
             $meetingLogs = $query->orderBy("created_at", "desc")->paginate(1);
-            Log::info($meetingLogs);
         }
 
         $queryParams = request()->query();
@@ -179,7 +183,6 @@ class MeetingLogController extends Controller
      */
     public function destroy(MeetingLog $meetingLog)
     {
-        Log::info($meetingLog->id);
         $meetingLog->delete();
         return to_route('meetinglog.index');
     }

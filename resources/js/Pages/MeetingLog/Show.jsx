@@ -1,7 +1,151 @@
+import MessageInput from "@/Components/Message/MessageInput";
+import MessageItem from "@/Components/Message/MessageItem";
+import { useEventBus } from "@/EventBus";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head, Link } from "@inertiajs/react";
+import { Head, Link, usePage } from "@inertiajs/react";
+import axios from "axios";
+import { useCallback, useEffect, useRef, useState } from "react";
 
-export default function Show({auth, meetingLog}) {
+export default function Show({ auth, meetingLog, messages }) {
+  const [localMessages, setLocalMessages] = useState([]);
+  const [noMoreMessages, setNoMoreMessages] = useState(false);
+  const [scrollFromBottom, setScrollFromBottom] = useState(0);
+  const { on, emit } = useEventBus();
+  const page = usePage();
+  const conversations = page.props.conversations;
+  const loadMoreIntersect = useRef(null);
+  const messagesCtrRef = useRef(null);
+
+  const messageCreated = (message) => {
+    if (meetingLog && meetingLog.id == message.meeting_logs_id) {
+      console.log("Updated setLocalMessages");
+      setLocalMessages((prevMessages) => [...prevMessages, message]);
+    }
+  }
+
+  const loadMoreMessages = useCallback(() => {
+    if (noMoreMessages) {
+      return;
+    }
+
+    const firstMessage = localMessages[0];
+    axios
+      .get(route("message.loadOlder", firstMessage.id))
+      .then(({data}) => {
+        if(data.data.length === 0) {
+          console.log("No more Messages");
+          setNoMoreMessages(true);
+          return;
+        }
+        const scrollHeight = messagesCtrRef.current.scrollHeight;
+        const scrollTop = messagesCtrRef.current.scrollTop;
+        const clientHeight = messagesCtrRef.current.clientHeight;
+        const tmpScrollFromBottom =
+          scrollHeight - scrollTop - clientHeight;
+        console.log("tmpScrollFromBottom", tmpScrollFromBottom);
+        setScrollFromBottom(tmpScrollFromBottom);
+
+        setLocalMessages((prevMessages) => {
+          return [...data.data.reverse(), ...prevMessages];
+        });
+      })
+  }, [localMessages]);
+
+  useEffect(() => {
+    let channel = `message.meetinglog.${meetingLog.id}`;
+    console.log("channel created");
+
+    conversations.forEach((conversation) => {
+      if (channel === `message.meetinglog.${conversation.id}`) {
+        console.log("channel delted", channel);
+        channel = [];
+        return;
+      }
+    });
+
+    if (channel.length != 0) {
+      Echo.private(channel)
+        .error((error) => {
+          console.error(error);
+        })
+        .listen("SocketMessage", (e) => {
+          console.log("SocketMessage", e);
+          const message = e.message;
+
+          emit("message.created", message);
+          if (message.sender_id === auth.id) {
+            return;
+          }
+          emit("newMessageNotification", {
+            user: message.sender,
+            meeting_logs_id: message.meeting_logs_id,
+            message: message.message
+          });
+        });
+
+      return () => {
+        let channel = `message.meetinglog.${meetingLog.id}`;
+        Echo.leave(channel);
+      }
+    }
+  }, [meetingLog]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (messagesCtrRef.current) {
+        messagesCtrRef.current.scrollTop = messagesCtrRef.current.scrollHeight;
+      }
+    }, 10);
+
+    const offCreated = on('message.created', messageCreated);
+
+    setScrollFromBottom(0);
+    setNoMoreMessages(false);
+
+    return () => {
+      console.log("offCreated");
+      offCreated();
+    }
+  }, [meetingLog]);
+
+  useEffect(() => {
+    console.log("This is setLocalMessages");
+    setLocalMessages(messages ? messages.data.reverse() : []);
+  }, [messages]);
+
+  useEffect(() => {
+    if(messagesCtrRef.current && scrollFromBottom !== null) {
+      messagesCtrRef.current.scrollTop =
+        messagesCtrRef.current.scrollHeight -
+        messagesCtrRef.current.offsetHeight -
+        scrollFromBottom;
+    }
+
+    if (noMoreMessages) {
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) =>
+        entries.forEach(
+          (entry) => entry.isIntersecting && loadMoreMessages()
+        ),
+      {
+        rootMargin: "0px 0px 250px 0px",
+      }
+    );
+
+    if(loadMoreIntersect.current) {
+      setTimeout(() => {
+        observer.observe(loadMoreIntersect.current);
+      }, 100);
+    }
+
+    return () => {
+      observer.disconnect();
+    }
+  },[localMessages]);
+
   return (
     <AuthenticatedLayout
       user={auth.user}
@@ -66,13 +210,41 @@ export default function Show({auth, meetingLog}) {
                 <div>
                   <div>
                     <label className="font-bold text-lg">面談記録</label>
-                    <div className="mt-1 whitespace-pre-wrap">{meetingLog.meeting_log}</div>
+                    <div className="mt-1 whitespace-pre-wrap max-h-[400px] overflow-y-auto">
+                      {meetingLog.meeting_log}
+                    </div>
                   </div>
                 </div>
                 <div>
-                  <div>
-                    <label className="font-bold text-lg">チャット</label>
-                    <div className="mt-1 whitespace-pre-wrap">Message</div>
+                  <label className="font-bold text-lg">チャット</label>
+                  <div className="mt-1 whitespace-pre-wrap">
+                    <>
+                      <div
+                        ref={messagesCtrRef}
+                        className="flex-1 overflow-y-auto p-5 max-h-[400px]"
+                      >
+                        {/* {messages} */}
+                        {localMessages.length === 0 && (
+                          <div className="flex justify-center items-center h-full">
+                            <div className="text-lg text-gray-500">
+                              メッセージがありません
+                            </div>
+                          </div>
+                        )}
+                        {localMessages.length > 0 && (
+                          <div className="flex-1 flex flex-col">
+                            <div ref={loadMoreIntersect}></div>
+                            {localMessages.map((message) => (
+                              <MessageItem
+                                key={message.id}
+                                message={message}
+                              />
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      <MessageInput meetingLogId={meetingLog.id} />
+                    </>
                   </div>
                 </div>
               </div>

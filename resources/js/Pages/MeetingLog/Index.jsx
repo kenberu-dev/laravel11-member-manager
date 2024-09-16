@@ -25,7 +25,6 @@ export default function Index({ auth, meetingLogs, offices, users, members,  que
   }
 
   const sortChanged = (name) => {
-    console.log(queryParams)
     if (name === queryParams.sort_field) {
       if (queryParams.sort_direction === 'asc') {
         queryParams.sort_direction = 'desc';
@@ -183,7 +182,7 @@ export default function Index({ auth, meetingLogs, offices, users, members,  que
                         >
                           <option value="">担当者名</option>
                           {users.data.map(user =>(
-                            <option value={user.id}>{user.name}</option>
+                            <option key={user.id} value={user.id}>{user.name}</option>
                           ))}
                         </SelectInput>
                       </th>
@@ -197,7 +196,7 @@ export default function Index({ auth, meetingLogs, offices, users, members,  que
                         >
                           <option value="">事業所名</option>
                           {offices.data.map(office =>(
-                            <option value={office.id}>{office.name}</option>
+                            <option key={office.id} value={office.id}>{office.name}</option>
                           ))}
                         </SelectInput>
                       </th>
@@ -237,19 +236,23 @@ export default function Index({ auth, meetingLogs, offices, users, members,  que
                         <td className="px-3 py-3 text-center">{meetingLog.condition}</td>
                         <td className="px-3 py-3 text-nowrap">{meetingLog.created_at}</td>
                         <td className="px-3 py-3 text-nowrap">{meetingLog.updated_at}</td>
-                        <td className="px-3 py-3 text-center text-nowrap">
-                          <Link
+                        <td className="px-3 py-3 text-center text-nowrap flex">
+                          { meetingLog.user.office.id == auth.user.office_id || auth.user.is_global_admin?(
+                            <Link
                             href={route('meetinglog.edit', meetingLog.id)}
                             className="font-medium text-blue-600 mx-1 hover:underline"
-                          >
-                            編集
-                          </Link>
+                            >
+                              編集
+                            </Link>
+                          ): <div className="font-medium text-gray-300 mx-1">編集</div>}
+                          {(auth.user.is_admin && meetingLog.user.office.id == auth.user.office_id) || auth.user.is_global_admin ? (
                           <button
-                            onClick={(e) => deleteMeetingLog(meetingLog)}
-                            className="font-medium text-red-600 mx-1 hover:underline"
+                          onClick={(e) => deleteMeetingLog(meetingLog)}
+                          className="font-medium text-red-600 mx-1 hover:underline"
                           >
                             削除
                           </button>
+                          ):<div className="font-medium text-gray-300 mx-1">削除</div>}
                         </td>
                       </tr>
                     ))}

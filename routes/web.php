@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\MeetingLogController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -35,6 +36,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::patch('/meetinglog/update/{meetingLog}', [MeetingLogController::class, 'update'])
         ->name('meetinglog.update');
+
+    Route::post('/message',[MessageController::class, 'store'])
+        ->name('message.store');
+
+    Route::delete('message/{message}',[MessageController::class, 'destroy'])
+        ->name('message.destroy');
+
+    Route::get('/message/older/{message}',[MessageController::class, 'loadOlder'])
+        ->name('message.loadOlder');
 
 });
 

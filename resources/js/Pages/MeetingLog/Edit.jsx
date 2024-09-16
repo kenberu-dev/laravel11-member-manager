@@ -50,7 +50,7 @@ export default function Edit({ auth, members, currentLog, meetingLogs, queryPara
           {meetingLogs.data.length != 0 ? (
             <div className="p-6 text-gray-900 w-1/2 sm:p-8 bg-white shadow sm:rounded-lg">
               {meetingLogs.data.map(meetingLog => (
-                <div>
+                <div key={meetingLog.id}>
                   <div className="grid gap-1 grid-cols-2">
                     <div>
                       <div>
@@ -112,7 +112,7 @@ export default function Edit({ auth, members, currentLog, meetingLogs, queryPara
                 >
                   <option value="">利用者名を選択してください</option>
                   {members.data.map(member => (
-                    <option value={member.id}>{member.name}</option>
+                    <option key={member.id} value={member.id}>{member.name}</option>
                   ))}
                 </SelectInput>
                 <InputError message={errors.member_id} className="mt-2" />

@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class MeetingLog extends Model
 {
@@ -36,5 +38,21 @@ class MeetingLog extends Model
     public function messages()
     {
         return $this->hasMany(Message::class);
+    }
+
+    public static function getMeetingLogsForUser()
+    {
+        $userId = Auth::user()->id;
+        $query = MeetingLog::where("user_id", "=", $userId);
+
+        return $query->get()->toArray();
+    }
+
+    public static function updateMeetingLogWithMessage($meetinglogsId, $message)
+    {
+        return self::updateOrCreate(
+            ['id' => $meetinglogsId],
+            ['last_message_id' => $message->id,]
+        );
     }
 }

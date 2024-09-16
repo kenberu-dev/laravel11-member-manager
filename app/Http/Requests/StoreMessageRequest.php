@@ -3,9 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
-class StoreMeetingLogRequest extends FormRequest
+class StoreMessageRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,11 +22,8 @@ class StoreMeetingLogRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "title" => ['required', 'max:255'],
-            "user_id" => ['required', 'integer'],
-            "member_id" => ['required', 'integer'],
-            "condition" => ['required', 'integer', Rule::in(1, 2, 3, 4, 5)],
-            "meeting_log" => ['string', 'nullable'],
+            "message" => "string",
+            "meeting_logs_id" => "required",
         ];
     }
 }

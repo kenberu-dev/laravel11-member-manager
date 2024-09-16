@@ -15,7 +15,7 @@ export default function Index({ auth, offices, members,  queryParams = null}) {
       delete queryParams[name]
     }
 
-    router.get(route('meetinglog.index'), queryParams)
+    router.get(route('member.index'), queryParams)
   }
 
   const onKeyPress = (name, e) => {
@@ -35,14 +35,14 @@ export default function Index({ auth, offices, members,  queryParams = null}) {
       queryParams.sort_field = name;
       queryParams.sort_direction = 'asc';
     }
-    router.get(route('meetinglog.index'), queryParams)
+    router.get(route('member.index'), queryParams)
   }
 
-  const deleteMeetingLog = (meetingLog) => {
+  const deleteMember = (member) => {
     if(!window.confirm("削除されたデータはもとに戻すことができません！\n削除しますか？")) {
       return;
     }
-    router.delete(route('meetinglog.destroy', meetingLog.id));
+    router.delete(route('member.destroy', member.id));
   }
 
   return (
@@ -62,6 +62,7 @@ export default function Index({ auth, offices, members,  queryParams = null}) {
         </div>
       }
     >
+
       <Head title="利用者一覧" />
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -189,9 +190,9 @@ export default function Index({ auth, offices, members,  queryParams = null}) {
                       <th className="px-3 py-2">
                       <SelectInput
                           className="w-full"
-                          defaultValue={queryParams.condition}
+                          defaultValue={queryParams.status}
                           onChange={e =>
-                            searchFieldChanged("condition", e.target.value)
+                            searchFieldChanged("status", e.target.value)
                           }
                         >
                           <option value="">ステータス</option>
@@ -218,27 +219,27 @@ export default function Index({ auth, offices, members,  queryParams = null}) {
                         <td className="px-3 py-3">{member.id}</td>
                         <td className="px-3 py-3 hover:underline">
                           <Link href={route("member.show", member.id)}>
-                            {meetingLog.name}
+                            {member.name}
                           </Link>
                         </td>
                         <td className="px-3 py-3 ">{member.sex}</td>
                         <td className="px-3 py-3 ">{member.office.name}</td>
                         <td className="px-3 py-3 ">{member.status}</td>
                         <td className="px-3 py-3 text-center">{member.characteristics}</td>
-                        <td className="px-3 py-3 text-nowrap">{meetingLog.created_at}</td>
-                        <td className="px-3 py-3 text-nowrap">{meetingLog.updated_at}</td>
+                        <td className="px-3 py-3 text-nowrap">{member.created_at}</td>
+                        <td className="px-3 py-3 text-nowrap">{member.updated_at}</td>
                         <td className="px-3 py-3 text-center text-nowrap flex">
-                          { meetingLog.user.office.id == auth.user.office_id || auth.user.is_global_admin?(
+                          { member.office.id == auth.user.office_id || auth.user.is_global_admin?(
                             <Link
-                            href={route('meetinglog.edit', member.id)}
+                            href={route('member.edit', member.id)}
                             className="font-medium text-blue-600 mx-1 hover:underline"
                             >
                               編集
                             </Link>
                           ): <div className="font-medium text-gray-300 mx-1">編集</div>}
-                          {(auth.user.is_admin && meetingLog.user.office.id == auth.user.office_id) || auth.user.is_global_admin ? (
+                          {(auth.user.is_admin && member.office.id == auth.user.office_id) || auth.user.is_global_admin ? (
                           <button
-                          onClick={(e) => deleteMeetingLog(member)}
+                          onClick={(e) => deleteMember(member)}
                           className="font-medium text-red-600 mx-1 hover:underline"
                           >
                             削除
@@ -250,7 +251,7 @@ export default function Index({ auth, offices, members,  queryParams = null}) {
                   </tbody>
                 </table>
               </div>
-              <Pagenation links={meetingLogs.meta.links} queryParams={queryParams}/>
+              <Pagenation links={members.meta.links} queryParams={queryParams}/>
             </div>
           </div>
         </div>

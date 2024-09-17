@@ -106,7 +106,7 @@ class MeetingLogController extends Controller
             $meetingLogs = $query->orderBy("created_at", "desc")->paginate(1);
         }
 
-        $queryParams = json_decode(json_encode(request()->query()), false);
+        $queryParams = request()->query();
 
         return inertia("MeetingLog/Create", [
             'members' => MemberResource::collection($members),

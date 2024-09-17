@@ -4,19 +4,22 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
 import { Link, useForm, usePage } from '@inertiajs/react';
 import { Transition } from '@headlessui/react';
+import UserAvatar from '@/Components/Message/UserAvatar';
 
 export default function UpdateProfileInformation({ mustVerifyEmail, status, className = '' }) {
     const user = usePage().props.auth.user;
 
-    const { data, setData, patch, errors, processing, recentlySuccessful } = useForm({
+    const { data, setData, post, errors, processing, recentlySuccessful } = useForm({
         name: user.name,
+        avatar: null,
         email: user.email,
+        _method: "PATCH",
     });
 
     const submit = (e) => {
         e.preventDefault();
 
-        patch(route('profile.update'));
+        post(route('profile.update'));
     };
 
     return (
@@ -30,6 +33,22 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
             </header>
 
             <form onSubmit={submit} className="mt-6 space-y-6">
+                <UserAvatar user={user} profile={true} />
+                <div>
+                    <InputLabel htmlFor="name" value="プロフィール画像" />
+
+                    <input
+                        id="avatar"
+                        type="file"
+                        className="file-input file-input-bordered w-full max-w-xs"
+                        onChange={(e) => setData('avatar', e.target.files[0])}
+                    />
+                    <p className="mt-1 text-gray-800">
+                      正方形の画像をアップロードしてください 例:512px&times;512px
+                    </p>
+
+                    <InputError className="mt-2" message={errors.avatar} />
+                </div>
                 <div>
                     <InputLabel htmlFor="name" value="名前" />
 

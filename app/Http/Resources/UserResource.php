@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Carbon as SupportCarbon;
+use Illuminate\Support\Facades\Storage;
 
 class UserResource extends JsonResource
 {
@@ -19,7 +20,7 @@ class UserResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'avatar' => $this->avatar,
+            'avatar_url' => $this->avatar ? Storage::url($this->avatar) : null,
             'email' => $this->email,
             'office' => new OfficeResource($this->office),
             'is_admin' => $this->is_admin,

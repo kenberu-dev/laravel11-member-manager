@@ -7,6 +7,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -30,12 +31,14 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $avatar = $request->file('atavar');
+        $avatar = $request->file('avatar');
         $user = $request->user();
         $data = $request->validated();
 
         if ($avatar) {
+            Log::info("Image Request exist");
             if ($user->avatar) {
+                Log::info("Store image");
                 Storage::disk('public')->delete($user->avatar);
             }
 

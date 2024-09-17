@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\MeetingLogController;
+use App\Http\Controllers\MemberController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
@@ -37,15 +38,38 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/meetinglog/update/{meetingLog}', [MeetingLogController::class, 'update'])
         ->name('meetinglog.update');
 
-    Route::post('/message',[MessageController::class, 'store'])
+    Route::post('/message', [MessageController::class, 'store'])
         ->name('message.store');
 
-    Route::delete('message/{message}',[MessageController::class, 'destroy'])
+    Route::delete('message/{message}', [MessageController::class, 'destroy'])
         ->name('message.destroy');
 
-    Route::get('/message/older/{message}',[MessageController::class, 'loadOlder'])
+    Route::get('/message/older/{message}', [MessageController::class, 'loadOlder'])
         ->name('message.loadOlder');
 
+    Route::get('/member', [MemberController::class, 'index'])
+        ->name('member.index');
+
+    Route::get('/member/show/{member}', [MemberController::class, 'show'])
+        ->name('member.show');
+
+    Route::get('/member/create', [MemberController::class, 'create'])
+        ->name('member.create');
+
+    Route::post('/member', [MemberController::class, 'store'])
+        ->name('member.store');
+
+    Route::delete('/member/destroy/{member}', [MemberController::class, 'destroy'])
+        ->name('member.destroy');
+
+    Route::get('/member/edit/{member}', [MemberController::class, 'edit'])
+        ->name('member.edit');
+
+    Route::put('/member/update/{member}', [MemberController::class, 'update'])
+        ->name('member.update');
+
+    Route::patch('/member/update/{member}', [MemberController::class, 'update'])
+        ->name('memeber.update');
 });
 
 Route::middleware('auth')->group(function () {
@@ -54,4 +78,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

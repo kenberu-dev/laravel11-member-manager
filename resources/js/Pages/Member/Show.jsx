@@ -67,7 +67,7 @@ export default function Show({ auth, member, meetingLogs, users, queryParams = n
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
           <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
             <div className="p-6 text-gray-900">
-              <div className="grid gap-1 grid-cols-2">
+              <div className="grid gap-1 grid-cols-3">
                 <div>
                   <div>
                     <label className="font-bold text-lg">ID</label>
@@ -95,6 +95,10 @@ export default function Show({ auth, member, meetingLogs, users, queryParams = n
                     <label className="font-bold text-lg">作成日</label>
                     <p className="mt-1">{member.created_at}</p>
                   </div>
+                </div>
+                <div>
+                  <label className="font-bold text-lg">備考</label>
+                  <p className="mt-1 whitespace-pre-wrap max-h-[200px] overflow-y-auto">{member.notes}</p>
                 </div>
               </div>
             </div>

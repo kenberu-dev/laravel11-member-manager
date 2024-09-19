@@ -3,6 +3,7 @@
 use App\Http\Controllers\MeetingLogController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\OfficeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
@@ -95,6 +96,30 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::patch('/user/update/{user}', [UserController::class, 'update'])
         ->name('user.update');
+
+    Route::get('/office', [OfficeController::class, 'index'])
+        ->name('office.index');
+
+    Route::get('/office/show/{office}', [OfficeController::class, 'show'])
+        ->name('office.show');
+
+    Route::get('/office/create', [OfficeController::class, 'create'])
+        ->name('office.create');
+
+    Route::post('/office', [OfficeController::class, 'store'])
+        ->name('office.store');
+
+    Route::delete('/office/destroy/{office}', [OfficeController::class, 'destroy'])
+        ->name('office.destroy');
+
+    Route::get('/office/edit/{office}', [OfficeController::class, 'edit'])
+        ->name('office.edit');
+
+    Route::put('/office/update/{office}', [OfficeController::class, 'update'])
+        ->name('office.update');
+
+    Route::patch('/office/update/{office}', [OfficeController::class, 'update'])
+        ->name('office.update');
 });
 
 Route::middleware('auth')->group(function () {

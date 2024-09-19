@@ -4,6 +4,7 @@ use App\Http\Controllers\MeetingLogController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -70,6 +71,30 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::patch('/member/update/{member}', [MemberController::class, 'update'])
         ->name('memeber.update');
+
+    Route::get('/user', [UserController::class, 'index'])
+        ->name('user.index');
+
+    Route::get('/user/show/{user}', [UserController::class, 'show'])
+        ->name('user.show');
+
+    Route::get('/user/create', [UserController::class, 'create'])
+        ->name('user.create');
+
+    Route::post('/user', [UserController::class, 'store'])
+        ->name('user.store');
+
+    Route::delete('/user/destroy/{user}', [UserController::class, 'destroy'])
+        ->name('user.destroy');
+
+    Route::get('/user/edit/{user}', [UserController::class, 'edit'])
+        ->name('user.edit');
+
+    Route::put('/user/update/{user}', [UserController::class, 'update'])
+        ->name('user.update');
+
+    Route::patch('/user/update/{user}', [UserController::class, 'update'])
+        ->name('user.update');
 });
 
 Route::middleware('auth')->group(function () {

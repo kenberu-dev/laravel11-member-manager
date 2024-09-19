@@ -33,6 +33,7 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
             </header>
 
             <form onSubmit={submit} className="mt-6 space-y-6">
+              <div className="flex items-center gap-10">
                 <UserAvatar user={user} profile={true} />
                 <div>
                     <InputLabel htmlFor="name" value="プロフィール画像" />
@@ -49,6 +50,8 @@ export default function UpdateProfileInformation({ mustVerifyEmail, status, clas
 
                     <InputError className="mt-2" message={errors.avatar} />
                 </div>
+              </div>
+
                 <div>
                     <InputLabel htmlFor="name" value="名前" />
 

@@ -15,7 +15,7 @@ class OfficeController extends Controller
     public function index()
     {
         $query = Office::query();
-
+        
         $sortField = request("sort_field", "created_at");
         $sortDirection = request("sort_direction", "desc");
 
@@ -45,7 +45,7 @@ class OfficeController extends Controller
 
         return inertia("Office/Index", [
             "offices" => OfficeResource::collection($offices),
-            "queryParams" => $queryParams,
+            "queryParams" => $queryParams ?: null,
         ]);
     }
 
@@ -83,7 +83,9 @@ class OfficeController extends Controller
      */
     public function edit(Office $office)
     {
-        //
+        return inertia("Office/Edit",[
+            "office" => new OfficeResource($office),
+        ]);
     }
 
     /**
@@ -91,7 +93,10 @@ class OfficeController extends Controller
      */
     public function update(UpdateOfficeRequest $request, Office $office)
     {
-        //
+        $data = $request->validated();
+        $office->update($data);
+
+        return to_route("office.index");
     }
 
     /**
@@ -99,6 +104,8 @@ class OfficeController extends Controller
      */
     public function destroy(Office $office)
     {
-        //
+        $office->delete();
+
+        return to_route("office.index");
     }
 }

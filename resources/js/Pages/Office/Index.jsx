@@ -4,7 +4,7 @@ import TextInput from "@/Components/TextInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, router } from "@inertiajs/react";
 
-export default function Index({ auth, offices, queryParams = null}) {
+export default function Index({ auth, offices, queryParams = null }) {
   queryParams = queryParams || {}
 
   const searchFieldChanged = (name, value) => {
@@ -13,8 +13,8 @@ export default function Index({ auth, offices, queryParams = null}) {
     } else {
       delete queryParams[name]
     }
-
-    router.get(route('office.index'), queryParams)
+    console.log("queryParams", queryParams);
+    router.get(route('office.index'), queryParams);
   }
 
   const onKeyPress = (name, e) => {
@@ -34,11 +34,12 @@ export default function Index({ auth, offices, queryParams = null}) {
       queryParams.sort_field = name;
       queryParams.sort_direction = 'asc';
     }
-    router.get(route('office.index'), queryParams)
+    console.log("queryParams", queryParams);
+    router.get(route('office.index'), queryParams);
   }
 
   const deleteOffice = (office) => {
-    if(!window.confirm("削除されたデータはもとに戻すことができません！\n削除しますか？")) {
+    if (!window.confirm("削除されたデータはもとに戻すことができません！\n削除しますか？")) {
       return;
     }
     router.delete(route('office.destroy', office.id));
@@ -50,7 +51,7 @@ export default function Index({ auth, offices, queryParams = null}) {
       header={
         <div className="flex justify-between items-center">
           <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            利用者一覧
+            事業所一覧
           </h2>
           <Link
             href={route("office.create")}
@@ -62,7 +63,7 @@ export default function Index({ auth, offices, queryParams = null}) {
       }
     >
 
-      <Head title="利用者一覧" />
+      <Head title="事業所一覧" />
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
           <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
@@ -197,29 +198,29 @@ export default function Index({ auth, offices, queryParams = null}) {
                         <td className="px-3 py-3 text-nowrap">{office.created_at}</td>
                         <td className="px-3 py-3 text-nowrap">{office.updated_at}</td>
                         <td className="px-3 py-3 text-center text-nowrap flex">
-                          { auth.user.is_global_admin?(
+                          {auth.user.is_global_admin ? (
                             <Link
-                            href={route('office.edit', office.id)}
-                            className="font-medium text-blue-600 mx-1 hover:underline"
+                              href={route('office.edit', office.id)}
+                              className="font-medium text-blue-600 mx-1 hover:underline"
                             >
                               編集
                             </Link>
-                          ): <div className="font-medium text-gray-300 mx-1">編集</div>}
-                          { auth.user.is_global_admin ? (
-                          <button
-                          onClick={(e) => deleteOffice(office)}
-                          className="font-medium text-red-600 mx-1 hover:underline"
-                          >
-                            削除
-                          </button>
-                          ):<div className="font-medium text-gray-300 mx-1">削除</div>}
+                          ) : <div className="font-medium text-gray-300 mx-1">編集</div>}
+                          {auth.user.is_global_admin ? (
+                            <button
+                              onClick={(e) => deleteOffice(office)}
+                              className="font-medium text-red-600 mx-1 hover:underline"
+                            >
+                              削除
+                            </button>
+                          ) : <div className="font-medium text-gray-300 mx-1">削除</div>}
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
-              <Pagenation links={offices.meta.links} queryParams={queryParams}/>
+              <Pagenation links={offices.meta.links} queryParams={queryParams} />
             </div>
           </div>
         </div>

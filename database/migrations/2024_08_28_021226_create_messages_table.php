@@ -14,13 +14,13 @@ return new class extends Migration
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
             $table->longText('message');
-            $table->foreignId('sender_id')->constrained('users');
+            $table->foreignId('sender_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('meeting_logs_id')->constrained('meeting_logs')->onDelete('cascade');
             $table->timestamps();
         });
 
         Schema::table('meeting_logs', function(Blueprint $table) {
-            $table->foreignId('last_message_id')->nullable()->constrained('messages');
+            $table->foreignId('last_message_id')->nullable()->constrained('messages')->onDelete('cascade');
         });
     }
 

@@ -36,9 +36,7 @@ class ProfileController extends Controller
         $data = $request->validated();
 
         if ($avatar) {
-            Log::info("Image Request exist");
             if ($user->avatar) {
-                Log::info("Store image");
                 Storage::disk('public')->delete($user->avatar);
             }
 

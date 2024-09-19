@@ -229,7 +229,7 @@ export default function Index({ auth, offices, members,  queryParams = null}) {
                         <td className="px-3 py-3 text-nowrap">{member.created_at}</td>
                         <td className="px-3 py-3 text-nowrap">{member.updated_at}</td>
                         <td className="px-3 py-3 text-center text-nowrap flex">
-                          { member.office.id == auth.user.office_id || auth.user.is_global_admin?(
+                          { member.office.id == auth.user.office.id || auth.user.is_global_admin?(
                             <Link
                             href={route('member.edit', member.id)}
                             className="font-medium text-blue-600 mx-1 hover:underline"
@@ -237,7 +237,7 @@ export default function Index({ auth, offices, members,  queryParams = null}) {
                               編集
                             </Link>
                           ): <div className="font-medium text-gray-300 mx-1">編集</div>}
-                          {(auth.user.is_admin && member.office.id == auth.user.office_id) || auth.user.is_global_admin ? (
+                          {(auth.user.is_admin && member.office.id == auth.user.office.id) || auth.user.is_global_admin ? (
                           <button
                           onClick={(e) => deleteMember(member)}
                           className="font-medium text-red-600 mx-1 hover:underline"

@@ -80,6 +80,11 @@ export default function AuthenticatedLayout({ header, children }) {
                     従業員一覧
                   </NavLink>
                 ):""}
+                { user.is_global_admin ? (
+                  <NavLink href={route('office.index')} active={route().current('office.index')}>
+                    事業所一覧
+                  </NavLink>
+                ):""}
               </div>
             </div>
 
@@ -160,6 +165,11 @@ export default function AuthenticatedLayout({ header, children }) {
             {user.is_admin || user.is_global_admin ? (
               <ResponsiveNavLink href={route('user.index')} active={route().current('user.index')}>
                 従業員一覧
+              </ResponsiveNavLink>
+            ):""}
+            { user.is_global_admin ? (
+              <ResponsiveNavLink href={route('office.index')} active={route().current('office.index')}>
+                事業所一覧
               </ResponsiveNavLink>
             ):""}
           </div>

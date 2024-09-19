@@ -11,7 +11,7 @@ class UpdateOfficeRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,10 @@ class UpdateOfficeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            "name" => ["required", "string"],
+            "zip_code" => ["required", "string", "regex:/^[0-9-]+$/"],
+            "address" => ["required", "string"],
+            "phone_number" => ["required", "string", "regex:/^[0-9-]+$/"],
         ];
     }
 }

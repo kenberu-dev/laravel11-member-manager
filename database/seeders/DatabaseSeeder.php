@@ -44,7 +44,7 @@ class DatabaseSeeder extends Seeder
 
         MeetingLog::factory()->count(200)->create();
 
-        Message::factory()->count(2000)->create();
+        Message::factory()->count(20000)->create();
         $messages = Message::orderBy('created_at')->get();
 
         $ids = $messages

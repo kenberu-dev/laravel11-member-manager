@@ -75,6 +75,11 @@ export default function AuthenticatedLayout({ header, children }) {
                 <NavLink href={route('member.index')} active={route().current('member.index')}>
                   利用者一覧
                 </NavLink>
+                {user.is_admin || user.is_global_admin ? (
+                  <NavLink href={route('user.index')} active={route().current('user.index')}>
+                    従業員一覧
+                  </NavLink>
+                ):""}
               </div>
             </div>
 
@@ -152,6 +157,11 @@ export default function AuthenticatedLayout({ header, children }) {
             <ResponsiveNavLink href={route('member.index')} active={route().current('member.index')}>
               利用者一覧
             </ResponsiveNavLink>
+            {user.is_admin || user.is_global_admin ? (
+              <ResponsiveNavLink href={route('user.index')} active={route().current('user.index')}>
+                従業員一覧
+              </ResponsiveNavLink>
+            ):""}
           </div>
 
           <div className="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">

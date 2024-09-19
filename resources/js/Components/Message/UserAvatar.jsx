@@ -3,14 +3,14 @@ const UserAvatar = ({ user, profile = false }) => {
 
     return (
         <>
-            {user.avatar && (
+            {user.avatar_url && (
                 <div className={`chat-image avatar`}>
                     <div className={`rounded-full ${sizeClass}`}>
-                        <img src={user.avatar} />
+                        <img src={user.avatar_url} />
                     </div>
                 </div>
             )}
-            {!user.avatar && (
+            {!user.avatar_url && (
                 <div className={`chat-image avatar placeholder`}>
                     <div 
                         className={`rounded-full ${sizeClass} bg-gray-200 text-gray-400 text-center`}

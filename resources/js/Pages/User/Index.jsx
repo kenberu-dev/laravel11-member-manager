@@ -1,3 +1,4 @@
+import UserAvatar from "@/Components/Message/UserAvatar";
 import Pagenation from "@/Components/Pagenation";
 import SelectInput from "@/Components/SelectInput";
 import TableHeading from "@/Components/TableHeading";
@@ -5,7 +6,7 @@ import TextInput from "@/Components/TextInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, router } from "@inertiajs/react";
 
-export default function Index({ auth, meetingLogs, offices, users, members,  queryParams = null}) {
+export default function Index({ auth, offices, users, queryParams = null}) {
   queryParams = queryParams || {}
 
   const searchFieldChanged = (name, value) => {
@@ -15,7 +16,7 @@ export default function Index({ auth, meetingLogs, offices, users, members,  que
       delete queryParams[name]
     }
 
-    router.get(route('meetinglog.index'), queryParams)
+    router.get(route('user.index'), queryParams)
   }
 
   const onKeyPress = (name, e) => {
@@ -35,14 +36,14 @@ export default function Index({ auth, meetingLogs, offices, users, members,  que
       queryParams.sort_field = name;
       queryParams.sort_direction = 'asc';
     }
-    router.get(route('meetinglog.index'), queryParams)
+    router.get(route('user.index'), queryParams)
   }
 
-  const deleteMeetingLog = (meetingLog) => {
+  const deleteuser = (user) => {
     if(!window.confirm("削除されたデータはもとに戻すことができません！\n削除しますか？")) {
       return;
     }
-    router.delete(route('meetinglog.destroy', meetingLog.id));
+    router.delete(route('user.destroy', user.id));
   }
 
   return (
@@ -51,10 +52,10 @@ export default function Index({ auth, meetingLogs, offices, users, members,  que
       header={
         <div className="flex justify-between items-center">
           <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            面談記録
+            利用者一覧
           </h2>
           <Link
-            href={route("meetinglog.create")}
+            href={route("user.create")}
             className="bg-emerald-400 py-1 px-3 text-gray-900 rounded shadown transition-all hover:bg-emerald-500"
           >
             新規作成
@@ -62,7 +63,8 @@ export default function Index({ auth, meetingLogs, offices, users, members,  que
         </div>
       }
     >
-      <Head title="面談記録" />
+
+      <Head title="利用者一覧" />
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
           <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
@@ -79,29 +81,24 @@ export default function Index({ auth, meetingLogs, offices, users, members,  que
                       >
                         ID
                       </TableHeading>
+                      <th className="py-3 px-2 text-center">
+                        アイコン
+                      </th>
                       <TableHeading
-                        name="title"
+                        name="name"
                         sort_field={queryParams.sort_field}
                         sort_direction={queryParams.sort_direction}
                         sortChanged={sortChanged}
                       >
-                        タイトル
+                        氏名
                       </TableHeading>
                       <TableHeading
-                        name="member_id"
+                        name="email"
                         sort_field={queryParams.sort_field}
                         sort_direction={queryParams.sort_direction}
                         sortChanged={sortChanged}
                       >
-                        利用者
-                      </TableHeading>
-                      <TableHeading
-                        name="user_id"
-                        sort_field={queryParams.sort_field}
-                        sort_direction={queryParams.sort_direction}
-                        sortChanged={sortChanged}
-                      >
-                        作成者
+                        メールアドレス
                       </TableHeading>
                       <TableHeading
                         name="office_id"
@@ -112,12 +109,12 @@ export default function Index({ auth, meetingLogs, offices, users, members,  que
                         事業所
                       </TableHeading>
                       <TableHeading
-                        name="condition"
+                        name="is_admin"
                         sort_field={queryParams.sort_field}
                         sort_direction={queryParams.sort_direction}
                         sortChanged={sortChanged}
                       >
-                        体調
+                        管理者権限
                       </TableHeading>
                       <TableHeading
                         name="created_at"
@@ -149,42 +146,24 @@ export default function Index({ auth, meetingLogs, offices, users, members,  que
                           onKeyPress={e => onKeyPress('id', e)}
                         />
                       </th>
+                      <th className="px-3 py-2"></th>
                       <th className="px-3 py-2">
                         <TextInput
-                          className="w-full"
-                          defaultValue={queryParams.title}
-                          placeholder="タイトル"
-                          onBlur={e => searchFieldChanged('title', e.target.value)}
-                          onKeyPress={e => onKeyPress('title', e)}
+                          className="w-28"
+                          defaultValue={queryParams.name}
+                          placeholder="氏名"
+                          onBlur={e => searchFieldChanged('name', e.target.value)}
+                          onKeyPress={e => onKeyPress('name', e)}
                         />
                       </th>
                       <th className="px-3 py-2">
-                      <SelectInput
+                        <TextInput
                           className="w-full"
-                          defaultValue={queryParams.member}
-                          onChange={e =>
-                            searchFieldChanged("member", e.target.value)
-                          }
-                        >
-                          <option value="">利用者名</option>
-                          {members.data.map(member =>(
-                            <option key={member.id} value={member.id}>{member.name}</option>
-                          ))}
-                        </SelectInput>
-                      </th>
-                      <th className="px-3 py-2">
-                      <SelectInput
-                          className="w-full"
-                          defaultValue={queryParams.user}
-                          onChange={e =>
-                            searchFieldChanged("user", e.target.value)
-                          }
-                        >
-                          <option value="">担当者名</option>
-                          {users.data.map(user =>(
-                            <option key={user.id} value={user.id}>{user.name}</option>
-                          ))}
-                        </SelectInput>
+                          defaultValue={queryParams.email}
+                          placeholder="メールアドレス"
+                          onBlur={e => searchFieldChanged('email', e.target.value)}
+                          onKeyPress={e => onKeyPress('email', e)}
+                        />
                       </th>
                       <th className="px-3 py-2">
                         <SelectInput
@@ -200,54 +179,43 @@ export default function Index({ auth, meetingLogs, offices, users, members,  que
                           ))}
                         </SelectInput>
                       </th>
-                      <th className="px-3 py-2">
-                      <SelectInput
-                          className="w-full"
-                          defaultValue={queryParams.condition}
-                          onChange={e =>
-                            searchFieldChanged("condition", e.target.value)
-                          }
-                        >
-                          <option value="">体調</option>
-                          <option value="1">1</option>
-                          <option value="2">2</option>
-                          <option value="3">3</option>
-                          <option value="4">4</option>
-                          <option value="5">5</option>
-                        </SelectInput>
-                      </th>
-                      <th className="px-3 py-2"></th>
-                      <th className="px-3 py-2"></th>
+                      <th className="px-3 py-2 "></th>
+                      <th className="px-3 py-2 "></th>
+                      <th className="px-3 py-2 "></th>
                       <th className="px-3 py-2 text-right"></th>
                     </tr>
                   </thead>
                   <tbody>
-                    {meetingLogs.data.map(meetingLog => (
-                      <tr className="bg-white border-b" key={meetingLog.id}>
-                        <td className="px-3 py-3">{meetingLog.id}</td>
+                    {users.data.map(user => (
+                      <tr className="bg-white border-b" key={user.id}>
+                        <td className="px-3 py-3">{user.id}</td>
+                        <td className="px-3 py-3 ">
+                          <UserAvatar user={user} />
+                        </td>
                         <td className="px-3 py-3 hover:underline">
-                          <Link href={route("meetinglog.show", meetingLog.id)}>
-                            {meetingLog.title}
+                          <Link href={route("user.show", user.id)}>
+                            {user.name}
                           </Link>
                         </td>
-                        <td className="px-3 py-3 ">{meetingLog.member.name}</td>
-                        <td className="px-3 py-3 ">{meetingLog.user.name}</td>
-                        <td className="px-3 py-3 ">{meetingLog.member.office.name}</td>
-                        <td className="px-3 py-3 text-center">{meetingLog.condition}</td>
-                        <td className="px-3 py-3 text-nowrap">{meetingLog.created_at}</td>
-                        <td className="px-3 py-3 text-nowrap">{meetingLog.updated_at}</td>
+                        <td className="px-3 py-3 ">{user.email}</td>
+                        <td className="px-3 py-3 ">{user.office.name}</td>
+                        <td className="px-3 py-3 text-center text-nowrap">
+                          {user.is_admin ? "あり" : "なし"}
+                        </td>
+                        <td className="px-3 py-3 text-nowrap">{user.created_at}</td>
+                        <td className="px-3 py-3 text-nowrap">{user.updated_at}</td>
                         <td className="px-3 py-3 text-center text-nowrap flex">
-                          { meetingLog.user.office.id == auth.user.office.id || auth.user.is_global_admin?(
+                          { user.office.id == auth.user.office.id || auth.user.is_global_admin?(
                             <Link
-                            href={route('meetinglog.edit', meetingLog.id)}
+                            href={route('user.edit', user.id)}
                             className="font-medium text-blue-600 mx-1 hover:underline"
                             >
                               編集
                             </Link>
                           ): <div className="font-medium text-gray-300 mx-1">編集</div>}
-                          {(auth.user.is_admin && meetingLog.user.office.id == auth.user.office.id) || auth.user.is_global_admin ? (
+                          {(auth.user.is_admin && user.office.id == auth.user.office.id) || auth.user.is_global_admin ? (
                           <button
-                          onClick={(e) => deleteMeetingLog(meetingLog)}
+                          onClick={(e) => deleteuser(user)}
                           className="font-medium text-red-600 mx-1 hover:underline"
                           >
                             削除
@@ -259,7 +227,7 @@ export default function Index({ auth, meetingLogs, offices, users, members,  que
                   </tbody>
                 </table>
               </div>
-              <Pagenation links={meetingLogs.meta.links} queryParams={queryParams}/>
+              <Pagenation links={users.meta.links} queryParams={queryParams}/>
             </div>
           </div>
         </div>

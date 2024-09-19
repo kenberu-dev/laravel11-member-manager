@@ -124,7 +124,7 @@ class MemberController extends Controller
             'member' => new MemberResource($member),
             'users' => UserResource::collection($users),
             'meetingLogs' => MeetingLogResource::collection($meetingLogs),
-            'queryParams' => $queryParams,
+            'queryParams' => $queryParams ?: null,
         ]);
     }
 

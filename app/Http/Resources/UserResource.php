@@ -25,7 +25,7 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'office' => new OfficeResource($this->office),
             'is_admin' => $this->is_admin,
-            'is_main_office' => $this->is_main_office,
+            'is_global_admin' => $this->is_global_admin,
             'created_at' => (new Carbon($this->created_at))->format('Y-m-d'),
             'updated_at' => (new Carbon($this->updated_at))->format('Y-m-d'),
         ];

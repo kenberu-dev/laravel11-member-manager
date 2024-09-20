@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MeetingLogController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\MessageController;
@@ -13,7 +14,7 @@ use Inertia\Inertia;
 Route::redirect('/', '/dashboard');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', fn() => Inertia::render('Dashboard'))
+    Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
 
     Route::get('/meetinglog', [MeetingLogController::class, 'index'])

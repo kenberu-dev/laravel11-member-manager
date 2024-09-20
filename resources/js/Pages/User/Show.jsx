@@ -54,12 +54,14 @@ export default function Show({ auth, user, meetingLogs, members, queryParams = n
           <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {`プロフィール詳細 - "${user.name}"`}
           </h2>
-          <Link
-            href={route("user.edit", user.id)}
-            className="bg-emerald-400 py-1 px-3 text-gray-900 rounded shadown transition-all hover:bg-emerald-500"
-          >
-            編集
-          </Link>
+          { user.office.id == auth.user.office.id || auth.user.is_global_admin?(
+            <Link
+              href={route("user.edit", user.id)}
+              className="bg-emerald-400 py-1 px-3 text-gray-900 rounded shadown transition-all hover:bg-emerald-500"
+            >
+              編集
+            </Link>
+          ):""}
         </div>
       }
     >

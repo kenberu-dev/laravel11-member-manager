@@ -13,7 +13,6 @@ export default function Index({ auth, offices, queryParams = null }) {
     } else {
       delete queryParams[name]
     }
-    console.log("queryParams", queryParams);
     router.get(route('office.index'), queryParams);
   }
 

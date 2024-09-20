@@ -19,7 +19,6 @@ export default function AuthenticatedLayout({ header, children }) {
       let channel = [];
       if (user.id === conversation.user_id) {
         channel = `message.meetinglog.${conversation.id}`
-        console.log("channel created");
       }
       Echo.private(channel)
         .error((error) => {
@@ -47,7 +46,6 @@ export default function AuthenticatedLayout({ header, children }) {
         if (user.id === conversation.user_id) {
           channel = `message.meetinglog.${conversation.id}`
           Echo.leave(channel);
-          console.log("leave from channel");
         }
       });
     }

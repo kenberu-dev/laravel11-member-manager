@@ -42,7 +42,6 @@ export default function Show({ auth, meetingLog, messages }) {
         const clientHeight = messagesCtrRef.current.clientHeight;
         const tmpScrollFromBottom =
           scrollHeight - scrollTop - clientHeight;
-        console.log("tmpScrollFromBottom", tmpScrollFromBottom);
         setScrollFromBottom(tmpScrollFromBottom);
 
         setLocalMessages((prevMessages) => {
@@ -53,11 +52,9 @@ export default function Show({ auth, meetingLog, messages }) {
 
   useEffect(() => {
     let channel = `message.meetinglog.${meetingLog.id}`;
-    console.log("channel created");
 
     conversations.forEach((conversation) => {
       if (channel === `message.meetinglog.${conversation.id}`) {
-        console.log("channel delted", channel);
         channel = [];
         return;
       }
@@ -103,13 +100,11 @@ export default function Show({ auth, meetingLog, messages }) {
     setNoMoreMessages(false);
 
     return () => {
-      console.log("offCreated");
       offCreated();
     }
   }, [meetingLog]);
 
   useEffect(() => {
-    console.log("This is setLocalMessages");
     setLocalMessages(messages ? messages.data.reverse() : []);
   }, [messages]);
 

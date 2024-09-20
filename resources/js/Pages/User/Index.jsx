@@ -139,7 +139,7 @@ export default function Index({ auth, offices, users, queryParams = null}) {
                     <tr className="text-nowrap">
                       <th className="px-3 py-2">
                         <TextInput
-                          className="w-full max-w-16"
+                          className="w-auto max-w-12"
                           defaultValue={queryParams.id}
                           placeholder="ID"
                           onBlur={e => searchFieldChanged('id', e.target.value)}
@@ -149,7 +149,7 @@ export default function Index({ auth, offices, users, queryParams = null}) {
                       <th className="px-3 py-2"></th>
                       <th className="px-3 py-2">
                         <TextInput
-                          className="w-28"
+                          className="w-auto max-w-24"
                           defaultValue={queryParams.name}
                           placeholder="氏名"
                           onBlur={e => searchFieldChanged('name', e.target.value)}

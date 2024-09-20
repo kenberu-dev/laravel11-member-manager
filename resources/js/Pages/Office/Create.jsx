@@ -1,7 +1,5 @@
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
-import UserAvatar from "@/Components/Message/UserAvatar";
-import SelectInput from "@/Components/SelectInput";
 import TextInput from "@/Components/TextInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, useForm } from "@inertiajs/react";

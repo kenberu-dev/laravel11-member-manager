@@ -149,12 +149,15 @@ export default function Show({ auth, meetingLog, messages }) {
           <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {`面談記録 - "${meetingLog.title}"`}
           </h2>
-          <Link
-            href={route("meetinglog.edit", meetingLog.id)}
-            className="bg-emerald-400 py-1 px-3 text-gray-900 rounded shadown transition-all hover:bg-emerald-500"
-          >
-            編集
-          </Link>
+          {meetingLog.user.office.id == auth.user.office.id || auth.user.is_global_admin?(
+            <Link
+              href={route("meetinglog.edit", meetingLog.id)}
+              className="bg-emerald-400 py-1 px-3 text-gray-900 rounded shadown transition-all hover:bg-emerald-500"
+            >
+              編集
+            </Link>
+          ): ""}
+
         </div>
       }
     >

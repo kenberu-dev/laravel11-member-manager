@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('offices', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->integer('zip_code');
+            $table->string('zip_code');
             $table->string('address');
             $table->string('phone_number')->nullable();
             $table->timestamps();

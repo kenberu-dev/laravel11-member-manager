@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('zip_code');
             $table->string('address');
             $table->string('phone_number')->nullable();
+            $table->boolean('is_archive')->default(false);
             $table->timestamps();
         });
     }

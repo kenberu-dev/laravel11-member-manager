@@ -89,6 +89,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/user/destroy/{user}', [UserController::class, 'destroy'])
         ->name('user.destroy');
 
+    Route::post('/user/archive/{user}', [UserController::class, 'archive'])
+        ->name('user.archive');
+
     Route::get('/user/edit/{user}', [UserController::class, 'edit'])
         ->name('user.edit');
 
@@ -112,6 +115,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::delete('/office/destroy/{office}', [OfficeController::class, 'destroy'])
         ->name('office.destroy');
+
+    Route::post('/office/archive/{office}', [OfficeController::class, 'archive'])
+        ->name('office.archive');
 
     Route::get('/office/edit/{office}', [OfficeController::class, 'edit'])
         ->name('office.edit');

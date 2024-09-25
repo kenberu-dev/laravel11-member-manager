@@ -14,7 +14,7 @@ class OfficeController extends Controller
      */
     public function index()
     {
-        $query = Office::query();
+        $query = Office::where("is_archive", "=", false);
         
         $sortField = request("sort_field", "created_at");
         $sortDirection = request("sort_direction", "desc");
@@ -95,6 +95,13 @@ class OfficeController extends Controller
     {
         $data = $request->validated();
         $office->update($data);
+
+        return to_route("office.index");
+    }
+
+    public function archive(Office $office)
+    {
+        $office->update(['is_archive' => true]);
 
         return to_route("office.index");
     }

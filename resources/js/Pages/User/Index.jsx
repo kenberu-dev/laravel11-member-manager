@@ -39,11 +39,18 @@ export default function Index({ auth, offices, users, queryParams = null}) {
     router.get(route('user.index'), queryParams)
   }
 
-  const deleteuser = (user) => {
+  const deleteUser = (user) => {
     if(!window.confirm("削除されたデータはもとに戻すことができません！\n削除しますか？")) {
       return;
     }
     router.delete(route('user.destroy', user.id));
+  }
+
+  const archiveUser = (user) => {
+    if(!window.confirm("データはアーカイブされます。\n実行しますか？")) {
+      return;
+    }
+    router.post(route('user.archive', user.id));
   }
 
   return (
@@ -215,7 +222,7 @@ export default function Index({ auth, offices, users, queryParams = null}) {
                           ): <div className="font-medium text-gray-300 mx-1">編集</div>}
                           {(auth.user.is_admin && user.office.id == auth.user.office.id) || auth.user.is_global_admin ? (
                           <button
-                          onClick={(e) => deleteuser(user)}
+                          onClick={(e) => archiveUser(user)}
                           className="font-medium text-red-600 mx-1 hover:underline"
                           >
                             削除

@@ -44,6 +44,13 @@ export default function Index({ auth, offices, queryParams = null }) {
     router.delete(route('office.destroy', office.id));
   }
 
+  const archiveOffice = (office) => {
+    if (!window.confirm("データはアーカイブされます。\n実行しますか？")) {
+      return;
+    }
+    router.post(route('office.archive', office.id));
+  }
+
   return (
     <AuthenticatedLayout
       user={auth.user}
@@ -207,7 +214,7 @@ export default function Index({ auth, offices, queryParams = null }) {
                           ) : <div className="font-medium text-gray-300 mx-1">編集</div>}
                           {auth.user.is_global_admin ? (
                             <button
-                              onClick={(e) => deleteOffice(office)}
+                              onClick={(e) => archiveOffice(office)}
                               className="font-medium text-red-600 mx-1 hover:underline"
                             >
                               削除

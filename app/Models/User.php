@@ -23,6 +23,7 @@ class User extends Authenticatable
         'office_id',
         'email_verified_at',
         'password',
+        'is_archive',
         'is_admin',
         'is_global_admin',
     ];

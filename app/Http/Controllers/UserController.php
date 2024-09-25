@@ -12,6 +12,7 @@ use App\Models\MeetingLog;
 use App\Models\Member;
 use App\Models\Office;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
@@ -21,7 +22,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $query = User::query();
+        $query = User::where("is_archive", "=", false);
 
         $sortField = request("sort_field", "created_at");
         $sortDirection = request("sort_direction", "desc");
@@ -144,6 +145,13 @@ class UserController extends Controller
 
         unset($data['avatar']);
         $user->update($data);
+
+        return to_route("user.index");
+    }
+
+    public function archive(User $user)
+    {
+        $user->update(['is_archive' => true]);
 
         return to_route("user.index");
     }

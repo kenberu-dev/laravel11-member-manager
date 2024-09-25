@@ -14,6 +14,7 @@ class Office extends Model
         'zip_code',
         'address',
         'phone_number',
+        'is_archive',
     ];
 
     public function users()

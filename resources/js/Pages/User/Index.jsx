@@ -39,13 +39,6 @@ export default function Index({ auth, offices, users, queryParams = null}) {
     router.get(route('user.index'), queryParams)
   }
 
-  const deleteUser = (user) => {
-    if(!window.confirm("削除されたデータはもとに戻すことができません！\n削除しますか？")) {
-      return;
-    }
-    router.delete(route('user.destroy', user.id));
-  }
-
   const archiveUser = (user) => {
     if(!window.confirm("データはアーカイブされます。\n実行しますか？")) {
       return;

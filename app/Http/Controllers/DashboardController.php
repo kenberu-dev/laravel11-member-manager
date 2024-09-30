@@ -31,6 +31,8 @@ class DashboardController extends Controller
         $messageCount = Message::select("messages.id")
                             ->leftJoin("meeting_logs", "messages.meeting_logs_id", "meeting_logs.id")
                             ->whereDate("messages.created_at", "=", $yesterday)
+                            ->where("meeting_logs.id", "=", Auth::id())
+                            ->where("messages.sender_id", "!=", Auth::id())
                             ->orWhereDate("messages.created_at", "=", $today)
                             ->where("meeting_logs.id", "=", Auth::id())
                             ->where("messages.sender_id", "!=", Auth::id())

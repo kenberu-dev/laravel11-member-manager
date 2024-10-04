@@ -10,6 +10,7 @@ export default function Index({ auth, offices, queryParams = null }) {
   const searchFieldChanged = (name, value) => {
     if (value) {
       queryParams[name] = value
+      queryParams['page'] = 1
     } else {
       delete queryParams[name]
     }

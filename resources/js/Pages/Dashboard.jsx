@@ -11,6 +11,7 @@ export default function Dashboard({ auth, meetingLogs, messageCount = 0, meeting
   const searchFieldChanged = (name, value) => {
     if (value) {
       queryParams[name] = value
+      queryParams['page'] = 1
     } else {
       delete queryParams[name]
     }

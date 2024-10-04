@@ -11,6 +11,7 @@ export default function Index({ auth, meetingLogs, offices, users, members,  que
   const searchFieldChanged = (name, value) => {
     if (value) {
       queryParams[name] = value
+      queryParams['page'] = 1
     } else {
       delete queryParams[name]
     }

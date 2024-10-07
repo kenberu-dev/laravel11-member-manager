@@ -120,6 +120,7 @@ export default function Create ({ auth, offices, user }) {
                       id="is_admin"
                       type="checkbox"
                       value={data.is_admin}
+                      checked = {data.is_admin ? "checked" : ""}
                       onChange={(e) => setData("is_admin", e.target.checked)}
                       className="checkbox"
                     />

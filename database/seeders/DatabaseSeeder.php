@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
         Office::factory()->count(10)->hasUsers(10)->create();
 
         User::factory()->create([
-            'name' => 'Kenberu',
+            'name' => 'ケンベル',
             'email' => 'kenberu@example.com',
             'password' => bcrypt('12345678'),
             'office_id' => 1,
@@ -40,25 +40,17 @@ class DatabaseSeeder extends Seeder
             'email_verified_at' => time(),
         ]);
 
-        Member::factory()->count(50)->create();
-
-        MeetingLog::factory()->count(200)->create();
+        User::factory()->create([
+            'name' => '山田 太郎',
+            'email' => 'tyamada@example.com',
+            'password' => bcrypt('12345678'),
+            'office_id' => 1,
+            'is_admin' => false,
+            'is_global_admin' => false,
+            'email_verified_at' => time(),
+        ]);
+        Member::factory()->count(50)->hasMeetingLogs(20)->create();
 
         Message::factory()->count(20000)->create();
-        $messages = Message::orderBy('created_at')->get();
-
-        $ids = $messages
-                    ->groupBy('meeting_logs_id')
-                    ->map(function ($groupedMessages) {
-                        return[
-                            'meeting_logs_id' => $groupedMessages->first()->meeting_logs_id,
-                            'last_message_id' => $groupedMessages->last()->id,
-                        ];
-                    })->values()->toArray();
-       foreach($ids as $id) {
-            MeetingLog::where('id', '=', $id["meeting_logs_id"])
-                ->firstOrFail()
-                ->update(['last_message_id' => $id["last_message_id"]]);
-        }
     }
 }

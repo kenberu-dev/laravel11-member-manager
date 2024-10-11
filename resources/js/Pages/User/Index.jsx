@@ -55,12 +55,20 @@ export default function Index({ auth, offices, users, queryParams = null}) {
           <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             従業員一覧
           </h2>
-          <Link
-            href={route("user.create")}
-            className="bg-emerald-400 py-1 px-3 text-gray-900 rounded shadown transition-all hover:bg-emerald-500"
-          >
-            新規作成
-          </Link>
+          <div className="">
+            <Link
+              href={route("user.create")}
+              className="bg-emerald-400 py-1 px-3 mr-2 text-gray-900 rounded shadown transition-all hover:bg-emerald-500"
+            >
+              新規作成
+            </Link>
+            <Link
+              href={route("user.indexArchived")}
+              className="bg-gray-400 py-1 px-3 text-gray-900 rounded shadown transition-all hover:bg-gray-500"
+            >
+              復元
+            </Link>
+          </div>
         </div>
       }
     >
@@ -159,7 +167,7 @@ export default function Index({ auth, offices, users, queryParams = null}) {
                       </th>
                       <th className="px-3 py-2">
                         <TextInput
-                          className="w-full"
+                          className="w-auto"
                           defaultValue={queryParams.email}
                           placeholder="メールアドレス"
                           onBlur={e => searchFieldChanged('email', e.target.value)}
@@ -168,7 +176,7 @@ export default function Index({ auth, offices, users, queryParams = null}) {
                       </th>
                       <th className="px-3 py-2">
                         <SelectInput
-                          className="w-full"
+                          className="w-auto"
                           defaultValue={queryParams.office}
                           onChange={e =>
                             searchFieldChanged("office", e.target.value)

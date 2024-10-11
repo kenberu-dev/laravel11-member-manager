@@ -49,8 +49,10 @@ class DatabaseSeeder extends Seeder
             'is_global_admin' => false,
             'email_verified_at' => time(),
         ]);
-        Member::factory()->count(50)->hasMeetingLogs(20)->create();
+        Member::factory()->count(50)->create();
 
-        Message::factory()->count(20000)->create();
+        MeetingLog::factory()->count(1500)->create();
+
+        Message::factory()->count(25000)->create();
     }
 }

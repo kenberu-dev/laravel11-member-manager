@@ -114,9 +114,9 @@ export default function Show({ auth, member, meetingLogs, users, queryParams = n
               <div>
                 <label className="font-bold text-lg">面談記録</label>
                 <div className="mt-1 whitespace-pre-wrap max-h-[400px] overflow-y-auto">
-                  <div className="overflow-auto">
+                  <div className="">
                     <table className="w-full text-sm text-left rtl:text-right">
-                      <thead className="text-xs text-gray-700 uppercase bg-gray-50 border-b-2">
+                      <thead className="text-xs text-gray-700 uppercase bg-gray-50 border-b-2 sticky top-0">
                         <tr className="text-nowrap">
                           <TableHeading
                             name="id"
@@ -169,7 +169,7 @@ export default function Show({ auth, member, meetingLogs, users, queryParams = n
                           <th className="px-3 py-2 text-center">編集・削除</th>
                         </tr>
                       </thead>
-                      <thead className="text-xs text-gray-700 uppercase bg-gray-50 border-b">
+                      <thead className="text-xs text-gray-700 uppercase bg-gray-50 border-b sticky top-10">
                         <tr className="text-nowrap">
                           <th className="px-3 py-2">
                             <TextInput
@@ -224,7 +224,7 @@ export default function Show({ auth, member, meetingLogs, users, queryParams = n
                           <th className="px-3 py-2 text-right"></th>
                         </tr>
                       </thead>
-                      <tbody>
+                      <tbody className="">
                         {meetingLogs.data.map(meetingLog => (
                           <tr className="bg-white border-b" key={meetingLog.id}>
                             <td className="px-3 py-3">{meetingLog.id}</td>

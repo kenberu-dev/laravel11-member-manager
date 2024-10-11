@@ -24,9 +24,7 @@ class MeetingLogFactory extends Factory
 
         $createdAt = fake()->dateTimeBetween('-1 year', 'now')->format('Y-m-d');
 
-        $title = fake()->randomElement(\App\Models\Member::where('id', '=', $memberId)
-            ->pluck('name')
-            ->toArray()) . '-' . $createdAt;
+        $title = fake()->randomElement(['テストタイトル']) . '-' . $createdAt;
 
 
         return [

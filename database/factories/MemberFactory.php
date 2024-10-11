@@ -23,7 +23,7 @@ class MemberFactory extends Factory
             'sex' => fake()->randomElement(['男性', '女性', 'その他']),
             'office_id' => $officeId,
             'status' => fake()->randomElement(['利用中', '利用中止', '利用終了']),
-            'characteristics' => fake()->realText(10),
+            'characteristics' => fake()->randomElement(['抑うつ病', '統合失調症', '自閉スペクトラム症', '注意欠如・多動症']),
             'notes' => fake()->realText(100),
             'created_at' => fake()->dateTimeBetween('-1 year', 'now'),
         ];

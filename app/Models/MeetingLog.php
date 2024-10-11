@@ -17,7 +17,6 @@ class MeetingLog extends Model
         'member_id',
         'condition',
         'meeting_log',
-        'last_message_id',
     ];
 
     public function user()
@@ -28,11 +27,6 @@ class MeetingLog extends Model
     public function member()
     {
         return $this->belongsTo(Member::class);
-    }
-
-    public function lastMessage()
-    {
-        return $this->belongsTo(Message::class, 'last_message_id');
     }
 
     public function messages()

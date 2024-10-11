@@ -18,10 +18,6 @@ return new class extends Migration
             $table->foreignId('meeting_logs_id')->constrained('meeting_logs')->onDelete('cascade');
             $table->timestamps();
         });
-
-        Schema::table('meeting_logs', function(Blueprint $table) {
-            $table->foreignId('last_message_id')->nullable()->constrained('messages')->onDelete('cascade');
-        });
     }
 
     /**

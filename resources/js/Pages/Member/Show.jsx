@@ -238,7 +238,7 @@ export default function Show({ auth, member, meetingLogs, users, queryParams = n
                             <td className="px-3 py-3 text-nowrap">{meetingLog.created_at}</td>
                             <td className="px-3 py-3 text-nowrap">{meetingLog.updated_at}</td>
                             <td className="px-3 py-3 text-center text-nowrap flex">
-                              { meetingLog.user.office.id == auth.user.office_id || auth.user.is_global_admin?(
+                              { meetingLog.user.office.id == auth.user.office.id || auth.user.is_global_admin?(
                                 <Link
                                 href={route('meetinglog.edit', meetingLog.id)}
                                 className="font-medium text-blue-600 mx-1 hover:underline"
@@ -246,7 +246,7 @@ export default function Show({ auth, member, meetingLogs, users, queryParams = n
                                   編集
                                 </Link>
                               ): <div className="font-medium text-gray-300 mx-1">編集</div>}
-                              {(auth.user.is_admin && meetingLog.user.office.id == auth.user.office_id) || auth.user.is_global_admin ? (
+                              {(auth.user.is_admin && meetingLog.user.office.id == auth.user.office.id) || auth.user.is_global_admin ? (
                               <button
                               onClick={(e) => deleteMeetingLog(meetingLog)}
                               className="font-medium text-red-600 mx-1 hover:underline"

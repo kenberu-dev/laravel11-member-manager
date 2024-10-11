@@ -55,4 +55,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Office::class);
     }
+
+    public function meetingLogs()
+    {
+        return $this->hasMany(MeetingLog::class);
+    }
 }

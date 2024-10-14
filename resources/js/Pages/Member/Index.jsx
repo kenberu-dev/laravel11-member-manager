@@ -74,14 +74,6 @@ export default function Index({ auth, offices, members,  queryParams = null}) {
                   <thead className="text-xs text-gray-700 uppercase bg-gray-50 border-b-2">
                     <tr className="text-nowrap">
                       <TableHeading
-                        name="id"
-                        sort_field={queryParams.sort_field}
-                        sort_direction={queryParams.sort_direction}
-                        sortChanged={sortChanged}
-                      >
-                        ID
-                      </TableHeading>
-                      <TableHeading
                         name="name"
                         sort_field={queryParams.sort_field}
                         sort_direction={queryParams.sort_direction}
@@ -96,14 +88,6 @@ export default function Index({ auth, offices, members,  queryParams = null}) {
                         sortChanged={sortChanged}
                       >
                         性別
-                      </TableHeading>
-                      <TableHeading
-                        name="office_id"
-                        sort_field={queryParams.sort_field}
-                        sort_direction={queryParams.sort_direction}
-                        sortChanged={sortChanged}
-                      >
-                        事業所
                       </TableHeading>
                       <TableHeading
                         name="status"
@@ -144,15 +128,6 @@ export default function Index({ auth, offices, members,  queryParams = null}) {
                     <tr className="text-nowrap">
                       <th className="px-3 py-2">
                         <TextInput
-                          className="w-full max-w-16"
-                          defaultValue={queryParams.id}
-                          placeholder="ID"
-                          onBlur={e => searchFieldChanged('id', e.target.value)}
-                          onKeyPress={e => onKeyPress('id', e)}
-                        />
-                      </th>
-                      <th className="px-3 py-2">
-                        <TextInput
                           className="w-full"
                           defaultValue={queryParams.name}
                           placeholder="氏名"
@@ -175,20 +150,6 @@ export default function Index({ auth, offices, members,  queryParams = null}) {
                         </SelectInput>
                       </th>
                       <th className="px-3 py-2">
-                        <SelectInput
-                          className="w-full"
-                          defaultValue={queryParams.office}
-                          onChange={e =>
-                            searchFieldChanged("office", e.target.value)
-                          }
-                        >
-                          <option value="">事業所名</option>
-                          {offices.data.map(office =>(
-                            <option key={office.id} value={office.id}>{office.name}</option>
-                          ))}
-                        </SelectInput>
-                      </th>
-                      <th className="px-3 py-2">
                       <SelectInput
                           className="w-full"
                           defaultValue={queryParams.status}
@@ -197,6 +158,9 @@ export default function Index({ auth, offices, members,  queryParams = null}) {
                           }
                         >
                           <option value="">ステータス</option>
+                          <option value="見学">見学</option>
+                          <option value="体験">体験</option>
+                          <option value="利用意思獲得">利用意思獲得</option>
                           <option value="利用中">利用中</option>
                           <option value="利用中止">利用中止</option>
                           <option value="利用終了">利用終了</option>
@@ -217,14 +181,12 @@ export default function Index({ auth, offices, members,  queryParams = null}) {
                   <tbody>
                     {members.data.map(member => (
                       <tr className="bg-white border-b" key={member.id}>
-                        <td className="px-3 py-3">{member.id}</td>
                         <td className="px-3 py-3 hover:underline">
                           <Link href={route("member.show", member.id)}>
                             {member.name}
                           </Link>
                         </td>
                         <td className="px-3 py-3 ">{member.sex}</td>
-                        <td className="px-3 py-3 ">{member.office.name}</td>
                         <td className="px-3 py-3 ">{member.status}</td>
                         <td className="px-3 py-3 text-center">{member.characteristics}</td>
                         <td className="px-3 py-3 text-nowrap">{member.created_at}</td>

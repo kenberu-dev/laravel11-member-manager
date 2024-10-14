@@ -12,6 +12,7 @@ use App\Models\MeetingLog;
 use App\Models\Member;
 use App\Models\Office;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class MemberController extends Controller
 {
@@ -20,7 +21,7 @@ class MemberController extends Controller
      */
     public function index()
     {
-        $query = Member::query();
+        $query = Member::where("office_id", "=", Auth::user()->office_id);
 
         $sortField = request("sort_field", "created_at");
         $sortDirection = request("sort_direction", "desc");
@@ -37,10 +38,6 @@ class MemberController extends Controller
 
         if (request("sex")) {
             $query->where("sex", "=", request("sex"));
-        }
-
-        if (request("office")) {
-            $query->where("office_id", "=", request("office"));
         }
 
         if (request("status")) {

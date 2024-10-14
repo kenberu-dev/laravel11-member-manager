@@ -131,7 +131,7 @@ export default function Restore({ auth, offices, users, queryParams = null}) {
                       >
                         更新日時
                       </TableHeading>
-                      <th className="px-3 py-2 text-center">編集・削除</th>
+                      <th className="px-3 py-2 text-center">復元・削除</th>
                     </tr>
                   </thead>
                   <thead className="text-xs text-gray-700 uppercase bg-gray-50 border-b">

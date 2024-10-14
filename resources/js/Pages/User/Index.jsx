@@ -141,7 +141,7 @@ export default function Index({ auth, offices, users, queryParams = null}) {
                       >
                         更新日時
                       </TableHeading>
-                      <th className="px-3 py-2 text-center">編集・削除</th>
+                      <th className="px-3 py-2 text-center">編集・非表示</th>
                     </tr>
                   </thead>
                   <thead className="text-xs text-gray-700 uppercase bg-gray-50 border-b">
@@ -227,9 +227,9 @@ export default function Index({ auth, offices, users, queryParams = null}) {
                           onClick={(e) => archiveUser(user)}
                           className="font-medium text-red-600 mx-1 hover:underline"
                           >
-                            削除
+                            非表示
                           </button>
-                          ):<div className="font-medium text-gray-300 mx-1">削除</div>}
+                          ):<div className="font-medium text-gray-300 mx-1">非表示</div>}
                         </td>
                       </tr>
                     ))}

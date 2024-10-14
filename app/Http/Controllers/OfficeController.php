@@ -15,7 +15,7 @@ class OfficeController extends Controller
     public function index()
     {
         $query = Office::where("is_archive", "=", false);
-        
+
         $sortField = request("sort_field", "created_at");
         $sortDirection = request("sort_direction", "desc");
 
@@ -104,6 +104,49 @@ class OfficeController extends Controller
         $office->update(['is_archive' => true]);
 
         return to_route("office.index");
+    }
+
+    public function indexArchived()
+    {
+        $query = Office::where("is_archive", "=", true);
+
+        $sortField = request("sort_field", "created_at");
+        $sortDirection = request("sort_direction", "desc");
+
+        if (request("id")) {
+            $query->where("id", "like", "%" . request("id") . "%");
+        }
+
+        if (request("name")) {
+            $query->where("name", "like", "%" . request("name") . "%");
+        }
+
+        if (request("zip_code")) {
+            $query->where("zip_code", "like", "%" . request("zip_code") . "%");
+        }
+
+        if (request("address")) {
+            $query->where("address", "like", "%" . request("address") . "%");
+        }
+
+        if (request("phone_number")) {
+            $query->wher("phone_number", "like", "%" . request("phone_number") . "%");
+        }
+
+        $offices = $query->orderBy($sortField, $sortDirection)->paginate(10);
+        $queryParams = request()->query();
+
+        return inertia("Office/Restore", [
+            "offices" => OfficeResource::collection($offices),
+            "queryParams" => $queryParams ?: null,
+        ]);
+    }
+
+    public function restore(Office $office)
+    {
+        $office->update(['is_archive' => false]);
+
+        return to_route("office.indexArchived");
     }
 
     /**

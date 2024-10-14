@@ -25,6 +25,10 @@ class MeetingLogController extends Controller
     public function index()
     {
         $query = MeetingLog::query();
+        $query->select("meeting_logs.*", "offices.id as office_id")
+            ->leftJoin('members', 'meeting_logs.member_id', '=', 'members.id')
+            ->leftJoin('offices', 'members.office_id', '=', 'offices.id')
+            ->where('offices.id', '=', Auth::user()->office_id);
 
         $sortField = request("sort_field", "created_at");
         $sortDirection = request("sort_direction", "desc");
@@ -39,15 +43,6 @@ class MeetingLogController extends Controller
 
         if (request("title")) {
             $query->where("title", "like", "%" . request("title") . "%");
-        }
-
-        if (request("office")) {
-            $query->select("meeting_logs.*", "offices.id as office_id")
-                ->leftJoin('members', 'meeting_logs.member_id', '=', 'members.id')
-                ->leftJoin('offices', 'members.office_id', '=', 'offices.id')
-                ->where('offices.id', '=', request("office"));
-            $users = User::where('office_id', '=', request("office"))->get();
-            $members = Member::where('office_id', '=', request("office"))->get();
         }
 
         if (request("user")) {

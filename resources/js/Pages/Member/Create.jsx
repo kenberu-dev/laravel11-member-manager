@@ -105,6 +105,9 @@ export default function Create ({ auth, offices }) {
                   onChange={(e) => setData("status", e.target.value)}
                 >
                   <option value="">ステータスを選択してください</option>
+                  <option value="見学">見学</option>
+                  <option value="体験">体験</option>
+                  <option value="利用意思獲得">利用意思獲得</option>
                   <option value="利用中">利用中</option>
                   <option value="利用中止">利用中止</option>
                   <option value="利用終了">利用終了</option>

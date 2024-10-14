@@ -1,10 +1,12 @@
+import UserAvatar from "@/Components/Message/UserAvatar";
 import Pagenation from "@/Components/Pagenation";
+import SelectInput from "@/Components/SelectInput";
 import TableHeading from "@/Components/TableHeading";
 import TextInput from "@/Components/TextInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, router } from "@inertiajs/react";
 
-export default function Index({ auth, offices, queryParams = null }) {
+export default function Restore({ auth, offices, users, queryParams = null}) {
   queryParams = queryParams || {}
 
   const searchFieldChanged = (name, value) => {
@@ -14,7 +16,8 @@ export default function Index({ auth, offices, queryParams = null }) {
     } else {
       delete queryParams[name]
     }
-    router.get(route('office.index'), queryParams);
+
+    router.get(route('user.indexArchived'), queryParams)
   }
 
   const onKeyPress = (name, e) => {
@@ -34,15 +37,18 @@ export default function Index({ auth, offices, queryParams = null }) {
       queryParams.sort_field = name;
       queryParams.sort_direction = 'asc';
     }
-    console.log("queryParams", queryParams);
-    router.get(route('office.index'), queryParams);
+    router.get(route('user.indexArchived'), queryParams)
   }
 
-  const archiveOffice = (office) => {
-    if (!window.confirm("データはアーカイブされます。\n非表示にしますか？")) {
+  const restoreUser = (user) => {
+    router.post(route('user.restore', user.id));
+  }
+
+  const deleteUser = (user) => {
+    if(!window.confirm("データは削除されもとに戻すことができません！\n実行しますか？")) {
       return;
     }
-    router.post(route('office.archive', office.id));
+    router.delete(route('user.destroy', user.id));
   }
 
   return (
@@ -51,27 +57,13 @@ export default function Index({ auth, offices, queryParams = null }) {
       header={
         <div className="flex justify-between items-center">
           <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            事業所一覧
+            アーカイブされた従業員一覧
           </h2>
-          <div>
-            <Link
-              href={route("office.create")}
-              className="bg-emerald-400 py-1 px-3 mr-2 text-gray-900 rounded shadown transition-all hover:bg-emerald-500"
-            >
-              新規作成
-            </Link>
-            <Link
-                href={route("office.indexArchived")}
-                className="bg-gray-400 py-1 px-3 text-gray-900 rounded shadown transition-all hover:bg-gray-500"
-              >
-                復元
-              </Link>
-          </div>
         </div>
       }
     >
 
-      <Head title="事業所一覧" />
+      <Head title="アーカイブされた従業員一覧" />
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
           <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
@@ -88,37 +80,40 @@ export default function Index({ auth, offices, queryParams = null }) {
                       >
                         ID
                       </TableHeading>
+                      <th className="py-3 px-2 text-center">
+                        アイコン
+                      </th>
                       <TableHeading
                         name="name"
                         sort_field={queryParams.sort_field}
                         sort_direction={queryParams.sort_direction}
                         sortChanged={sortChanged}
                       >
-                        事業所名
+                        氏名
                       </TableHeading>
                       <TableHeading
-                        name="zip_code"
+                        name="email"
                         sort_field={queryParams.sort_field}
                         sort_direction={queryParams.sort_direction}
                         sortChanged={sortChanged}
                       >
-                        郵便番号
+                        メールアドレス
                       </TableHeading>
                       <TableHeading
-                        name="address"
+                        name="office_id"
                         sort_field={queryParams.sort_field}
                         sort_direction={queryParams.sort_direction}
                         sortChanged={sortChanged}
                       >
-                        住所
+                        事業所
                       </TableHeading>
                       <TableHeading
-                        name="phone_number"
+                        name="is_admin"
                         sort_field={queryParams.sort_field}
                         sort_direction={queryParams.sort_direction}
                         sortChanged={sortChanged}
                       >
-                        電話番号
+                        管理者権限
                       </TableHeading>
                       <TableHeading
                         name="created_at"
@@ -136,99 +131,102 @@ export default function Index({ auth, offices, queryParams = null }) {
                       >
                         更新日時
                       </TableHeading>
-                      <th className="px-3 py-2 text-center">編集・非表示</th>
+                      <th className="px-3 py-2 text-center">復元・削除</th>
                     </tr>
                   </thead>
                   <thead className="text-xs text-gray-700 uppercase bg-gray-50 border-b">
                     <tr className="text-nowrap">
                       <th className="px-3 py-2">
                         <TextInput
-                          className="w-full max-w-16"
+                          className="w-auto max-w-12"
                           defaultValue={queryParams.id}
                           placeholder="ID"
                           onBlur={e => searchFieldChanged('id', e.target.value)}
                           onKeyPress={e => onKeyPress('id', e)}
                         />
                       </th>
+                      <th className="px-3 py-2"></th>
                       <th className="px-3 py-2">
                         <TextInput
-                          className="w-28"
+                          className="w-auto max-w-24"
                           defaultValue={queryParams.name}
-                          placeholder="事業所名"
+                          placeholder="氏名"
                           onBlur={e => searchFieldChanged('name', e.target.value)}
                           onKeyPress={e => onKeyPress('name', e)}
                         />
                       </th>
                       <th className="px-3 py-2">
                         <TextInput
-                          className="w-full"
-                          defaultValue={queryParams.zip_code}
-                          placeholder="郵便番号"
-                          onBlur={e => searchFieldChanged('zip_code', e.target.value)}
-                          onKeyPress={e => onKeyPress('zip_code', e)}
+                          className="w-auto"
+                          defaultValue={queryParams.email}
+                          placeholder="メールアドレス"
+                          onBlur={e => searchFieldChanged('email', e.target.value)}
+                          onKeyPress={e => onKeyPress('email', e)}
                         />
                       </th>
                       <th className="px-3 py-2">
-                        <TextInput
-                          className="w-full"
-                          defaultValue={queryParams.address}
-                          placeholder="住所"
-                          onBlur={e => searchFieldChanged('address', e.target.value)}
-                          onKeyPress={e => onKeyPress('address', e)}
-                        />
+                        <SelectInput
+                          className="w-auto"
+                          defaultValue={queryParams.office}
+                          onChange={e =>
+                            searchFieldChanged("office", e.target.value)
+                          }
+                        >
+                          <option value="">事業所名</option>
+                          {offices.data.map(office =>(
+                            <option key={office.id} value={office.id}>{office.name}</option>
+                          ))}
+                        </SelectInput>
                       </th>
-                      <th className="px-3 py-2">
-                        <TextInput
-                          className="w-full"
-                          defaultValue={queryParams.phone_number}
-                          placeholder="電話番号"
-                          onBlur={e => searchFieldChanged('phone_number', e.target.value)}
-                          onKeyPress={e => onKeyPress('phone_number', e)}
-                        />
-                      </th>
+                      <th className="px-3 py-2 "></th>
                       <th className="px-3 py-2 "></th>
                       <th className="px-3 py-2 "></th>
                       <th className="px-3 py-2 text-right"></th>
                     </tr>
                   </thead>
                   <tbody>
-                    {offices.data.map(office => (
-                      <tr className="bg-white border-b" key={office.id}>
-                        <td className="px-3 py-3">{office.id}</td>
+                    {users.data.map(user => (
+                      <tr className="bg-white border-b" key={user.id}>
+                        <td className="px-3 py-3">{user.id}</td>
+                        <td className="px-3 py-3 ">
+                          <UserAvatar user={user} />
+                        </td>
                         <td className="px-3 py-3 hover:underline">
-                          <Link href={route("office.show", office.id)}>
-                            {office.name}
+                          <Link href={route("user.show", user.id)}>
+                            {user.name}
                           </Link>
                         </td>
-                        <td className="px-3 py-3 ">{office.zip_code}</td>
-                        <td className="px-3 py-3 ">{office.address}</td>
-                        <td className="px-3 py-3 ">{office.phone_number}</td>
-                        <td className="px-3 py-3 text-nowrap">{office.created_at}</td>
-                        <td className="px-3 py-3 text-nowrap">{office.updated_at}</td>
+                        <td className="px-3 py-3 ">{user.email}</td>
+                        <td className="px-3 py-3 ">{user.office.name}</td>
+                        <td className="px-3 py-3 text-center text-nowrap">
+                          {user.is_admin ? "あり" : "なし"}
+                        </td>
+                        <td className="px-3 py-3 text-nowrap">{user.created_at}</td>
+                        <td className="px-3 py-3 text-nowrap">{user.updated_at}</td>
                         <td className="px-3 py-3 text-center text-nowrap flex">
-                          {auth.user.is_global_admin ? (
-                            <Link
-                              href={route('office.edit', office.id)}
-                              className="font-medium text-blue-600 mx-1 hover:underline"
-                            >
-                              編集
-                            </Link>
-                          ) : <div className="font-medium text-gray-300 mx-1">編集</div>}
-                          {auth.user.is_global_admin ? (
+                          { user.office.id == auth.user.office.id || auth.user.is_global_admin?(
                             <button
-                              onClick={(e) => archiveOffice(office)}
-                              className="font-medium text-red-600 mx-1 hover:underline"
+                              onClick={(e) => restoreUser(user)}
+                              className="font-medium text-green-600 mx-1 hover:underline"
                             >
-                              非表示
+                              復元
                             </button>
-                          ) : <div className="font-medium text-gray-300 mx-1">非表示</div>}
+                          ): <div className="font-medium text-gray-300 mx-1">復元</div>}
+                          {(auth.user.is_admin && user.office.id == auth.user.office.id) || auth.user.is_global_admin ? (
+                          <button
+                          onClick={(e) => deleteUser(user)}
+                          className="font-medium text-red-600 mx-1 hover:underline"
+                          >
+                            削除
+                          </button>
+                          ):<div className="font-medium text-gray-300 mx-1">削除</div>}
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
-              <Pagenation links={offices.meta.links} queryParams={queryParams} />
+              <Pagenation links={users.meta.links} queryParams={queryParams}/>
             </div>
           </div>
         </div>

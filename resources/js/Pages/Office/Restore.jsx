@@ -38,11 +38,15 @@ export default function Index({ auth, offices, queryParams = null }) {
     router.get(route('office.index'), queryParams);
   }
 
-  const archiveOffice = (office) => {
-    if (!window.confirm("データはアーカイブされます。\n非表示にしますか？")) {
+  const deleteOffice = (office) => {
+    if (!window.confirm("削除されたデータはもとに戻すことができません！\n削除しますか？")) {
       return;
     }
-    router.post(route('office.archive', office.id));
+    router.delete(route('office.destroy', office.id));
+  }
+
+  const restoreOffice = (office) => {
+    router.post(route('office.restore', office.id));
   }
 
   return (
@@ -51,22 +55,8 @@ export default function Index({ auth, offices, queryParams = null }) {
       header={
         <div className="flex justify-between items-center">
           <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            事業所一覧
+            アーカイブされた事業所一覧
           </h2>
-          <div>
-            <Link
-              href={route("office.create")}
-              className="bg-emerald-400 py-1 px-3 mr-2 text-gray-900 rounded shadown transition-all hover:bg-emerald-500"
-            >
-              新規作成
-            </Link>
-            <Link
-                href={route("office.indexArchived")}
-                className="bg-gray-400 py-1 px-3 text-gray-900 rounded shadown transition-all hover:bg-gray-500"
-              >
-                復元
-              </Link>
-          </div>
         </div>
       }
     >
@@ -136,7 +126,7 @@ export default function Index({ auth, offices, queryParams = null }) {
                       >
                         更新日時
                       </TableHeading>
-                      <th className="px-3 py-2 text-center">編集・非表示</th>
+                      <th className="px-3 py-2 text-center">復元・削除</th>
                     </tr>
                   </thead>
                   <thead className="text-xs text-gray-700 uppercase bg-gray-50 border-b">
@@ -207,21 +197,21 @@ export default function Index({ auth, offices, queryParams = null }) {
                         <td className="px-3 py-3 text-nowrap">{office.updated_at}</td>
                         <td className="px-3 py-3 text-center text-nowrap flex">
                           {auth.user.is_global_admin ? (
-                            <Link
-                              href={route('office.edit', office.id)}
-                              className="font-medium text-blue-600 mx-1 hover:underline"
+                            <button
+                              onClick={(e) => restoreOffice(office)}
+                              className="font-medium text-green-600 mx-1 hover:underline"
                             >
-                              編集
-                            </Link>
+                              復元
+                            </button>
                           ) : <div className="font-medium text-gray-300 mx-1">編集</div>}
                           {auth.user.is_global_admin ? (
                             <button
-                              onClick={(e) => archiveOffice(office)}
+                              onClick={(e) => deleteOffice(office)}
                               className="font-medium text-red-600 mx-1 hover:underline"
                             >
-                              非表示
+                              削除
                             </button>
-                          ) : <div className="font-medium text-gray-300 mx-1">非表示</div>}
+                          ) : <div className="font-medium text-gray-300 mx-1">削除</div>}
                         </td>
                       </tr>
                     ))}

@@ -101,6 +101,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/user/update/{user}', [UserController::class, 'update'])
         ->name('user.update');
 
+    Route::get('/user/archived', [UserController::class, 'indexArchived'])
+        ->name('user.indexArchived');
+
+    Route::post('user/restore/{user}', [UserController::class, 'restore'])
+        ->name('user.restore');
+
     Route::get('/office', [OfficeController::class, 'index'])
         ->name('office.index');
 
@@ -127,6 +133,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::patch('/office/update/{office}', [OfficeController::class, 'update'])
         ->name('office.update');
+
+    Route::get('office/archived', [OfficeController::class, 'indexArchived'])
+        ->name('office.indexArchived');
+
+    Route::post('office/restore/{office}', [OfficeController::class, 'restore'])
+        ->name('office.restore');
 });
 
 Route::middleware('auth')->group(function () {

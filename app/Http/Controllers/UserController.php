@@ -156,6 +156,48 @@ class UserController extends Controller
         return to_route("user.index");
     }
 
+    public function indexArchived()
+    {
+        $query = User::where("is_archive", "=", true);
+
+        $sortField = request("sort_field", "created_at");
+        $sortDirection = request("sort_direction", "desc");
+
+        $offices = Office::all();
+
+        if (request("id")) {
+            $query->where("id", "=", request("id"));
+        }
+
+        if (request("name")) {
+            $query->where("name", "like", "%" . request("name") . "%");
+        }
+
+        if (request("email")) {
+            $query->where("email", "like", "%" . request("email") . "%");
+        }
+
+        if (request("office")) {
+            $query->where("office_id", "=", request("office"));
+        }
+
+        $users = $query->orderBy($sortField, $sortDirection)->paginate(10);
+        $queryParams = request()->query();
+
+        return inertia("User/Restore", [
+            "users" => UserResource::collection($users),
+            "offices" => OfficeResource::collection($offices),
+            "queryParams" => $queryParams ?: null,
+        ]);
+    }
+
+    public function restore(User $user)
+    {
+        $user->update(['is_archive' => false]);
+
+        return to_route("user.indexArchived");
+    }
+
     /**
      * Remove the specified resource from storage.
      */
@@ -166,6 +208,6 @@ class UserController extends Controller
         }
         $user->delete();
 
-        return to_route("user.index");
+        return to_route("user.indexArchived");
     }
 }

@@ -25,7 +25,7 @@ class StoreMemberRequest extends FormRequest
             "name" => "required|string",
             "sex" => "required",
             "office_id" => "required",
-            "status" => "required",
+            "status" => "required|string",
             "characteristics" => "nullable|string",
             "notes" => "nullable|string",
         ];

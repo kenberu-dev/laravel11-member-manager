@@ -83,6 +83,9 @@ export default function AuthenticatedLayout({ header, children }) {
                     事業所一覧
                   </NavLink>
                 ):""}
+                <NavLink href={route('crm.index')} active={route().current('crm.index')}>
+                  CRM
+                </NavLink>
               </div>
             </div>
 
@@ -170,6 +173,9 @@ export default function AuthenticatedLayout({ header, children }) {
                 事業所一覧
               </ResponsiveNavLink>
             ):""}
+            <ResponsiveNavLink href={route('crm.index')} active={route().current('crm.index')}>
+              CRM
+            </ResponsiveNavLink>
           </div>
 
           <div className="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
@@ -179,7 +185,9 @@ export default function AuthenticatedLayout({ header, children }) {
             </div>
 
             <div className="mt-3 space-y-1">
-              <ResponsiveNavLink href={route('profile.edit')}>プロフィール編集</ResponsiveNavLink>
+              <ResponsiveNavLink href={route('profile.edit')}>
+                プロフィール編集
+              </ResponsiveNavLink>
               <ResponsiveNavLink method="post" href={route('logout')} as="button">
                 ログアウト
               </ResponsiveNavLink>

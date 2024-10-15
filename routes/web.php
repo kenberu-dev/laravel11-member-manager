@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CrmController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MeetingLogController;
 use App\Http\Controllers\MemberController;
@@ -139,6 +140,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::post('office/restore/{office}', [OfficeController::class, 'restore'])
         ->name('office.restore');
+
+    Route::get('crm', [CrmController::class, 'index'])
+        ->name('crm.index');
+
 });
 
 Route::middleware('auth')->group(function () {

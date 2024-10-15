@@ -53,7 +53,7 @@ export default function Show({ auth, member, meetingLogs, users, queryParams = n
           <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {`利用者情報詳細 - "${member.name}"`}
           </h2>
-          {(auth.user.is_admin && member.office.id == auth.user.office.id) || auth.user.is_global_admin ? (
+          {(member.office.id == auth.user.office.id) || auth.user.is_global_admin ? (
             <Link
               href={route("member.edit", member.id)}
               className="bg-emerald-400 py-1 px-3 text-gray-900 rounded shadown transition-all hover:bg-emerald-500"

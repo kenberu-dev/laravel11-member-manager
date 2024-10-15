@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        Office::factory()->count(10)->hasUsers(10)->create();
+        Office::factory()->count(10)->hasMembers(50)->create();
 
         User::factory()->create([
             'name' => 'ケンベル',
@@ -49,7 +49,7 @@ class DatabaseSeeder extends Seeder
             'is_global_admin' => false,
             'email_verified_at' => time(),
         ]);
-        Member::factory()->count(50)->create();
+        User::factory()->count(50)->create();
 
         MeetingLog::factory()->count(1500)->create();
 

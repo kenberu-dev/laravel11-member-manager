@@ -21,7 +21,11 @@ class MemberController extends Controller
      */
     public function index()
     {
-        $query = Member::where("office_id", "=", Auth::user()->office_id);
+        $query = Member::query();
+
+        if (!Auth::user()->is_global_admin) {
+            $query->where("office_id", "=", Auth::user()->office_id);
+        }
 
         $sortField = request("sort_field", "created_at");
         $sortDirection = request("sort_direction", "desc");
@@ -42,6 +46,10 @@ class MemberController extends Controller
 
         if (request("status")) {
             $query->where("status", "=", request("status"));
+        }
+
+        if (request("office")) {
+            $query->where("office_id", "=", request("office"));
         }
 
         if (request("characteristics")) {

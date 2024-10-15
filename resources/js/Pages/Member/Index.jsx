@@ -97,6 +97,16 @@ export default function Index({ auth, offices, members,  queryParams = null}) {
                       >
                         ステータス
                       </TableHeading>
+                      {auth.user.is_global_admin ? (
+                        <TableHeading
+                          name="office_id"
+                          sort_field={queryParams.sort_field}
+                          sort_direction={queryParams.sort_direction}
+                          sortChanged={sortChanged}
+                        >
+                          事業所名
+                        </TableHeading>
+                      ):<th></th>}
                       <TableHeading
                         name="characteristics"
                         sort_field={queryParams.sort_field}
@@ -166,6 +176,22 @@ export default function Index({ auth, offices, members,  queryParams = null}) {
                           <option value="利用終了">利用終了</option>
                         </SelectInput>
                       </th>
+                      {auth.user.is_global_admin ? (
+                        <th className="px-3 py-2">
+                          <SelectInput
+                            className="w-full"
+                            defaultValue={queryParams.office}
+                            onChange={e =>
+                              searchFieldChanged("office", e.target.value)
+                            }
+                          >
+                            <option value="">事業所名</option>
+                            {offices.data.map(office =>(
+                              <option key={office.id} value={office.id}>{office.name}</option>
+                            ))}
+                          </SelectInput>
+                        </th>
+                      ):<th></th>}
                       <th className="px-3 py-2">
                       <TextInput
                           className="w-full"
@@ -188,6 +214,9 @@ export default function Index({ auth, offices, members,  queryParams = null}) {
                         </td>
                         <td className="px-3 py-3 ">{member.sex}</td>
                         <td className="px-3 py-3 ">{member.status}</td>
+                        {auth.user.is_global_admin ? (
+                          <td className="px-3 py-3 text-center">{member.office.name}</td>
+                        ):<td></td>}
                         <td className="px-3 py-3 text-center">{member.characteristics}</td>
                         <td className="px-3 py-3 text-nowrap">{member.created_at}</td>
                         <td className="px-3 py-3 text-nowrap">{member.updated_at}</td>

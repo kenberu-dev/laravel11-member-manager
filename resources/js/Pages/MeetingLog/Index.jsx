@@ -104,6 +104,16 @@ export default function Index({ auth, meetingLogs, offices, users, members,  que
                       >
                         作成者
                       </TableHeading>
+                      {auth.user.is_global_admin ? (
+                        <TableHeading
+                          name="office_id"
+                          sort_field={queryParams.sort_field}
+                          sort_direction={queryParams.sort_direction}
+                          sortChanged={sortChanged}
+                        >
+                          事業所名
+                        </TableHeading>
+                      ):<th></th>}
                       <TableHeading
                         name="condition"
                         sort_field={queryParams.sort_field}
@@ -179,6 +189,22 @@ export default function Index({ auth, meetingLogs, offices, users, members,  que
                           ))}
                         </SelectInput>
                       </th>
+                      {auth.user.is_global_admin ? (
+                        <th className="px-3 py-2">
+                          <SelectInput
+                            className="w-full"
+                            defaultValue={queryParams.office}
+                            onChange={e =>
+                              searchFieldChanged("office", e.target.value)
+                            }
+                          >
+                            <option value="">事業所名</option>
+                            {offices.data.map(office =>(
+                              <option key={office.id} value={office.id}>{office.name}</option>
+                            ))}
+                          </SelectInput>
+                        </th>
+                      ):<th></th>}
                       <th className="px-3 py-2">
                       <SelectInput
                           className="w-full"
@@ -211,6 +237,9 @@ export default function Index({ auth, meetingLogs, offices, users, members,  que
                         </td>
                         <td className="px-3 py-3 ">{meetingLog.member.name}</td>
                         <td className="px-3 py-3 ">{meetingLog.user.name}</td>
+                        {auth.user.is_global_admin ? (
+                          <td className="px-3 py-3 text-center">{meetingLog.member.office.name}</td>
+                        ):<td></td>}
                         <td className="px-3 py-3 text-center">{meetingLog.condition}</td>
                         <td className="px-3 py-3 text-nowrap">{meetingLog.created_at}</td>
                         <td className="px-3 py-3 text-nowrap">{meetingLog.updated_at}</td>

@@ -75,6 +75,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/member/update/{member}', [MemberController::class, 'update'])
         ->name('memeber.update');
 
+    Route::post('/member/updateLimit/{member}', [MemberController::class, 'updateLimit'])
+        ->name('member.updateLimit');
+
     Route::get('/user', [UserController::class, 'index'])
         ->name('user.index');
 

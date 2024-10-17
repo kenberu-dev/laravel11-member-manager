@@ -25,8 +25,12 @@ class UpdateMemberRequest extends FormRequest
             "name" => "required|string",
             "sex" => "required",
             "office_id" => "required",
-            "status" => "required",
+            "status" => "required|string",
             "characteristics" => "nullable|string",
+            "document_url" => "url|nullable",
+            "beneficiary_number" => "nullable|string|max:10|min:10",
+            "started_at" => "date|nullable",
+            "update_limit" => "date|nullable",
             "notes" => "nullable|string",
         ];
     }

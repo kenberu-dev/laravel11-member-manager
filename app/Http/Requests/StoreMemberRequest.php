@@ -27,6 +27,9 @@ class StoreMemberRequest extends FormRequest
             "office_id" => "required",
             "status" => "required|string",
             "characteristics" => "nullable|string",
+            "document_url" => "url|nullable",
+            "beneficiary_number" => "nullable",
+            "started_at" => "date|nullable",
             "notes" => "nullable|string",
         ];
     }

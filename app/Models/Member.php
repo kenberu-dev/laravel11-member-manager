@@ -15,6 +15,10 @@ class Member extends Model
         'office_id',
         'status',
         'characteristics',
+        'document_url',
+        'beneficiary_number',
+        'started_at',
+        'update_limit',
         'notes',
     ];
 

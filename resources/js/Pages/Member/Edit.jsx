@@ -7,21 +7,31 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, useForm } from "@inertiajs/react";
 
 export default function Create ({ auth, offices, member }) {
-
   const {data, setData, post, errors, reset} = useForm({
     name: member.name || "",
     sex: member.sex || "",
     office_id: member.office.id || "",
     status: member.status || "",
     characteristics: member.characteristics || "",
+    document_url: member.document_url || "",
+    beneficiary_number: member.beneficiary_number || "",
+    started_at: member.started_at || "",
+    update_limit : member.update_limit || "",
     notes: member.notes,
     _method: "PUT"
   })
 
   const onSubmit = (e) => {
     e.preventDefault();
-    console.log("onSubmit");
     post(route('member.update', member.id));
+  }
+
+  const setStartDate = (member) => {
+    if (data.started_at == member.created_at) {
+      return "";
+    } else {
+      return data.started_at;
+    }
   }
 
   return (
@@ -96,6 +106,20 @@ export default function Create ({ auth, offices, member }) {
               </div>
               <div className="mt-4">
                 <InputLabel
+                  htmlFor="characteristics"
+                  value="特性・障害"
+                />
+                <TextInput
+                  id="characteristics"
+                  type="text"
+                  value={data.characteristics}
+                  className="mt-1 block w-full"
+                  onChange={(e) => setData("characteristics", e.target.value)}
+                />
+                <InputError message={errors.characteristics} className="mt-2" />
+              </div>
+              <div className="mt-4">
+                <InputLabel
                   htmlFor="status"
                   value="ステータス"
                 />
@@ -115,20 +139,52 @@ export default function Create ({ auth, offices, member }) {
                 </SelectInput>
                 <InputError message={errors.status} className="mt-2" />
               </div>
-              <div className="mt-4">
-                <InputLabel
-                  htmlFor="characteristics"
-                  value="特性・障害"
-                />
-                <TextInput
-                  id="characteristics"
-                  type="text"
-                  value={data.characteristics}
-                  className="mt-1 block w-full"
-                  onChange={(e) => setData("characteristics", e.target.value)}
-                />
-                <InputError message={errors.characteristics} className="mt-2" />
-              </div>
+              {data.status != "見学" && data.status != "体験" && data.status != ""? (
+                <div>
+                  <div className="mt-4">
+                    <InputLabel
+                      htmlFor="beneficiary_number"
+                      value="受給者番号"
+                    />
+                    <TextInput
+                      id="beneficiary_number"
+                      type="text"
+                      value={data.beneficiary_number}
+                      className="mt-1 block w-full"
+                      onChange={(e) => setData("beneficiary_number", e.target.value)}
+                    />
+                    <InputError message={errors.beneficiary_number} className="mt-2" />
+                  </div>
+                  <div className="mt-4">
+                    <InputLabel
+                      htmlFor="document_url"
+                      value="ドライブのURL"
+                    />
+                    <TextInput
+                      id="characteristics"
+                      type="text"
+                      value={data.document_url}
+                      className="mt-1 block w-full"
+                      onChange={(e) => setData("document_url", e.target.value)}
+                    />
+                    <InputError message={errors.document_url} className="mt-2" />
+                  </div>
+                  <div className="mt-4">
+                    <InputLabel
+                      htmlFor="started_at"
+                      value="利用開始日"
+                    />
+                    <TextInput
+                      id="started_at"
+                      type="date"
+                      value={setStartDate(member)}
+                      className="mt-1 block w-full"
+                      onChange={(e) => setData("started_at", e.target.value)}
+                    />
+                    <InputError message={errors.started_at} className="mt-2" />
+                  </div>
+                </div>
+              ):""}
               <div className="mt-4 max-h-96">
                 <InputLabel
                   htmlFor="notes"

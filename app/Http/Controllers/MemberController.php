@@ -12,7 +12,9 @@ use App\Models\MeetingLog;
 use App\Models\Member;
 use App\Models\Office;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class MemberController extends Controller
 {
@@ -82,10 +84,19 @@ class MemberController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreMemberRequest $request)
+    public function store(Member $member, StoreMemberRequest $request)
     {
         $data = $request->validated();
-        Member::create($data);
+
+        if($data["started_at"]) {
+            $startAt = new Carbon($data["started_at"]);
+            $updateLimit = $startAt->addMonth(3);
+
+            $member->fill($data);
+            $member->fill(['update_limit' => $updateLimit])->save();
+        } else {
+            $member->create($data);
+        }
 
         return to_route('member.index');
     }
@@ -152,9 +163,27 @@ class MemberController extends Controller
     public function update(UpdateMemberRequest $request, Member $member)
     {
         $data = $request->validated();
-        $member->update($data);
+
+        if($data["started_at"] != $data["update_limit"]) {
+            $startAt = new Carbon($data["started_at"]);
+            $updateLimit = $startAt->addMonth(3);
+
+            $member->fill($data);
+            $member->fill(['update_limit' => $updateLimit])->save();
+        } else {
+            $member->update($data);
+        }
 
         return to_route('member.index');
+    }
+
+    public function updateLimit(Member $member)
+    {
+        $today = new Carbon();
+        $updateLimit = $today->copy()->addMonth(3);
+        $member->update(['update_limit' => $updateLimit]);
+
+        return redirect()->route('member.show', $member);
     }
 
     /**

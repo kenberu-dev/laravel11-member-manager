@@ -46,6 +46,29 @@ export default function Index({ auth, offices, members,  queryParams = null}) {
     router.delete(route('member.destroy', member.id));
   }
 
+  const alertColor = (member) => {
+    let loadDate = new Date();
+    let distDate = new Date(member.update_limit)
+    let diffMilliSec = distDate - loadDate;
+    let diffDays = parseInt(diffMilliSec / 1000 / 60 / 60 / 24);
+
+    if (member.started_at == member.update_limit) {
+      if (member.status == "利用意思獲得" || member.status == "利用中") {
+        return "bg-blue-400";
+      } else {
+        return "bg-white";
+      }
+    }
+    if (diffDays < 14) {
+      return "bg-red-400";
+    }
+    if (diffDays < 30) {
+      return "bg-amber-400";
+    } else {
+      return "bg-white";
+    }
+  }
+
   return (
     <AuthenticatedLayout
       user={auth.user}
@@ -121,7 +144,7 @@ export default function Index({ auth, offices, members,  queryParams = null}) {
                         sort_direction={queryParams.sort_direction}
                         sortChanged={sortChanged}
                       >
-                        作成日時
+                        利用開始日
                       </TableHeading>
                       <TableHeading
                         name="updated_at"
@@ -129,7 +152,7 @@ export default function Index({ auth, offices, members,  queryParams = null}) {
                         sort_direction={queryParams.sort_direction}
                         sortChanged={sortChanged}
                       >
-                        更新日時
+                        更新期限
                       </TableHeading>
                       <th className="px-3 py-2 text-center">編集・削除</th>
                     </tr>
@@ -206,7 +229,7 @@ export default function Index({ auth, offices, members,  queryParams = null}) {
                   </thead>
                   <tbody>
                     {members.data.map(member => (
-                      <tr className="bg-white border-b" key={member.id}>
+                      <tr className={alertColor(member) + ` border-b`} key={member.id}>
                         <td className="px-3 py-3 hover:underline">
                           <Link href={route("member.show", member.id)}>
                             {member.name}
@@ -218,8 +241,11 @@ export default function Index({ auth, offices, members,  queryParams = null}) {
                           <td className="px-3 py-3 text-center">{member.office.name}</td>
                         ):<td></td>}
                         <td className="px-3 py-3 text-center">{member.characteristics}</td>
-                        <td className="px-3 py-3 text-nowrap">{member.created_at}</td>
-                        <td className="px-3 py-3 text-nowrap">{member.updated_at}</td>
+                        <td className="px-3 py-3 text-nowrap">{member.started_at}</td>
+                        <td className="px-3 py-3 text-nowrap">
+                          <div className="">
+                            {member.update_limit}
+                          </div>                        </td>
                         <td className="px-3 py-3 text-center text-nowrap flex">
                           { member.office.id == auth.user.office.id || auth.user.is_global_admin?(
                             <Link

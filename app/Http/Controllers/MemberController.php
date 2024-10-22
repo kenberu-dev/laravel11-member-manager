@@ -89,11 +89,14 @@ class MemberController extends Controller
         $data = $request->validated();
 
         if($data["started_at"]) {
-            $startAt = new Carbon($data["started_at"]);
-            $updateLimit = $startAt->addMonth(3);
-
-            $member->fill($data);
-            $member->fill(['update_limit' => $updateLimit])->save();
+            if(!$data["update_limit"]) {
+                $startAt = new Carbon($data["started_at"]);
+                $updateLimit = $startAt->addMonth(3);
+                $member->fill($data);
+                $member->fill(['update_limit' => $updateLimit])->save();
+            } else {
+                $member->create($data);
+            }
         } else {
             $member->create($data);
         }
@@ -165,11 +168,14 @@ class MemberController extends Controller
         $data = $request->validated();
 
         if($data["started_at"] != $data["update_limit"]) {
-            $startAt = new Carbon($data["started_at"]);
-            $updateLimit = $startAt->addMonth(3);
-
-            $member->fill($data);
-            $member->fill(['update_limit' => $updateLimit])->save();
+            if(!$data["update_limit"]) {
+                $startAt = new Carbon($data["started_at"]);
+                $updateLimit = $startAt->addMonth(3);
+                $member->fill($data);
+                $member->fill(['update_limit' => $updateLimit])->save();
+            } else {
+                $member->update($data);
+            }
         } else {
             $member->update($data);
         }

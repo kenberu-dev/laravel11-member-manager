@@ -30,6 +30,7 @@ class StoreMemberRequest extends FormRequest
             "document_url" => "url|nullable",
             "beneficiary_number" => "nullable",
             "started_at" => "date|nullable",
+            "update_limit" => "date|nullable",
             "notes" => "nullable|string",
         ];
     }

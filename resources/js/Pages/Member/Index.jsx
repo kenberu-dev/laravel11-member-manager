@@ -52,20 +52,18 @@ export default function Index({ auth, offices, members,  queryParams = null}) {
     let diffMilliSec = distDate - loadDate;
     let diffDays = parseInt(diffMilliSec / 1000 / 60 / 60 / 24);
 
-    if (member.started_at == member.update_limit) {
-      if (member.status == "利用意思獲得" || member.status == "利用中") {
+    if (member.status == "利用意思獲得" || member.status == "利用中") {
+      if (member.started_at == member.update_limit) {
         return "bg-blue-400";
+      }
+      if (diffDays < 14) {
+        return "bg-red-400";
+      }
+      if (diffDays < 30) {
+        return "bg-amber-400";
       } else {
         return "bg-white";
       }
-    }
-    if (diffDays < 14) {
-      return "bg-red-400";
-    }
-    if (diffDays < 30) {
-      return "bg-amber-400";
-    } else {
-      return "bg-white";
     }
   }
 

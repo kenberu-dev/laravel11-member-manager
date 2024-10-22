@@ -33,6 +33,13 @@ export default function Create ({ auth, offices, member }) {
       return data.started_at;
     }
   }
+  const setUpdateDate = (member) => {
+    if (data.update_limit == member.created_at) {
+      return "";
+    } else {
+      return data.update_limit;
+    }
+  }
 
   return (
     <AuthenticatedLayout
@@ -182,6 +189,20 @@ export default function Create ({ auth, offices, member }) {
                       onChange={(e) => setData("started_at", e.target.value)}
                     />
                     <InputError message={errors.started_at} className="mt-2" />
+                  </div>
+                  <div className="mt-4">
+                    <InputLabel
+                      htmlFor="update_limit"
+                      value="更新期限"
+                    />
+                    <TextInput
+                      id="update_limit"
+                      type="date"
+                      value={setUpdateDate(member)}
+                      className="mt-1 block w-full"
+                      onChange={(e) => setData("update_limit", e.target.value)}
+                    />
+                    <InputError message={errors.update_limit} className="mt-2" />
                   </div>
                 </div>
               ):""}

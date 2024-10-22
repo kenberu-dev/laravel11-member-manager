@@ -17,6 +17,7 @@ export default function Create ({ auth, offices }) {
     document_url: "",
     beneficiary_number: "",
     started_at: "",
+    update_limit: "",
     notes: "",
   })
 
@@ -173,6 +174,20 @@ export default function Create ({ auth, offices }) {
                       onChange={(e) => setData("started_at", e.target.value)}
                     />
                     <InputError message={errors.started_at} className="mt-2" />
+                  </div>
+                  <div className="mt-4">
+                    <InputLabel
+                      htmlFor="update_limit"
+                      value="更新期限"
+                    />
+                    <TextInput
+                      id="update_limit"
+                      type="date"
+                      value={data.update_limit}
+                      className="mt-1 block w-full"
+                      onChange={(e) => setData("update_limit", e.target.value)}
+                    />
+                    <InputError message={errors.update_limit} className="mt-2" />
                   </div>
                 </div>
               ):""}

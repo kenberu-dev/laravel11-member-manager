@@ -143,9 +143,24 @@ export default function Show({ auth, member, meetingLogs, users, queryParams = n
           <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
             <div className="p-6 text-gray-900 border-b-2 rounded-sm">
               <div>
-                <div className="flex justify-between">
+                <div className="flex justify-between items-center">
                   <label className="font-bold text-lg">面談記録</label>
-                  {member.document_url ? (<a className="btn btn-info" href={member.document_url} target="_blank">フォルダを開く</a>):""}
+                  <div>
+                    <Link
+                      className="btn btn-success text-white mr-2"
+                      href={route("meetinglog.create")}
+                    >
+                      新規作成
+                    </Link>
+                    {member.document_url ? (
+                      <a
+                        className="btn btn-info text-white"
+                        href={member.document_url} target="_blank"
+                      >
+                        フォルダを開く
+                      </a>
+                    ):""}
+                  </div>
                 </div>
                 <div className="mt-1 whitespace-pre-wrap max-h-[400px] overflow-y-auto">
                   <div className="">

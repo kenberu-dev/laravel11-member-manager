@@ -265,6 +265,7 @@ return [
         'beneficiary_number' => '受給者番号',
         'started_at' => '利用開始日',
         'characteristics' => '特性・障害',
+        'meeting_log' => '面談記録',
     ],
 
 ];

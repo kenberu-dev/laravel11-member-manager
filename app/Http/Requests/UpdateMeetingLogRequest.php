@@ -27,7 +27,7 @@ class UpdateMeetingLogRequest extends FormRequest
             "user_id" => ['required', 'integer'],
             "member_id" => ['required', 'integer'],
             "condition" => ['required', 'integer', Rule::in(1, 2, 3, 4, 5)],
-            "meeting_log" => ['string', 'nullable'],
+            "meeting_log" => ['required','string'],
         ];
     }
 }

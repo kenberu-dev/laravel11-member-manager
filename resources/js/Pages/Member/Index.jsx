@@ -137,7 +137,7 @@ export default function Index({ auth, offices, members,  queryParams = null}) {
                         特性・障害
                       </TableHeading>
                       <TableHeading
-                        name="created_at"
+                        name="started_at"
                         sort_field={queryParams.sort_field}
                         sort_direction={queryParams.sort_direction}
                         sortChanged={sortChanged}
@@ -145,7 +145,7 @@ export default function Index({ auth, offices, members,  queryParams = null}) {
                         利用開始日
                       </TableHeading>
                       <TableHeading
-                        name="updated_at"
+                        name="update_limit"
                         sort_field={queryParams.sort_field}
                         sort_direction={queryParams.sort_direction}
                         sortChanged={sortChanged}

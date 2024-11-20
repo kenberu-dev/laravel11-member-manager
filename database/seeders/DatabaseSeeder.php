@@ -21,9 +21,9 @@ class DatabaseSeeder extends Seeder
         Office::factory()->count(10)->hasMembers(50)->create();
 
         User::factory()->create([
-            'name' => 'ケンベル',
-            'email' => 'kenberu@example.com',
-            'password' => bcrypt('12345678'),
+            'name' => 'グローバルアドミン',
+            'email' => 'gadmin@example.com',
+            'password' => bcrypt('meemane.gadmin'),
             'office_id' => 1,
             'is_admin' => true,
             'is_global_admin' => true,
@@ -31,9 +31,9 @@ class DatabaseSeeder extends Seeder
         ]);
 
         User::factory()->create([
-            'name' => 'Hiroshi Akutsu',
-            'email' => 'hakutsu@example.com',
-            'password' => bcrypt('12345678'),
+            'name' => 'アドミン',
+            'email' => 'admin@example.com',
+            'password' => bcrypt('meemane.admin'),
             'office_id' => 1,
             'is_admin' => true,
             'is_global_admin' => false,
@@ -41,9 +41,9 @@ class DatabaseSeeder extends Seeder
         ]);
 
         User::factory()->create([
-            'name' => '山田 太郎',
-            'email' => 'tyamada@example.com',
-            'password' => bcrypt('12345678'),
+            'name' => 'ユーザー',
+            'email' => 'user@example.com',
+            'password' => bcrypt('meemane.user'),
             'office_id' => 1,
             'is_admin' => false,
             'is_global_admin' => false,

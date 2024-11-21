@@ -195,6 +195,8 @@ export default function Index({ auth, offices, members,  queryParams = null}) {
                           <option value="利用中">利用中</option>
                           <option value="利用中止">利用中止</option>
                           <option value="利用終了">利用終了</option>
+                          <option value="定着中">定着中</option>
+                          <option value="ロスト">ロスト</option>
                         </SelectInput>
                       </th>
                       {auth.user.is_global_admin ? (

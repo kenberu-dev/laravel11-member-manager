@@ -128,10 +128,12 @@ export default function Create ({ auth, offices }) {
                   <option value="利用中">利用中</option>
                   <option value="利用中止">利用中止</option>
                   <option value="利用終了">利用終了</option>
+                  <option value="定着中">定着中</option>
+                  <option value="ロスト">ロスト</option>
                 </SelectInput>
                 <InputError message={errors.status} className="mt-2" />
               </div>
-              {data.status != "見学" && data.status != "体験" && data.status != ""? (
+              {data.status != "見学" && data.status != "体験" && data.status != "ロスト" && data.status != ""? (
                 <div>
                   <div className="mt-4">
                     <InputLabel

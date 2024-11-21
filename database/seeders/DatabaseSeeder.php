@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        Office::factory()->count(10)->hasMembers(50)->create();
+        Office::factory()->count(10)->hasMembers(80)->create();
 
         User::factory()->create([
             'name' => 'グローバルアドミン',

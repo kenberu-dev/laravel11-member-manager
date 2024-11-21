@@ -27,7 +27,7 @@ class MemberFactory extends Factory
             'name' => fake()->name(),
             'sex' => fake()->randomElement(['男性', '女性', 'その他']),
             'office_id' => $officeId,
-            'status' => fake()->randomElement(['見学','体験','利用意思獲得','利用中', '利用中止', '利用終了']),
+            'status' => fake()->randomElement(['見学','体験','利用意思獲得','利用中', '利用中止', '利用終了', '定着中', 'ロスト']),
             'characteristics' => fake()->randomElement(['抑うつ病', '統合失調症', '自閉スペクトラム症', '注意欠如・多動症']),
             'document_url' => 'https://drive.google.com/drive/folders/1xUxgJTMX6gOFJdGRG3m1P-uPJj9kUfqJ',
             'beneficiary_number' => fake()->numerify('##########'),

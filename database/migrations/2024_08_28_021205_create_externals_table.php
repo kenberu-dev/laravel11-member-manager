@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('status');
             $table->string('address')->nullable();
             $table->string('phone_number')->nullable();
+            $table->string('email')->nullable();
             $table->string('notes')->nullable();
             $table->timestamps();
         });

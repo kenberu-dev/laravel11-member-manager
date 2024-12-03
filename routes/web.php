@@ -3,6 +3,7 @@
 use App\Http\Controllers\CrmController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExternalController;
+use App\Http\Controllers\ExternalMeetingLogController;
 use App\Http\Controllers\MeetingLogController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\MessageController;
@@ -169,29 +170,29 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/external/update/{external}', [ExternalController::class, 'update'])
         ->name('external.update');
 
-    Route::get('/external/meetinglog', [MeetingLogController::class, 'index'])
-        ->name('externalmeetinglog.index');
+    Route::get('/external/meetinglog', [ExternalMeetingLogController::class, 'index'])
+        ->name('external.meetinglog.index');
 
-    Route::get('/external/meetinglog/show/{meetingLog}', [MeetingLogController::class, 'show'])
-        ->name('externalmeetinglog.show');
+    Route::get('/external/meetinglog/show/{externalMeetingLog}', [ExternalMeetingLogController::class, 'show'])
+        ->name('external.meetinglog.show');
 
-    Route::get('/external/meetinglog/create', [MeetingLogController::class, 'create'])
-        ->name('externalmeetinglog.create');
+    Route::get('/external/meetinglog/create', [ExternalMeetingLogController::class, 'create'])
+        ->name('external.meetinglog.create');
 
-    Route::post('/external/meetinglog', [MeetingLogController::class, 'store'])
-        ->name('externalmeetinglog.store');
+    Route::post('/external/meetinglog', [ExternalMeetingLogController::class, 'store'])
+        ->name('external.meetinglog.store');
 
-    Route::delete('/external/meetinglog/destroy/{meetingLog}', [MeetingLogController::class, 'destroy'])
-        ->name('externalmeetinglog.destroy');
+    Route::delete('/external/meetinglog/destroy/{externalMeetingLog}', [ExternalMeetingLogController::class, 'destroy'])
+        ->name('external.meetinglog.destroy');
 
-    Route::get('/external/meetinglog/edit/{meetingLog}', [MeetingLogController::class, 'edit'])
-        ->name('externalmeetinglog.edit');
+    Route::get('/external/meetinglog/edit/{externalMeetingLog}', [ExternalMeetingLogController::class, 'edit'])
+        ->name('external.meetinglog.edit');
 
-    Route::put('/external/meetinglog/update/{meetingLog}', [MeetingLogController::class, 'update'])
-        ->name('externalmeetinglog.update');
+    Route::put('/external/meetinglog/update/{externalMeetingLog}', [ExternalMeetingLogController::class, 'update'])
+        ->name('external.meetinglog.update');
 
-    Route::patch('/external/meetinglog/update/{meetingLog}', [MeetingLogController::class, 'update'])
-        ->name('externalmeetinglog.update');
+    Route::patch('/external/meetinglog/update/{externalMeetingLog}', [ExternalMeetingLogController::class, 'update'])
+        ->name('external.meetinglog.update');
 
     Route::get('crm', [CrmController::class, 'index'])
         ->name('crm.index');

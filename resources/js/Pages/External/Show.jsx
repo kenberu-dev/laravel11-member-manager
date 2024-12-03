@@ -117,7 +117,7 @@ export default function Show({ auth, external, meetingLogs, users, queryParams =
                   <div>
                     <Link
                       className="btn btn-success text-white mr-2"
-                      href={route("meetinglog.create")}
+                      href={route("external.meetinglog.create")}
                     >
                       新規作成
                     </Link>
@@ -215,7 +215,7 @@ export default function Show({ auth, external, meetingLogs, users, queryParams =
                           <tr className="bg-white border-b" key={meetingLog.id}>
                             <td className="px-3 py-3">{meetingLog.id}</td>
                             <td className="px-3 py-3 hover:underline">
-                              <Link href={route("meetinglog.show", meetingLog.id)}>
+                              <Link href={route("external.meetinglog.show", meetingLog.id)}>
                                 {meetingLog.title}
                               </Link>
                             </td>
@@ -225,7 +225,7 @@ export default function Show({ auth, external, meetingLogs, users, queryParams =
                             <td className="px-3 py-3 text-center text-nowrap flex">
                               { meetingLog.user.office.id == auth.user.office.id || auth.user.is_global_admin?(
                                 <Link
-                                href={route('meetinglog.edit', meetingLog.id)}
+                                href={route('external.meetinglog.edit', meetingLog.id)}
                                 className="font-medium text-blue-600 mx-1 hover:underline"
                                 >
                                   編集

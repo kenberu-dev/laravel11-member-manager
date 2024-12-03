@@ -8,6 +8,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class ExternalMeetingLogResource extends JsonResource
 {
+    public static $wrap = false;
     /**
      * Transform the resource into an array.
      *
@@ -20,7 +21,6 @@ class ExternalMeetingLogResource extends JsonResource
             'title' => $this->title,
             'user' => new UserResource($this->user),
             'external' => new ExternalRsource($this->external),
-            'condition' => $this->condition,
             'meeting_log' => $this->meeting_log,
             'created_at' => (new Carbon($this->created_at))->format('Y-m-d'),
             'updated_at' => (new Carbon($this->updated_at))->format('Y-m-d'),

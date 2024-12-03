@@ -266,6 +266,8 @@ return [
         'started_at' => '利用開始日',
         'characteristics' => '特性・障害',
         'meeting_log' => '面談記録',
+        'company_name' => '会社名',
+        'manager_name' => '担当者名'
     ],
 
 ];

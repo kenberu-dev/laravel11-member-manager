@@ -73,6 +73,9 @@ export default function AuthenticatedLayout({ header, children }) {
                 <NavLink href={route('member.index')} active={route().current('member.index')}>
                   利用者一覧
                 </NavLink>
+                <NavLink href={route('external.index')} active={route().current('external.index')}>
+                  外部対応一覧
+                </NavLink>
                 {user.is_admin || user.is_global_admin ? (
                   <NavLink href={route('user.index')} active={route().current('user.index')}>
                     従業員一覧

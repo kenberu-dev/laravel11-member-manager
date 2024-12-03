@@ -2,6 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\External;
+use App\Models\ExternalMeetingLog;
+use App\Models\ExternalMessage;
 use App\Models\MeetingLog;
 use App\Models\Member;
 use App\Models\Message;
@@ -51,8 +54,11 @@ class DatabaseSeeder extends Seeder
         ]);
         User::factory()->count(50)->create();
 
+        External::factory()->count(50)->hasMeetingLogs(30)->create();
+
         MeetingLog::factory()->count(1500)->create();
 
-        Message::factory()->count(25000)->create();
+        Message::factory()->count(2500)->create();
+        ExternalMessage::factory()->count(2500)->create();
     }
 }

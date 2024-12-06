@@ -5,7 +5,7 @@ import TextInput from "@/Components/TextInput";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, Link, router } from "@inertiajs/react";
 
-export default function Index({ auth, meetingLogs, offices, users, members,  queryParams = null}) {
+export default function Index({ auth, meetingLogs, offices, users, externals,  queryParams = null}) {
   queryParams = queryParams || {}
 
   const searchFieldChanged = (name, value) => {
@@ -16,7 +16,7 @@ export default function Index({ auth, meetingLogs, offices, users, members,  que
       delete queryParams[name]
     }
 
-    router.get(route('meetinglog.index'), queryParams)
+    router.get(route('external.meetinglog.index'), queryParams)
   }
 
   const onKeyPress = (name, e) => {
@@ -36,14 +36,14 @@ export default function Index({ auth, meetingLogs, offices, users, members,  que
       queryParams.sort_field = name;
       queryParams.sort_direction = 'asc';
     }
-    router.get(route('meetinglog.index'), queryParams)
+    router.get(route('external.meetinglog.index'), queryParams)
   }
 
   const deleteMeetingLog = (meetingLog) => {
     if(!window.confirm("削除されたデータはもとに戻すことができません！\n削除しますか？")) {
       return;
     }
-    router.delete(route('meetinglog.destroy', meetingLog.id));
+    router.delete(route('external.meetinglog.destroy', meetingLog.id));
   }
 
   return (
@@ -55,7 +55,7 @@ export default function Index({ auth, meetingLogs, offices, users, members,  que
             面談記録
           </h2>
           <Link
-            href={route("meetinglog.create")}
+            href={route("external.meetinglog.create")}
             className="bg-emerald-400 py-1 px-3 text-gray-900 rounded shadown transition-all hover:bg-emerald-500"
           >
             新規作成
@@ -89,12 +89,12 @@ export default function Index({ auth, meetingLogs, offices, users, members,  que
                         タイトル
                       </TableHeading>
                       <TableHeading
-                        name="member_id"
+                        name="external_id"
                         sort_field={queryParams.sort_field}
                         sort_direction={queryParams.sort_direction}
                         sortChanged={sortChanged}
                       >
-                        利用者
+                        会社名
                       </TableHeading>
                       <TableHeading
                         name="user_id"
@@ -114,14 +114,6 @@ export default function Index({ auth, meetingLogs, offices, users, members,  que
                           事業所名
                         </TableHeading>
                       ):<th></th>}
-                      <TableHeading
-                        name="condition"
-                        sort_field={queryParams.sort_field}
-                        sort_direction={queryParams.sort_direction}
-                        sortChanged={sortChanged}
-                      >
-                        体調
-                      </TableHeading>
                       <TableHeading
                         name="created_at"
                         sort_field={queryParams.sort_field}
@@ -164,14 +156,14 @@ export default function Index({ auth, meetingLogs, offices, users, members,  que
                       <th className="px-3 py-2">
                       <SelectInput
                           className="w-full"
-                          defaultValue={queryParams.member}
+                          defaultValue={queryParams.external}
                           onChange={e =>
-                            searchFieldChanged("member", e.target.value)
+                            searchFieldChanged("external", e.target.value)
                           }
                         >
-                          <option value="">利用者名</option>
-                          {members.data.map(member =>(
-                            <option key={member.id} value={member.id}>{member.name}</option>
+                          <option value="">会社名</option>
+                          {externals.data.map(external =>(
+                            <option key={external.id} value={external.id}>{external.company_name}</option>
                           ))}
                         </SelectInput>
                       </th>
@@ -183,7 +175,7 @@ export default function Index({ auth, meetingLogs, offices, users, members,  que
                             searchFieldChanged("user", e.target.value)
                           }
                         >
-                          <option value="">担当者名</option>
+                          <option value="">作成者名</option>
                           {users.data.map(user =>(
                             <option key={user.id} value={user.id}>{user.name}</option>
                           ))}
@@ -205,22 +197,6 @@ export default function Index({ auth, meetingLogs, offices, users, members,  que
                           </SelectInput>
                         </th>
                       ):<th></th>}
-                      <th className="px-3 py-2">
-                      <SelectInput
-                          className="w-full"
-                          defaultValue={queryParams.condition}
-                          onChange={e =>
-                            searchFieldChanged("condition", e.target.value)
-                          }
-                        >
-                          <option value="">体調</option>
-                          <option value="1">1</option>
-                          <option value="2">2</option>
-                          <option value="3">3</option>
-                          <option value="4">4</option>
-                          <option value="5">5</option>
-                        </SelectInput>
-                      </th>
                       <th className="px-3 py-2"></th>
                       <th className="px-3 py-2"></th>
                       <th className="px-3 py-2 text-right"></th>
@@ -231,22 +207,21 @@ export default function Index({ auth, meetingLogs, offices, users, members,  que
                       <tr className="bg-white border-b" key={meetingLog.id}>
                         <td className="px-3 py-3">{meetingLog.id}</td>
                         <td className="px-3 py-3 hover:underline">
-                          <Link href={route("meetinglog.show", meetingLog.id)}>
+                          <Link href={route("external.meetinglog.show", meetingLog.id)}>
                             {meetingLog.title}
                           </Link>
                         </td>
-                        <td className="px-3 py-3 ">{meetingLog.member.name}</td>
+                        <td className="px-3 py-3 ">{meetingLog.external.company_name}</td>
                         <td className="px-3 py-3 ">{meetingLog.user.name}</td>
                         {auth.user.is_global_admin ? (
-                          <td className="px-3 py-3 text-center">{meetingLog.member.office.name}</td>
+                          <td className="px-3 py-3 text-center">{meetingLog.external.office.name}</td>
                         ):<td></td>}
-                        <td className="px-3 py-3 text-center">{meetingLog.condition}</td>
                         <td className="px-3 py-3 text-nowrap">{meetingLog.created_at}</td>
                         <td className="px-3 py-3 text-nowrap">{meetingLog.updated_at}</td>
                         <td className="px-3 py-3 text-center text-nowrap flex">
                           { meetingLog.user.office.id == auth.user.office.id || auth.user.is_global_admin?(
                             <Link
-                            href={route('meetinglog.edit', meetingLog.id)}
+                            href={route('external.meetinglog.edit', meetingLog.id)}
                             className="font-medium text-blue-600 mx-1 hover:underline"
                             >
                               編集

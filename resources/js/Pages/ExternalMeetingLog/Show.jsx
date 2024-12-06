@@ -151,7 +151,7 @@ export default function Show({ auth, meetingLog, messages }) {
           </h2>
           {meetingLog.user.office.id == auth.user.office.id || auth.user.is_global_admin?(
             <Link
-              href={route("meetinglog.edit", meetingLog.id)}
+              href={route("external.meetinglog.edit", meetingLog.id)}
               className="bg-emerald-400 py-1 px-3 text-gray-900 rounded shadown transition-all hover:bg-emerald-500"
             >
               編集

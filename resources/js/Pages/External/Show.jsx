@@ -42,7 +42,7 @@ export default function Show({ auth, external, meetingLogs, users, queryParams =
     if(!window.confirm("削除されたデータはもとに戻すことができません！\n削除しますか？")) {
       return;
     }
-    router.delete(route('meetinglog.destroy', meetingLog.id));
+    router.delete(route('external.meetinglog.destroy', meetingLog.id));
   }
 
   return (

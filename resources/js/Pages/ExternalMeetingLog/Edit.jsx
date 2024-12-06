@@ -57,8 +57,8 @@ export default function Edit({ auth, externals, currentLog, meetingLogs, queryPa
                         <p className="mt-1">{meetingLog.id}</p>
                       </div>
                       <div className="mt-4">
-                        <label className="font-bold text-lg">利用者名</label>
-                        <p className="mt-1">{meetingLog.external.name}</p>
+                        <label className="font-bold text-lg">会社名</label>
+                        <p className="mt-1">{meetingLog.external.company_name}</p>
                       </div>
                     </div>
                     <div>
@@ -97,7 +97,7 @@ export default function Edit({ auth, externals, currentLog, meetingLogs, queryPa
               <div className="">
                 <InputLabel
                   htmlFor="external_id"
-                  value="利用者名"
+                  value="会社名"
                 />
                 <SelectInput
                   id="external_id"
@@ -105,7 +105,7 @@ export default function Edit({ auth, externals, currentLog, meetingLogs, queryPa
                   className="mt-1 block w-full"
                   onChange={(e) => { externalChanged(e.target.value) }}
                 >
-                  <option value="">利用者名を選択してください</option>
+                  <option value="">会社名を選択してください</option>
                   {externals.data.map(external => (
                     <option key={external.id} value={external.id}>{external.company_name}</option>
                   ))}
@@ -142,7 +142,7 @@ export default function Edit({ auth, externals, currentLog, meetingLogs, queryPa
               </div>
               <div className="mt-4 text-right">
                 <Link
-                  href={route("meetinglog.index")}
+                  href={route("external.meetinglog.index")}
                   className="bg-gray-300 py-1 px-3 text-gray-800 rounded shadow transition-all hover:bg-gray-200 mr-2"
                 >
                   戻る

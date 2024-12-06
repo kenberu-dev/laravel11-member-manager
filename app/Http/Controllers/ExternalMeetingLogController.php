@@ -8,6 +8,7 @@ use App\Http\Resources\ExternalMeetingLogResource;
 use App\Http\Resources\ExternalMessageResource;
 use App\Http\Resources\ExternalRsource;
 use App\Http\Resources\OfficeResource;
+use App\Http\Resources\UserResource;
 use App\Models\External;
 use App\Models\ExternalMeetingLog;
 use App\Models\ExternalMessage;
@@ -22,7 +23,77 @@ class ExternalMeetingLogController extends Controller
      */
     public function index()
     {
-        //
+        $query = ExternalMeetingLog::query();
+
+        $sortField = request("sort_field", "created_at");
+        $sortDirection = request("sort_direction", "desc");
+
+        $offices = Office::all();
+        $users = User::all();
+        $externals = External::all();
+
+        if(!Auth::user()->is_global_admin) {
+            $officeId = Auth::user()->office_id;
+            $query->select("external_meeting_logs.*", "offices.id as office_id")
+                ->leftJoin('externals', 'external_meeting_logs.external_id', '=', 'externals.id')
+                ->leftJoin('offices', 'externals.office_id', '=', 'offices.id')
+                ->where('offices.id', '=', $officeId);
+            $users = User::where("office_id", "=", $officeId)->get();
+            $externals = External::where("office_id", "=", $officeId)->get();
+        }
+
+        if(request("id")) {
+            $query->where("id", "like", "%" . request("id") . "%");
+        }
+
+        if(request("title")) {
+            $query->where("title", "like", "%" . request("title") . "%");
+        }
+
+        if(request("user")) {
+            $query->where("user_id", "=", request("user"));
+
+            $officeId = User::select("office_id")->where("id", "=", request("user"));
+            $offices = Office::where("id", "=", $officeId)->get();
+            $externals = External::where("office_id", "=", $officeId)->get();
+        }
+
+        if(request("external")) {
+            $query->where("external_id", "=", request("external"));
+
+            $officeId = External::select("office_id")->where("id", "=", request("external"));
+            $offices = Office::where("id", "=", $officeId)->get();
+            $users = User::where("office_id", "=", $officeId)->get();
+        }
+
+        if (request("office")) {
+            $query->select("external_meeting_logs.*", "offices.id as office_id")
+                ->leftJoin('externals', 'external_meeting_logs.external_id', '=', 'externals.id')
+                ->leftJoin('offices', 'externals.office_id', '=', 'offices.id')
+                ->where('offices.id', '=', request("office"));
+            $externals = External::where("office_id", "=", request("office"))->get();
+            $users = User::where("office_id", "=", request("office"))->get();
+        }
+
+        if ($sortField == "office_id") {
+            if (!request("office")) {
+                $query->select("external_meeting_logs.*", "offices.id as office_id")
+                    ->leftJoin('externals', 'meeting_logs.external_id', '=', 'externals.id')
+                    ->leftJoin('offices', 'externals.office_id', '=', 'offices.id');
+            }
+        }
+
+        $meetingLogs = $query->orderBy($sortField, $sortDirection)->paginate(10);
+
+        $queryParams = request()->query();
+
+        return inertia("ExternalMeetingLog/Index",[
+            "meetingLogs" => ExternalMeetingLogResource::collection($meetingLogs),
+            "offices" => OfficeResource::collection($offices),
+            "users" => UserResource::collection($users),
+            "externals" => ExternalRsource::collection($externals),
+            "queryParams" => $queryParams ?: null,
+        ]);
     }
 
     /**
@@ -117,6 +188,8 @@ class ExternalMeetingLogController extends Controller
      */
     public function destroy(ExternalMeetingLog $externalMeetingLog)
     {
-        //
+        $externalMeetingLog->delete();
+
+        return to_route("external.show", $externalMeetingLog->external_id);
     }
 }

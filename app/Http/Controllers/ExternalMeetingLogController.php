@@ -129,7 +129,7 @@ class ExternalMeetingLogController extends Controller
 
         ExternalMeetingLog::create($data);
 
-        return to_route("external.show", $request->external_id);
+        return to_route("external.meetinglog.index");
     }
 
     /**
@@ -180,7 +180,7 @@ class ExternalMeetingLogController extends Controller
 
         $externalMeetingLog->update($data);
 
-        return to_route("external.show", $request->external_id);
+        return to_route("external.meetinglog.index");
     }
 
     /**
@@ -190,6 +190,6 @@ class ExternalMeetingLogController extends Controller
     {
         $externalMeetingLog->delete();
 
-        return to_route("external.show", $externalMeetingLog->external_id);
+        return to_route("external.meetinglog.index");
     }
 }

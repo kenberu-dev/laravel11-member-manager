@@ -33,10 +33,6 @@ export default function Create ({ auth, externals, meetingLogs, queryParams = nu
     post(route('external.meetinglog.store'));
   }
 
-  const handleBack = () => {
-    window.history.back();
-  }
-
   return (
     <AuthenticatedLayout
     user={auth.user}
@@ -142,12 +138,12 @@ export default function Create ({ auth, externals, meetingLogs, queryParams = nu
                 <InputError message={errors.meeting_log} className="mt-2" />
               </div>
               <div className="mt-4 text-right">
-                  <button
-                    onClick={handleBack}
+                  <Link
+                    href={route("external.meetinglog.index")}
                     className="bg-gray-300 py-1 px-3 text-gray-800 rounded shadow transition-all hover:bg-gray-200 mr-2"
                   >
                     戻る
-                  </button>
+                  </Link>
                   <button
                     className="bg-emerald-500 py-1 px-3 text-white rounded shadow transition-all hover:bg-emerald-400"
                   >

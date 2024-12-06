@@ -52,7 +52,7 @@ export default function Index({ auth, meetingLogs, offices, users, externals,  q
       header={
         <div className="flex justify-between items-center">
           <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            面談記録
+            外部対応：面談記録
           </h2>
           <Link
             href={route("external.meetinglog.create")}

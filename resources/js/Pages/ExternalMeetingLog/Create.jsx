@@ -33,6 +33,10 @@ export default function Create ({ auth, externals, meetingLogs, queryParams = nu
     post(route('external.meetinglog.store'));
   }
 
+  const handleBack = () => {
+    window.history.back();
+  }
+
   return (
     <AuthenticatedLayout
     user={auth.user}
@@ -102,7 +106,7 @@ export default function Create ({ auth, externals, meetingLogs, queryParams = nu
                   className="mt-1 block w-full"
                   onChange={(e) => {externalChanged(e.target.value) }}
                 >
-                  <option value="">利用者名を選択してください</option>
+                  <option value="">会社名を選択してください</option>
                   {externals.data.map(external => (
                     <option value={external.id}>{external.company_name}</option>
                   ))}
@@ -138,12 +142,12 @@ export default function Create ({ auth, externals, meetingLogs, queryParams = nu
                 <InputError message={errors.meeting_log} className="mt-2" />
               </div>
               <div className="mt-4 text-right">
-                  <Link
-                    href={route("meetinglog.index")}
+                  <button
+                    onClick={handleBack}
                     className="bg-gray-300 py-1 px-3 text-gray-800 rounded shadow transition-all hover:bg-gray-200 mr-2"
                   >
                     戻る
-                  </Link>
+                  </button>
                   <button
                     className="bg-emerald-500 py-1 px-3 text-white rounded shadow transition-all hover:bg-emerald-400"
                   >

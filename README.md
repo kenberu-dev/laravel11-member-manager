@@ -18,10 +18,12 @@
 |利用する人が得られる便益|利用者の状況を一元管理することによる管理コストの削減と細やかな対応につなげることによるサービス質の向上|
 |作るための体制|個人で開発|
 |作成期間|約２ヶ月|
-## DEMOサイトのURL
-https://meemane.online/
-email:user@example.com
-pass :meemane.user
+## DEMOサイトのURL|
+|項目|内容|
+|----|----|
+|URL|https://meemane.online/|
+|email|user@example.com|
+|pass|meemane.user|
 ※管理者権限の挙動を見たい方は選考時の資料に記載します。
 ## 使用技術
 - Laravel 11.21.0

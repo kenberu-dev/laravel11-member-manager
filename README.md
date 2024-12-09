@@ -24,6 +24,7 @@
 |URL|https://meemane.online/|
 |email|user@example.com|
 |pass|meemane.user|
+
 ※管理者権限の挙動を見たい方は選考時の資料に記載します。
 ## 使用技術
 - Laravel 11.21.0

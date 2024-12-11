@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreExternalMeetingLogRequest;
 use App\Http\Requests\UpdateExternalMeetingLogRequest;
 use App\Http\Resources\ExternalMeetingLogResource;
-use App\Http\Resources\ExternalMessageResource;
 use App\Http\Resources\ExternalRsource;
+use App\Http\Resources\MessageResource;
 use App\Http\Resources\OfficeResource;
 use App\Http\Resources\UserResource;
 use App\Models\External;
@@ -137,13 +137,13 @@ class ExternalMeetingLogController extends Controller
      */
     public function show(ExternalMeetingLog $externalMeetingLog)
     {
-        $messages = ExternalMessage::where('external_meeting_logs_id', $externalMeetingLog->id)
+        $messages = ExternalMessage::where('meeting_logs_id', $externalMeetingLog->id)
         ->latest()
         ->paginate(10);
 
         return inertia('ExternalMeetingLog/Show', [
             'meetingLog' => new ExternalMeetingLogResource($externalMeetingLog),
-            'messages' => ExternalMessageResource::collection($messages),
+            'messages' => MessageResource::collection($messages),
         ]);
     }
 

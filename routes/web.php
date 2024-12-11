@@ -4,12 +4,14 @@ use App\Http\Controllers\CrmController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExternalController;
 use App\Http\Controllers\ExternalMeetingLogController;
+use App\Http\Controllers\ExternalMessageController;
 use App\Http\Controllers\MeetingLogController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\OfficeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
+use App\Models\External;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -193,6 +195,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::patch('/external/meetinglog/update/{externalMeetingLog}', [ExternalMeetingLogController::class, 'update'])
         ->name('external.meetinglog.update');
+
+    Route::post('/external/message', [ExternalMessageController::class, 'store'])
+        ->name('external.message.store');
+
+    Route::delete('/external/message/{message}', [ExternalMessageController::class, 'destroy'])
+        ->name('external.message.destroy');
+
+    Route::get('/external/message/older/{message}', [ExternalMessageController::class, 'loadOlder'])
+        ->name('external.message.loadOlder');
 
     Route::get('crm', [CrmController::class, 'index'])
         ->name('crm.index');

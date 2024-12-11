@@ -52,6 +52,11 @@ export default function Show({ auth, member, meetingLogs, users, queryParams = n
     router.delete(route('meetinglog.destroy', meetingLog.id));
   }
 
+  const createMeetingLog = (member) => {
+    queryParams["member"] = member.id;
+    router.get(route('meetinglog.create'), queryParams);
+  }
+
   return (
     <AuthenticatedLayout
       user={auth.user}
@@ -146,12 +151,12 @@ export default function Show({ auth, member, meetingLogs, users, queryParams = n
                 <div className="flex justify-between items-center">
                   <label className="font-bold text-lg">面談記録</label>
                   <div>
-                    <Link
+                    <button
                       className="btn btn-success text-white mr-2"
-                      href={route("meetinglog.create")}
+                      onClick={(e) => createMeetingLog(member)}
                     >
                       新規作成
-                    </Link>
+                    </button>
                     {member.document_url ? (
                       <a
                         className="btn btn-info text-white"

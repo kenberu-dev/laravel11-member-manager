@@ -45,6 +45,11 @@ export default function Show({ auth, external, meetingLogs, users, queryParams =
     router.delete(route('external.meetinglog.destroy', meetingLog.id));
   }
 
+  const createMeetingLog = (external) => {
+    queryParams["external"] = external.id;
+    router.get(route('external.meetinglog.create'), queryParams);
+  }
+
   return (
     <AuthenticatedLayout
       user={auth.user}
@@ -115,12 +120,12 @@ export default function Show({ auth, external, meetingLogs, users, queryParams =
                 <div className="flex justify-between items-center">
                   <label className="font-bold text-lg">面談記録</label>
                   <div>
-                    <Link
+                    <button
                       className="btn btn-success text-white mr-2"
-                      href={route("external.meetinglog.create")}
+                      onClick={(e) => createMeetingLog(external)}
                     >
                       新規作成
-                    </Link>
+                    </button>
                   </div>
                 </div>
                 <div className="mt-1 whitespace-pre-wrap max-h-[400px] overflow-y-auto">

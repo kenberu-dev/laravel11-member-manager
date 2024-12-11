@@ -12,7 +12,7 @@ class ExternalMessage extends Model
     protected $fillable = [
         'message',
         'sender_id',
-        'external_meeting_logs_id',
+        'meeting_logs_id',
     ];
 
     public function sender()

@@ -19,7 +19,7 @@ class ExternalMessageFactory extends Factory
         return [
             'message' => fake()->realText(100),
             'sender_id' => fake()->randomElement(\App\Models\User::pluck('id')->toArray()),
-            'external_meeting_logs_id' => fake()->randomElement(\App\Models\ExternalMeetingLog::pluck('id')->toArray()),
+            'meeting_logs_id' => fake()->randomElement(\App\Models\ExternalMeetingLog::pluck('id')->toArray()),
             'created_at' =>fake()->dateTimeBetween('-1 year', 'now'),
         ];
     }

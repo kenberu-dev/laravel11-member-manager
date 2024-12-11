@@ -11,7 +11,7 @@ export default function Create ({ auth, offices }) {
   const {data, setData, post, errors, reset} = useForm({
     name: "",
     sex: "",
-    office_id: "",
+    office_id: auth.user.office.id ?? "",
     status: "",
     characteristics: "",
     document_url: "",

@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Http\Resources\UserResource;
+use App\Models\ExternalMeetingLog;
 use App\Models\MeetingLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -38,7 +39,8 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => Auth::id() ? new UserResource($request->user()) : null,
             ],
-            'conversations' => Auth::id() ? MeetingLog::getMeetingLogsForUser() : [],
+            'member_conversations' => Auth::id() ? MeetingLog::getMeetingLogsForUser() : [],
+            'external_conversations' => Auth::id() ? ExternalMeetingLog::getMeetingLogsForUser() : [],
         ];
     }
 }

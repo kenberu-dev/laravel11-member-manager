@@ -11,13 +11,14 @@ import ExternalDropDown from '@/Components/ExternalDropDown';
 export default function AuthenticatedLayout({ header, children }) {
   const page = usePage();
   const user = page.props.auth.user;
-  const conversations = page.props.conversations;
+  const memberConversations = page.props.member_conversations;
+  const externalConversations = page.props.external_conversations;
   const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
   const { emit } = useEventBus();
 
 
   useEffect(() => {
-    conversations.forEach((conversation) => {
+    memberConversations.forEach((conversation) => {
       let channel = [];
       if (user.id === conversation.user_id) {
         channel = `message.meetinglog.${conversation.id}`
@@ -27,7 +28,6 @@ export default function AuthenticatedLayout({ header, children }) {
           console.error(error);
         })
         .listen("SocketMessage", (e) => {
-          console.log("SocketMessage", e);
           const message = e.message;
 
           emit("message.created", message);
@@ -43,7 +43,7 @@ export default function AuthenticatedLayout({ header, children }) {
     });
 
     return () => {
-      conversations.forEach((conversation) => {
+      memberConversations.forEach((conversation) => {
         let channel = [];
         if (user.id === conversation.user_id) {
           channel = `message.meetinglog.${conversation.id}`
@@ -51,7 +51,43 @@ export default function AuthenticatedLayout({ header, children }) {
         }
       });
     }
-  }, [conversations]);
+  }, [memberConversations]);
+
+  useEffect(() => {
+    externalConversations.forEach((conversation) => {
+      let channel = [];
+      if (user.id === conversation.user_id) {
+        channel = `external.message.meetinglog.${conversation.id}`
+      }
+      Echo.private(channel)
+        .error((error) => {
+          console.error(error);
+        })
+        .listen("ExternalSocketMessage", (e) => {
+          const message = e.message;
+
+          emit("message.created", message);
+          if (message.sender_id === user.id) {
+            return;
+          }
+          emit("newMessageNotification", {
+            user: message.sender,
+            meeting_logs_id: message.meeting_logs_id,
+            message: message.message
+          });
+        });
+    });
+
+    return () => {
+      externalConversations.forEach((conversation) => {
+        let channel = [];
+        if (user.id === conversation.user_id) {
+          channel = `external.message.meetinglog.${conversation.id}`
+          Echo.leave(channel);
+        }
+      });
+    }
+  }, [externalConversations]);
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900">

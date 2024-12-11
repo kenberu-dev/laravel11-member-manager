@@ -12,13 +12,12 @@ export default function Show({ auth, meetingLog, messages }) {
   const [scrollFromBottom, setScrollFromBottom] = useState(0);
   const { on, emit } = useEventBus();
   const page = usePage();
-  const conversations = page.props.conversations;
+  const externalConversations = page.props.external_conversations;
   const loadMoreIntersect = useRef(null);
   const messagesCtrRef = useRef(null);
 
   const messageCreated = (message) => {
-    if (meetingLog && meetingLog.id == message.external_meeting_logs_id) {
-      console.log("Updated setLocalMessages");
+    if (meetingLog && meetingLog.id == message.meeting_logs_id) {
       setLocalMessages((prevMessages) => [...prevMessages, message]);
     }
   }
@@ -30,7 +29,7 @@ export default function Show({ auth, meetingLog, messages }) {
 
     const firstMessage = localMessages[0];
     axios
-      .get(route("message.loadOlder", firstMessage.id))
+      .get(route("external.message.loadOlder", firstMessage.id))
       .then(({data}) => {
         if(data.data.length === 0) {
           console.log("No more Messages");
@@ -51,10 +50,9 @@ export default function Show({ auth, meetingLog, messages }) {
   }, [localMessages]);
 
   useEffect(() => {
-    let channel = `message.meetinglog.${meetingLog.id}`;
-
-    conversations.forEach((conversation) => {
-      if (channel === `message.meetinglog.${conversation.id}`) {
+    let channel = `external.message.meetinglog.${meetingLog.id}`;
+    externalConversations.forEach((conversation) => {
+      if (channel === `external.message.meetinglog.${conversation.id}`) {
         channel = [];
         return;
       }
@@ -65,8 +63,7 @@ export default function Show({ auth, meetingLog, messages }) {
         .error((error) => {
           console.error(error);
         })
-        .listen("SocketMessage", (e) => {
-          console.log("SocketMessage", e);
+        .listen("ExternalSocketMessage", (e) => {
           const message = e.message;
 
           emit("message.created", message);
@@ -75,13 +72,13 @@ export default function Show({ auth, meetingLog, messages }) {
           }
           emit("newMessageNotification", {
             user: message.sender,
-            meeting_logs_id: message.external_meeting_logs_id,
+            meeting_logs_id: message.meeting_logs_id,
             message: message.message
           });
         });
 
       return () => {
-        let channel = `message.meetinglog.${meetingLog.id}`;
+        let channel = `external.message.meetinglog.${meetingLog.id}`;
         Echo.leave(channel);
       }
     }
@@ -237,7 +234,7 @@ export default function Show({ auth, meetingLog, messages }) {
                           </div>
                         )}
                       </div>
-                      <MessageInput meetingLogId={meetingLog.id} />
+                      <MessageInput meetingLogId={meetingLog.id} isExternal={true}/>
                     </>
                   </div>
                 </div>

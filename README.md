@@ -29,6 +29,9 @@
 ## 使用技術
 - Laravel 11.21.0
 - PHP 8.2.13
+- react 18.2.0
+- inertiaJS/react 1.0.0
+- tailwindCSS 3.2.1
 - MariaDB 10.5.22
 - Apache
 - Rocky Linux 9.4

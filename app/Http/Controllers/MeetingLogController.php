@@ -26,12 +26,22 @@ class MeetingLogController extends Controller
     {
         $query = MeetingLog::query();
 
-        $sortField = request("sort_field", "created_at");
-        $sortDirection = request("sort_direction", "desc");
-
         $users = User::all();
         $offices = Office::all();
         $members = Member::all();
+
+        if(!Auth::user()->is_global_admin) {
+            $officeId = Auth::user()->office_id;
+            $query->select("meeting_logs.*", "offices.id as office_id")
+                ->leftJoin('members', 'meeting_logs.member_id', '=', 'members.id')
+                ->leftJoin('offices', 'members.office_id', '=', 'offices.id')
+                ->where('offices.id', '=', $officeId);
+            $users = User::where("office_id", "=", $officeId)->get();
+            $members = Member::where("office_id", "=", $officeId)->get();
+        }
+
+        $sortField = request("sort_field", "created_at");
+        $sortDirection = request("sort_direction", "desc");
 
         if (request("id")) {
             $query->where("id", "=", request("id"));
@@ -39,15 +49,6 @@ class MeetingLogController extends Controller
 
         if (request("title")) {
             $query->where("title", "like", "%" . request("title") . "%");
-        }
-
-        if (request("office")) {
-            $query->select("meeting_logs.*", "offices.id as office_id")
-                ->leftJoin('members', 'meeting_logs.member_id', '=', 'members.id')
-                ->leftJoin('offices', 'members.office_id', '=', 'offices.id')
-                ->where('offices.id', '=', request("office"));
-            $users = User::where('office_id', '=', request("office"))->get();
-            $members = Member::where('office_id', '=', request("office"))->get();
         }
 
         if (request("user")) {
@@ -64,6 +65,15 @@ class MeetingLogController extends Controller
             $officeId = Member::select("office_id")->where("id", "=", request("member"));
             $offices = Office::where("id", "=", $officeId)->get();
             $users = User::where("office_id", "=", $officeId)->get();
+        }
+
+        if (request("office")) {
+            $query->select("meeting_logs.*", "offices.id as office_id")
+                ->leftJoin('members', 'meeting_logs.member_id', '=', 'members.id')
+                ->leftJoin('offices', 'members.office_id', '=', 'offices.id')
+                ->where('offices.id', '=', request("office"));
+            $members = Member::where("office_id", "=", request("office"))->get();
+            $users = User::where("office_id", "=", request("office"))->get();
         }
 
         if (request("condition")) {

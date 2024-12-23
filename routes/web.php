@@ -1,12 +1,17 @@
 <?php
 
+use App\Http\Controllers\CrmController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ExternalController;
+use App\Http\Controllers\ExternalMeetingLogController;
+use App\Http\Controllers\ExternalMessageController;
 use App\Http\Controllers\MeetingLogController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\OfficeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
+use App\Models\External;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -72,7 +77,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('member.update');
 
     Route::patch('/member/update/{member}', [MemberController::class, 'update'])
-        ->name('memeber.update');
+        ->name('member.update');
+
+    Route::post('/member/updateLimit/{member}', [MemberController::class, 'updateLimit'])
+        ->name('member.updateLimit');
 
     Route::get('/user', [UserController::class, 'index'])
         ->name('user.index');
@@ -139,6 +147,67 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::post('office/restore/{office}', [OfficeController::class, 'restore'])
         ->name('office.restore');
+
+    Route::get('/external', [ExternalController::class, 'index'])
+        ->name('external.index');
+
+    Route::get('/external/show/{external}', [ExternalController::class, 'show'])
+        ->name('external.show');
+
+    Route::get('/external/create', [ExternalController::class, 'create'])
+        ->name('external.create');
+
+    Route::post('/external', [ExternalController::class, 'store'])
+        ->name('external.store');
+
+    Route::delete('/external/destroy/{external}', [ExternalController::class, 'destroy'])
+        ->name('external.destroy');
+
+    Route::get('/external/edit/{external}', [ExternalController::class, 'edit'])
+        ->name('external.edit');
+
+    Route::put('/external/update/{external}', [ExternalController::class, 'update'])
+        ->name('external.update');
+
+    Route::patch('/external/update/{external}', [ExternalController::class, 'update'])
+        ->name('external.update');
+
+    Route::get('/external/meetinglog', [ExternalMeetingLogController::class, 'index'])
+        ->name('external.meetinglog.index');
+
+    Route::get('/external/meetinglog/show/{externalMeetingLog}', [ExternalMeetingLogController::class, 'show'])
+        ->name('external.meetinglog.show');
+
+    Route::get('/external/meetinglog/create', [ExternalMeetingLogController::class, 'create'])
+        ->name('external.meetinglog.create');
+
+    Route::post('/external/meetinglog', [ExternalMeetingLogController::class, 'store'])
+        ->name('external.meetinglog.store');
+
+    Route::delete('/external/meetinglog/destroy/{externalMeetingLog}', [ExternalMeetingLogController::class, 'destroy'])
+        ->name('external.meetinglog.destroy');
+
+    Route::get('/external/meetinglog/edit/{externalMeetingLog}', [ExternalMeetingLogController::class, 'edit'])
+        ->name('external.meetinglog.edit');
+
+    Route::put('/external/meetinglog/update/{externalMeetingLog}', [ExternalMeetingLogController::class, 'update'])
+        ->name('external.meetinglog.update');
+
+    Route::patch('/external/meetinglog/update/{externalMeetingLog}', [ExternalMeetingLogController::class, 'update'])
+        ->name('external.meetinglog.update');
+
+    Route::post('/external/message', [ExternalMessageController::class, 'store'])
+        ->name('external.message.store');
+
+    Route::delete('/external/message/{message}', [ExternalMessageController::class, 'destroy'])
+        ->name('external.message.destroy');
+
+    Route::get('/external/message/older/{message}', [ExternalMessageController::class, 'loadOlder'])
+        ->name('external.message.loadOlder');
+
+    Route::get('crm', [CrmController::class, 'index'])
+        ->name('crm.index');
+
 });
 
 Route::middleware('auth')->group(function () {

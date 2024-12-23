@@ -12,13 +12,12 @@ export default function Show({ auth, meetingLog, messages }) {
   const [scrollFromBottom, setScrollFromBottom] = useState(0);
   const { on, emit } = useEventBus();
   const page = usePage();
-  const conversations = page.props.conversations;
+  const memberConversations = page.props.member_conversations;
   const loadMoreIntersect = useRef(null);
   const messagesCtrRef = useRef(null);
 
   const messageCreated = (message) => {
     if (meetingLog && meetingLog.id == message.meeting_logs_id) {
-      console.log("Updated setLocalMessages");
       setLocalMessages((prevMessages) => [...prevMessages, message]);
     }
   }
@@ -53,7 +52,7 @@ export default function Show({ auth, meetingLog, messages }) {
   useEffect(() => {
     let channel = `message.meetinglog.${meetingLog.id}`;
 
-    conversations.forEach((conversation) => {
+    memberConversations.forEach((conversation) => {
       if (channel === `message.meetinglog.${conversation.id}`) {
         channel = [];
         return;
@@ -66,7 +65,6 @@ export default function Show({ auth, meetingLog, messages }) {
           console.error(error);
         })
         .listen("SocketMessage", (e) => {
-          console.log("SocketMessage", e);
           const message = e.message;
 
           emit("message.created", message);

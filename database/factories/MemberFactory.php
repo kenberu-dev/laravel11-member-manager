@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,14 +19,22 @@ class MemberFactory extends Factory
     {
         $officeId = fake()->randomElement(\App\Models\Office::pluck('id')->toArray());
 
+        $createdAt = fake()->dateTimeBetween('-3 month', 'now');
+        $startedAt = new Carbon(fake()->dateTimeBetween($createdAt, '+3 month'));
+        $endDate = $startedAt->copy()->addMonth(3);
+
         return [
             'name' => fake()->name(),
             'sex' => fake()->randomElement(['男性', '女性', 'その他']),
             'office_id' => $officeId,
-            'status' => fake()->randomElement(['利用中', '利用中止', '利用終了']),
+            'status' => fake()->randomElement(['見学','体験','利用意思獲得','利用中', '利用中止', '利用終了', '定着中', 'ロスト']),
             'characteristics' => fake()->randomElement(['抑うつ病', '統合失調症', '自閉スペクトラム症', '注意欠如・多動症']),
+            'document_url' => 'https://drive.google.com/drive/folders/1xUxgJTMX6gOFJdGRG3m1P-uPJj9kUfqJ',
+            'beneficiary_number' => fake()->numerify('##########'),
+            'started_at' => $startedAt,
+            'update_limit' => fake()->dateTimeBetween($startedAt, $endDate),
             'notes' => fake()->realText(100),
-            'created_at' => fake()->dateTimeBetween('-1 year', 'now'),
+            'created_at' => $createdAt
         ];
     }
 }

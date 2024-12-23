@@ -4,13 +4,18 @@ import { useState } from "react";
 import axios from "axios";
 
 
-const MessageInput = (meetingLogId = null) => {
+const MessageInput = ({ meetingLogId = null, isExternal = false }) => {
   const [newMessage, setNewMessage] = useState("");
   const [inputErrorMessage, setInputErrorMessage] = useState("");
   const [messageSending, setMessageSending] = useState(false);
 
-  // meetingLogIdがオブジェクト型だったので配列型に直している
-  const id = Object.values(meetingLogId)
+  let routeName = ""
+
+  if(isExternal) {
+    routeName = "external.message.store";
+  } else {
+    routeName = "message.store";
+  }
 
   const onSendClick = () => {
     if (messageSending) {
@@ -26,11 +31,11 @@ const MessageInput = (meetingLogId = null) => {
     }
     const formData = new FormData();
     formData.append("message", newMessage);
-    formData.append("meeting_logs_id", id[0]);
+    formData.append("meeting_logs_id", meetingLogId);
 
     setMessageSending(true);
 
-    axios.post(route("message.store"), formData, {
+    axios.post(route(routeName), formData, {
       onUploadProgress: (progressEvent) => {
         const progress = Math.round(
           (progressEvent.loaded / progressEvent.total) * 100

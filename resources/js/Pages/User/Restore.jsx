@@ -99,14 +99,16 @@ export default function Restore({ auth, offices, users, queryParams = null}) {
                       >
                         メールアドレス
                       </TableHeading>
-                      <TableHeading
-                        name="office_id"
-                        sort_field={queryParams.sort_field}
-                        sort_direction={queryParams.sort_direction}
-                        sortChanged={sortChanged}
-                      >
-                        事業所
-                      </TableHeading>
+                      {auth.user.is_global_admin ? (
+                        <TableHeading
+                          name="office_id"
+                          sort_field={queryParams.sort_field}
+                          sort_direction={queryParams.sort_direction}
+                          sortChanged={sortChanged}
+                        >
+                          事業所
+                        </TableHeading>
+                      ):<th></th>}
                       <TableHeading
                         name="is_admin"
                         sort_field={queryParams.sort_field}
@@ -164,20 +166,22 @@ export default function Restore({ auth, offices, users, queryParams = null}) {
                           onKeyPress={e => onKeyPress('email', e)}
                         />
                       </th>
-                      <th className="px-3 py-2">
-                        <SelectInput
-                          className="w-auto"
-                          defaultValue={queryParams.office}
-                          onChange={e =>
-                            searchFieldChanged("office", e.target.value)
-                          }
-                        >
-                          <option value="">事業所名</option>
-                          {offices.data.map(office =>(
-                            <option key={office.id} value={office.id}>{office.name}</option>
-                          ))}
-                        </SelectInput>
-                      </th>
+                      {auth.user.is_global_admin ? (
+                        <th className="px-3 py-2">
+                          <SelectInput
+                            className="w-auto"
+                            defaultValue={queryParams.office}
+                            onChange={e =>
+                              searchFieldChanged("office", e.target.value)
+                            }
+                          >
+                            <option value="">事業所名</option>
+                            {offices.data.map(office =>(
+                              <option key={office.id} value={office.id}>{office.name}</option>
+                            ))}
+                          </SelectInput>
+                        </th>
+                      ):<th></th>}
                       <th className="px-3 py-2 "></th>
                       <th className="px-3 py-2 "></th>
                       <th className="px-3 py-2 "></th>
@@ -197,7 +201,9 @@ export default function Restore({ auth, offices, users, queryParams = null}) {
                           </Link>
                         </td>
                         <td className="px-3 py-3 ">{user.email}</td>
-                        <td className="px-3 py-3 ">{user.office.name}</td>
+                        {auth.user.is_global_admin ? (
+                          <td className="px-3 py-3 ">{user.office.name}</td>
+                        ):<td></td>}
                         <td className="px-3 py-3 text-center text-nowrap">
                           {user.is_admin ? "あり" : "なし"}
                         </td>

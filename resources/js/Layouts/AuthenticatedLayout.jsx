@@ -3,19 +3,22 @@ import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link, usePage } from '@inertiajs/react';
-import { HomeIcon } from '@heroicons/react/24/solid'
+import { ChevronDownIcon, HomeIcon } from '@heroicons/react/24/solid'
 import { useEventBus } from '@/EventBus';
+import MemberDropDown from '@/Components/MemberDropDown';
+import ExternalDropDown from '@/Components/ExternalDropDown';
 
 export default function AuthenticatedLayout({ header, children }) {
   const page = usePage();
   const user = page.props.auth.user;
-  const conversations = page.props.conversations;
+  const memberConversations = page.props.member_conversations;
+  const externalConversations = page.props.external_conversations;
   const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
   const { emit } = useEventBus();
 
 
   useEffect(() => {
-    conversations.forEach((conversation) => {
+    memberConversations.forEach((conversation) => {
       let channel = [];
       if (user.id === conversation.user_id) {
         channel = `message.meetinglog.${conversation.id}`
@@ -25,7 +28,6 @@ export default function AuthenticatedLayout({ header, children }) {
           console.error(error);
         })
         .listen("SocketMessage", (e) => {
-          console.log("SocketMessage", e);
           const message = e.message;
 
           emit("message.created", message);
@@ -41,7 +43,7 @@ export default function AuthenticatedLayout({ header, children }) {
     });
 
     return () => {
-      conversations.forEach((conversation) => {
+      memberConversations.forEach((conversation) => {
         let channel = [];
         if (user.id === conversation.user_id) {
           channel = `message.meetinglog.${conversation.id}`
@@ -49,7 +51,43 @@ export default function AuthenticatedLayout({ header, children }) {
         }
       });
     }
-  }, [conversations]);
+  }, [memberConversations]);
+
+  useEffect(() => {
+    externalConversations.forEach((conversation) => {
+      let channel = [];
+      if (user.id === conversation.user_id) {
+        channel = `external.message.meetinglog.${conversation.id}`
+      }
+      Echo.private(channel)
+        .error((error) => {
+          console.error(error);
+        })
+        .listen("ExternalSocketMessage", (e) => {
+          const message = e.message;
+
+          emit("message.created", message);
+          if (message.sender_id === user.id) {
+            return;
+          }
+          emit("newMessageNotification", {
+            user: message.sender,
+            meeting_logs_id: message.meeting_logs_id,
+            message: message.message
+          });
+        });
+    });
+
+    return () => {
+      externalConversations.forEach((conversation) => {
+        let channel = [];
+        if (user.id === conversation.user_id) {
+          channel = `external.message.meetinglog.${conversation.id}`
+          Echo.leave(channel);
+        }
+      });
+    }
+  }, [externalConversations]);
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -67,12 +105,16 @@ export default function AuthenticatedLayout({ header, children }) {
                 <NavLink href={route('dashboard')} active={route().current('dashboard')}>
                   ダッシュボード
                 </NavLink>
-                <NavLink href={route('meetinglog.index')} active={route().current('meetinglog.index')}>
-                  面談記録
-                </NavLink>
-                <NavLink href={route('member.index')} active={route().current('member.index')}>
-                  利用者一覧
-                </NavLink>
+                <MemberDropDown
+                  active={route().current('member.index') || route().current('meetinglog.index')}
+                >
+                  利用者対応
+                </MemberDropDown>
+                <ExternalDropDown
+                  active={route().current('external.index') || route().current('external.meetinglog.index')}
+                >
+                  外部対応
+                </ExternalDropDown>
                 {user.is_admin || user.is_global_admin ? (
                   <NavLink href={route('user.index')} active={route().current('user.index')}>
                     従業員一覧
@@ -83,9 +125,11 @@ export default function AuthenticatedLayout({ header, children }) {
                     事業所一覧
                   </NavLink>
                 ):""}
+                <NavLink href={route('crm.index')} active={route().current('crm.index')}>
+                  CRM
+                </NavLink>
               </div>
             </div>
-
             <div className="hidden sm:flex sm:items-center sm:ms-6">
               <div className="ms-3 relative">
                 <Dropdown>
@@ -96,19 +140,7 @@ export default function AuthenticatedLayout({ header, children }) {
                         className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150"
                       >
                         {user.name}
-
-                        <svg
-                          className="ms-2 -me-0.5 h-4 w-4"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
+                        <ChevronDownIcon className="ms-2 -me-0.5 h-4 w-4"/>
                       </button>
                     </span>
                   </Dropdown.Trigger>
@@ -170,6 +202,9 @@ export default function AuthenticatedLayout({ header, children }) {
                 事業所一覧
               </ResponsiveNavLink>
             ):""}
+            <ResponsiveNavLink href={route('crm.index')} active={route().current('crm.index')}>
+              CRM
+            </ResponsiveNavLink>
           </div>
 
           <div className="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
@@ -179,7 +214,9 @@ export default function AuthenticatedLayout({ header, children }) {
             </div>
 
             <div className="mt-3 space-y-1">
-              <ResponsiveNavLink href={route('profile.edit')}>プロフィール編集</ResponsiveNavLink>
+              <ResponsiveNavLink href={route('profile.edit')}>
+                プロフィール編集
+              </ResponsiveNavLink>
               <ResponsiveNavLink method="post" href={route('logout')} as="button">
                 ログアウト
               </ResponsiveNavLink>

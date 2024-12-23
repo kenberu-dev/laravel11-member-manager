@@ -46,6 +46,27 @@ export default function Index({ auth, offices, members,  queryParams = null}) {
     router.delete(route('member.destroy', member.id));
   }
 
+  const alertColor = (member) => {
+    let loadDate = new Date();
+    let distDate = new Date(member.update_limit)
+    let diffMilliSec = distDate - loadDate;
+    let diffDays = parseInt(diffMilliSec / 1000 / 60 / 60 / 24);
+
+    if (member.status == "利用意思獲得" || member.status == "利用中") {
+      if (member.started_at == member.update_limit) {
+        return "bg-blue-400";
+      }
+      if (diffDays < 14) {
+        return "bg-red-400";
+      }
+      if (diffDays < 30) {
+        return "bg-amber-400";
+      } else {
+        return "bg-white";
+      }
+    }
+  }
+
   return (
     <AuthenticatedLayout
       user={auth.user}
@@ -74,14 +95,6 @@ export default function Index({ auth, offices, members,  queryParams = null}) {
                   <thead className="text-xs text-gray-700 uppercase bg-gray-50 border-b-2">
                     <tr className="text-nowrap">
                       <TableHeading
-                        name="id"
-                        sort_field={queryParams.sort_field}
-                        sort_direction={queryParams.sort_direction}
-                        sortChanged={sortChanged}
-                      >
-                        ID
-                      </TableHeading>
-                      <TableHeading
                         name="name"
                         sort_field={queryParams.sort_field}
                         sort_direction={queryParams.sort_direction}
@@ -98,14 +111,6 @@ export default function Index({ auth, offices, members,  queryParams = null}) {
                         性別
                       </TableHeading>
                       <TableHeading
-                        name="office_id"
-                        sort_field={queryParams.sort_field}
-                        sort_direction={queryParams.sort_direction}
-                        sortChanged={sortChanged}
-                      >
-                        事業所
-                      </TableHeading>
-                      <TableHeading
                         name="status"
                         sort_field={queryParams.sort_field}
                         sort_direction={queryParams.sort_direction}
@@ -113,6 +118,16 @@ export default function Index({ auth, offices, members,  queryParams = null}) {
                       >
                         ステータス
                       </TableHeading>
+                      {auth.user.is_global_admin ? (
+                        <TableHeading
+                          name="office_id"
+                          sort_field={queryParams.sort_field}
+                          sort_direction={queryParams.sort_direction}
+                          sortChanged={sortChanged}
+                        >
+                          事業所名
+                        </TableHeading>
+                      ):<th></th>}
                       <TableHeading
                         name="characteristics"
                         sort_field={queryParams.sort_field}
@@ -122,35 +137,26 @@ export default function Index({ auth, offices, members,  queryParams = null}) {
                         特性・障害
                       </TableHeading>
                       <TableHeading
-                        name="created_at"
+                        name="started_at"
                         sort_field={queryParams.sort_field}
                         sort_direction={queryParams.sort_direction}
                         sortChanged={sortChanged}
                       >
-                        作成日時
+                        利用開始日
                       </TableHeading>
                       <TableHeading
-                        name="updated_at"
+                        name="update_limit"
                         sort_field={queryParams.sort_field}
                         sort_direction={queryParams.sort_direction}
                         sortChanged={sortChanged}
                       >
-                        更新日時
+                        更新期限
                       </TableHeading>
                       <th className="px-3 py-2 text-center">編集・削除</th>
                     </tr>
                   </thead>
                   <thead className="text-xs text-gray-700 uppercase bg-gray-50 border-b">
                     <tr className="text-nowrap">
-                      <th className="px-3 py-2">
-                        <TextInput
-                          className="w-full max-w-16"
-                          defaultValue={queryParams.id}
-                          placeholder="ID"
-                          onBlur={e => searchFieldChanged('id', e.target.value)}
-                          onKeyPress={e => onKeyPress('id', e)}
-                        />
-                      </th>
                       <th className="px-3 py-2">
                         <TextInput
                           className="w-full"
@@ -175,20 +181,6 @@ export default function Index({ auth, offices, members,  queryParams = null}) {
                         </SelectInput>
                       </th>
                       <th className="px-3 py-2">
-                        <SelectInput
-                          className="w-full"
-                          defaultValue={queryParams.office}
-                          onChange={e =>
-                            searchFieldChanged("office", e.target.value)
-                          }
-                        >
-                          <option value="">事業所名</option>
-                          {offices.data.map(office =>(
-                            <option key={office.id} value={office.id}>{office.name}</option>
-                          ))}
-                        </SelectInput>
-                      </th>
-                      <th className="px-3 py-2">
                       <SelectInput
                           className="w-full"
                           defaultValue={queryParams.status}
@@ -197,11 +189,32 @@ export default function Index({ auth, offices, members,  queryParams = null}) {
                           }
                         >
                           <option value="">ステータス</option>
+                          <option value="見学">見学</option>
+                          <option value="体験">体験</option>
+                          <option value="利用意思獲得">利用意思獲得</option>
                           <option value="利用中">利用中</option>
                           <option value="利用中止">利用中止</option>
                           <option value="利用終了">利用終了</option>
+                          <option value="定着中">定着中</option>
+                          <option value="ロスト">ロスト</option>
                         </SelectInput>
                       </th>
+                      {auth.user.is_global_admin ? (
+                        <th className="px-3 py-2">
+                          <SelectInput
+                            className="w-full"
+                            defaultValue={queryParams.office}
+                            onChange={e =>
+                              searchFieldChanged("office", e.target.value)
+                            }
+                          >
+                            <option value="">事業所名</option>
+                            {offices.data.map(office =>(
+                              <option key={office.id} value={office.id}>{office.name}</option>
+                            ))}
+                          </SelectInput>
+                        </th>
+                      ):<th></th>}
                       <th className="px-3 py-2">
                       <TextInput
                           className="w-full"
@@ -216,19 +229,23 @@ export default function Index({ auth, offices, members,  queryParams = null}) {
                   </thead>
                   <tbody>
                     {members.data.map(member => (
-                      <tr className="bg-white border-b" key={member.id}>
-                        <td className="px-3 py-3">{member.id}</td>
+                      <tr className={alertColor(member) + ` border-b`} key={member.id}>
                         <td className="px-3 py-3 hover:underline">
                           <Link href={route("member.show", member.id)}>
                             {member.name}
                           </Link>
                         </td>
                         <td className="px-3 py-3 ">{member.sex}</td>
-                        <td className="px-3 py-3 ">{member.office.name}</td>
                         <td className="px-3 py-3 ">{member.status}</td>
+                        {auth.user.is_global_admin ? (
+                          <td className="px-3 py-3 text-center">{member.office.name}</td>
+                        ):<td></td>}
                         <td className="px-3 py-3 text-center">{member.characteristics}</td>
-                        <td className="px-3 py-3 text-nowrap">{member.created_at}</td>
-                        <td className="px-3 py-3 text-nowrap">{member.updated_at}</td>
+                        <td className="px-3 py-3 text-nowrap">{member.started_at}</td>
+                        <td className="px-3 py-3 text-nowrap">
+                          <div className="">
+                            {member.update_limit}
+                          </div>                        </td>
                         <td className="px-3 py-3 text-center text-nowrap flex">
                           { member.office.id == auth.user.office.id || auth.user.is_global_admin?(
                             <Link

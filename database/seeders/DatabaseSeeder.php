@@ -2,6 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\External;
+use App\Models\ExternalMeetingLog;
+use App\Models\ExternalMessage;
 use App\Models\MeetingLog;
 use App\Models\Member;
 use App\Models\Message;
@@ -18,12 +21,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        Office::factory()->count(10)->hasUsers(10)->create();
+        Office::factory()->count(10)->hasMembers(80)->create();
 
         User::factory()->create([
-            'name' => 'ケンベル',
-            'email' => 'kenberu@example.com',
-            'password' => bcrypt('12345678'),
+            'name' => 'グローバルアドミン',
+            'email' => 'gadmin@example.com',
+            'password' => bcrypt('meemane.gadmin'),
             'office_id' => 1,
             'is_admin' => true,
             'is_global_admin' => true,
@@ -31,9 +34,9 @@ class DatabaseSeeder extends Seeder
         ]);
 
         User::factory()->create([
-            'name' => 'Hiroshi Akutsu',
-            'email' => 'hakutsu@example.com',
-            'password' => bcrypt('12345678'),
+            'name' => 'アドミン',
+            'email' => 'admin@example.com',
+            'password' => bcrypt('meemane.admin'),
             'office_id' => 1,
             'is_admin' => true,
             'is_global_admin' => false,
@@ -41,18 +44,21 @@ class DatabaseSeeder extends Seeder
         ]);
 
         User::factory()->create([
-            'name' => '山田 太郎',
-            'email' => 'tyamada@example.com',
-            'password' => bcrypt('12345678'),
+            'name' => 'ユーザー',
+            'email' => 'user@example.com',
+            'password' => bcrypt('meemane.user'),
             'office_id' => 1,
             'is_admin' => false,
             'is_global_admin' => false,
             'email_verified_at' => time(),
         ]);
-        Member::factory()->count(50)->create();
+        User::factory()->count(50)->create();
+
+        External::factory()->count(50)->hasMeetingLogs(30)->create();
 
         MeetingLog::factory()->count(1500)->create();
 
-        Message::factory()->count(25000)->create();
+        Message::factory()->count(2500)->create();
+        ExternalMessage::factory()->count(2500)->create();
     }
 }

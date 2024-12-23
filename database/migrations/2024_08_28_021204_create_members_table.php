@@ -18,7 +18,11 @@ return new class extends Migration
             $table->foreignId('office_id')->constrained('offices')->onDelete('cascade');
             $table->string('status');
             $table->string('characteristics');
-            $table->string('notes')->nullable();
+            $table->string('document_url')->nullable();
+            $table->string('beneficiary_number')->length(10)->nullable();
+            $table->date('started_at')->nullable();
+            $table->date('update_limit')->nullable();
+            $table->text('notes')->nullable();
             $table->timestamps();
         });
     }

@@ -12,6 +12,7 @@ use App\Models\MeetingLog;
 use App\Models\Member;
 use App\Models\Office;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
@@ -23,6 +24,11 @@ class UserController extends Controller
     public function index()
     {
         $query = User::where("is_archive", "=", false);
+
+        if (!Auth::user()->is_global_admin) {
+            $query->where("office_id", "=", Auth::user()->office_id)
+                ->where("is_global_admin", "=", false);
+        }
 
         $sortField = request("sort_field", "created_at");
         $sortDirection = request("sort_direction", "desc");
@@ -159,6 +165,11 @@ class UserController extends Controller
     public function indexArchived()
     {
         $query = User::where("is_archive", "=", true);
+
+        if (!Auth::user()->is_global_admin) {
+            $query->where("office_id", "=", Auth::user()->office_id)
+                ->where("is_global_admin", "=", false);
+        }
 
         $sortField = request("sort_field", "created_at");
         $sortDirection = request("sort_direction", "desc");

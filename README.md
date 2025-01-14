@@ -19,8 +19,8 @@
 |作るための体制|個人で開発|
 |作成期間|約２ヶ月|
 ## DEMOサイトのURL
-|項目|内容|
-|----|----|
+|項目|内容||
+|----|----|----|
 |URL|https://meemane.online/|
 |email|user@example.com|admin@example.com|
 |pass|meemane.user|meemane.admin|

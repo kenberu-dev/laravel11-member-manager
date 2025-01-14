@@ -22,10 +22,9 @@
 |項目|内容|
 |----|----|
 |URL|https://meemane.online/|
-|email|user@example.com|
-|pass|meemane.user|
+|email|user@example.com|admin@example.com|
+|pass|meemane.user|meemane.admin|
 
-※管理者権限の挙動を見たい方は選考時の資料に記載します。
 ## 使用技術
 - Laravel 11.21.0
 - PHP 8.2.13

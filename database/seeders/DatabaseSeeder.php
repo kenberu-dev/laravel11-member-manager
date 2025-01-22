@@ -21,43 +21,135 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        Office::factory()->count(10)->hasMembers(80)->create();
+        $offices = Office::factory()->count(10)->create();
 
-        User::factory()->create([
-            'name' => 'グローバルアドミン',
-            'email' => 'gadmin@example.com',
-            'password' => bcrypt('meemane.gadmin'),
-            'office_id' => 1,
-            'is_admin' => true,
-            'is_global_admin' => true,
-            'email_verified_at' => time(),
-        ]);
+        $gadmin = User::factory()->create([
+                    'name' => 'グローバルアドミン',
+                    'email' => 'gadmin@example.com',
+                    'password' => bcrypt('meemane.gadmin'),
+                    'office_id' => 1,
+                    'is_admin' => true,
+                    'is_global_admin' => true,
+                    'email_verified_at' => time(),
+                ]);
 
-        User::factory()->create([
-            'name' => 'アドミン',
-            'email' => 'admin@example.com',
-            'password' => bcrypt('meemane.admin'),
-            'office_id' => 1,
-            'is_admin' => true,
-            'is_global_admin' => false,
-            'email_verified_at' => time(),
-        ]);
+        $admin = User::factory()->create([
+                    'name' => 'アドミン',
+                    'email' => 'admin@example.com',
+                    'password' => bcrypt('meemane.admin'),
+                    'office_id' => 1,
+                    'is_admin' => true,
+                    'is_global_admin' => false,
+                    'email_verified_at' => time(),
+                ]);
 
-        User::factory()->create([
-            'name' => 'ユーザー',
-            'email' => 'user@example.com',
-            'password' => bcrypt('meemane.user'),
-            'office_id' => 1,
-            'is_admin' => false,
-            'is_global_admin' => false,
-            'email_verified_at' => time(),
-        ]);
-        User::factory()->count(50)->create();
+        $user = User::factory()->create([
+                    'name' => 'ユーザー',
+                    'email' => 'user@example.com',
+                    'password' => bcrypt('meemane.user'),
+                    'office_id' => 1,
+                    'is_admin' => false,
+                    'is_global_admin' => false,
+                    'email_verified_at' => time(),
+                ]);
 
-        External::factory()->count(50)->hasMeetingLogs(30)->create();
+        foreach ($offices as $office) {
+            $users = User::factory()
+                    ->count(10)
+                    ->create([
+                        'office_id' => $office->id,
+                    ]);
+            
+            $members = Member::factory()
+                        ->count(10)
+                        ->create([
+                            'office_id' => $office->id,
+                        ]);
 
-        MeetingLog::factory()->count(1500)->create();
+            $externals = External::factory()
+                            ->count(10)
+                            ->create([
+                                'office_id' => $office->id,
+                            ]);
+            
+            foreach($members as $member) {
+                MeetingLog::factory()
+                    ->count(10)
+                    ->create([
+                        'user_id' => $users->random()->id,
+                        'member_id' => $member->id,
+                    ]);
+            }
 
+            foreach($externals as $external) {
+                ExternalMeetingLog::factory()
+                    ->count(10)
+                    ->create([
+                        'user_id' => $users->random()->id,
+                        'external_id' => $external->id,
+                    ]);
+            }
+        }
+
+        $members = Member::where('office_id', '=', 1)->get();
+        $externals = External::where('office_id', '=', 1)->get();
+
+        
+        MeetingLog::factory()
+            ->count(10)
+            ->create([
+                'member_id' => $members->random()->id,
+                'user_id' => $gadmin->id,
+            ])->each(function ($meetingLog) use ($members) {
+                $meetingLog->update(['member_id' => $members->random()->id]);
+            });
+
+        MeetingLog::factory()
+            ->count(10)
+            ->create([
+                'member_id' => $members->random()->id,
+                'user_id' => $admin->id,
+            ])->each(function ($meetingLog) use ($members) {
+                $meetingLog->update(['member_id' => $members->random()->id]);
+            });
+
+        MeetingLog::factory()
+            ->count(10)
+            ->create([
+                'member_id' => $members->random()->id,
+                'user_id' => $user->id,
+            ])->each(function ($meetingLog) use ($members) {
+                $meetingLog->update(['member_id' => $members->random()->id]);
+            });
+
+        ExternalMeetingLog::factory()
+            ->count(10)
+            ->create([
+                'external_id' => $externals->random()->id,
+                'user_id' => $gadmin->id,
+            ])->each(function ($meetingLog) use ($externals) {
+                $meetingLog->update(['external_id' => $externals->random()->id]);
+            });
+
+        ExternalMeetingLog::factory()
+            ->count(10)
+            ->create([
+                'external_id' => $externals->random()->id,
+                'user_id' => $admin->id,
+            ])->each(function ($meetingLog) use ($externals) {
+                $meetingLog->update(['external_id' => $externals->random()->id]);
+            });
+    
+
+        ExternalMeetingLog::factory()
+            ->count(10)
+            ->create([
+                'external_id' => $externals->random()->id,
+                'user_id' => $user->id,
+            ])->each(function ($meetingLog) use ($externals) {
+                $meetingLog->update(['external_id' => $externals->random()->id]);
+            });
+            
         Message::factory()->count(2500)->create();
         ExternalMessage::factory()->count(2500)->create();
     }

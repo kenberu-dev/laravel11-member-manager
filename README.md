@@ -1,8 +1,7 @@
 ## はじめに
 - 本レポジトリは、PHP/Laravel学習者のケンベル(Xアカウント：@kenberu_dev)が、作成したウェブアプリケーションに関するものです。
 - ご利用いただくことでのトラブルなどは一切責任を負いかねます。
-ダッシュボード画面↓
-![Screenshot from 2024-10-11 12-58-17](https://github.com/user-attachments/assets/3dd48828-4cb4-4170-8f2e-4bbe9a82b226)
+![ダッシュボード画面](https://github.com/user-attachments/assets/3dd48828-4cb4-4170-8f2e-4bbe9a82b226)
 
 ## コンセプト
 - 私が通っている就労移行支援施設では、面談記録をスプレッドシートで管理していました。

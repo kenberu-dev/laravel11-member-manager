@@ -253,7 +253,7 @@ test('管理者ユーザーが利用者情報を削除できるか？', function
     $response->assertRedirect(route('member.index'));
 });
 
-test('一般ユーザーが利用者情報を削除できるか？', function () {
+test('一般ユーザーが利用者情報を削除できないか？', function () {
     $office = Office::factory()->count(2)->create();
 
     $user = User::factory()->create([

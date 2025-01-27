@@ -29,7 +29,7 @@ class MemberFactory extends Factory
             'office_id' => $officeId,
             'status' => fake()->randomElement(['見学','体験','利用意思獲得','利用中','定着中']),
             'characteristics' => fake()->randomElement(['抑うつ病', '注意欠如・多動症', 'なし', 'その他']),
-            'document_url' => 'https://drive.google.com/drive/folders/1xUxgJTMX6gOFJdGRG3m1P-uPJj9kUfqJ',
+            'document_url' => 'https://drive.google.com/drive/folders/1YbrR7_zJXO1MHAMydxXZaSmkIurKQu0q?usp=sharing',
             'beneficiary_number' => fake()->numerify('##########'),
             'started_at' => $startedAt,
             'update_limit' => fake()->dateTimeBetween($startedAt, $endDate),

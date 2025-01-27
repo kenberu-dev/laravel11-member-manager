@@ -1,93 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Dropdown from '@/Components/Dropdown';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Link, usePage } from '@inertiajs/react';
 import { ChevronDownIcon, HomeIcon } from '@heroicons/react/24/solid'
-import { useEventBus } from '@/EventBus';
 import MemberDropDown from '@/Components/MemberDropDown';
 import ExternalDropDown from '@/Components/ExternalDropDown';
 
 export default function AuthenticatedLayout({ header, children }) {
   const page = usePage();
   const user = page.props.auth.user;
-  const memberConversations = page.props.member_conversations;
-  const externalConversations = page.props.external_conversations;
   const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
-  const { emit } = useEventBus();
-
-
-  useEffect(() => {
-    memberConversations.forEach((conversation) => {
-      let channel = [];
-      if (user.id === conversation.user_id) {
-        channel = `message.meetinglog.${conversation.id}`
-      }
-      Echo.private(channel)
-        .error((error) => {
-          console.error(error);
-        })
-        .listen("SocketMessage", (e) => {
-          const message = e.message;
-
-          emit("message.created", message);
-          if (message.sender_id === user.id) {
-            return;
-          }
-          emit("newMessageNotification", {
-            user: message.sender,
-            meeting_logs_id: message.meeting_logs_id,
-            message: message.message
-          });
-        });
-    });
-
-    return () => {
-      memberConversations.forEach((conversation) => {
-        let channel = [];
-        if (user.id === conversation.user_id) {
-          channel = `message.meetinglog.${conversation.id}`
-          Echo.leave(channel);
-        }
-      });
-    }
-  }, [memberConversations]);
-
-  useEffect(() => {
-    externalConversations.forEach((conversation) => {
-      let channel = [];
-      if (user.id === conversation.user_id) {
-        channel = `external.message.meetinglog.${conversation.id}`
-      }
-      Echo.private(channel)
-        .error((error) => {
-          console.error(error);
-        })
-        .listen("ExternalSocketMessage", (e) => {
-          const message = e.message;
-
-          emit("message.created", message);
-          if (message.sender_id === user.id) {
-            return;
-          }
-          emit("newMessageNotification", {
-            user: message.sender,
-            meeting_logs_id: message.meeting_logs_id,
-            message: message.message
-          });
-        });
-    });
-
-    return () => {
-      externalConversations.forEach((conversation) => {
-        let channel = [];
-        if (user.id === conversation.user_id) {
-          channel = `external.message.meetinglog.${conversation.id}`
-          Echo.leave(channel);
-        }
-      });
-    }
-  }, [externalConversations]);
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900">

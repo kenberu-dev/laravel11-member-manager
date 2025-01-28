@@ -83,7 +83,7 @@ test('違う事業所に所属する利用者の面談記録を登録できる�
     ];
 
     $response = $this->post(route('meetinglog.store'), $data);
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });
 
 test('必須項目を入力しなかった場合、面談記録を登録できないか？', function () {
@@ -157,7 +157,7 @@ test('違う事業所に所属する利用者の面談記録を編集できな�
     ];
 
     $response = $this->put(route('meetinglog.update', $meetingLog->id), $data);
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });
 
 test('必須項目を入力しなかった場合、面談記録を編集できないか？', function () {
@@ -209,5 +209,5 @@ test('一般ユーザーは面談記録を削除できるか？', function () {
     $this->actingAs($user);
 
     $response = $this->delete(route('meetinglog.destroy', $meetingLog->id));
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });

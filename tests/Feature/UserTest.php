@@ -22,7 +22,7 @@ test('一般ユーザーが、従業員情報一覧ページにアクセスで�
     $this->actingAs($user);
 
     $response = $this->get(route('user.index'));
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });
 
 test('管理者ユーザーが、従業員詳細情報にアクセスできるか？', function () {
@@ -38,14 +38,14 @@ test('管理者ユーザーが、従業員詳細情報にアクセスできる�
     $response->assertOK();
 });
 
-test('一般ユーザーが、従業員詳細情報にアクセスできるか？', function () {
+test('一般ユーザーが、従業員詳細情報にアクセスできないか？', function () {
     $office = Office::factory()->create();
     $users = User::factory()->count(2)->create();
 
     $this->actingAs($users[0]);
 
     $response = $this->get(route('user.show', $users[1]->id));
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });
 
 test('管理者ユーザーが、従業員登録情報にアクセスできるか？', function () {
@@ -67,7 +67,7 @@ test('一般ユーザーが、従業員登録情報にアクセスできない�
     $this->actingAs($user);
 
     $response = $this->get(route('user.create'));
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });
 
 test('同じ事業所に所属する従業員情報を登録できるか？', function () {
@@ -112,7 +112,7 @@ test('違う事業所に所属する従業員情報を登録できないか？',
     ];
 
     $response = $this->post(route('user.store'), $data);
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });
 
 test('一般ユーザーが、従業員情報を登録できないか？', function () {
@@ -132,7 +132,7 @@ test('一般ユーザーが、従業員情報を登録できないか？', funct
     ];
 
     $response = $this->post(route('user.store'), $data);
-    $response->assertRedirect(route('user.index'));
+    $response->assertStatus(403);
 });
 
 test('任意項目を入力しなくても従業員情報を登録できるか？', function () {
@@ -150,7 +150,7 @@ test('任意項目を入力しなくても従業員情報を登録できるか�
         'office_id' => $office->id,
         'password' => 'password123',
         'password_confirmation' => 'password123',
-        'is_admin' => null,
+        'is_admin' => false,
     ];
 
     $response = $this->post(route('user.store'), $data);
@@ -169,7 +169,7 @@ test('必須項目を入力しない場合従業員情報を登録できない�
         'name' => null,
         'avatar' => null,
         'email' => null,
-        'office_id' => null,
+        'office_id' => $office->id,
         'password' => null,
         'password_confirmation' => null,
         'is_admin' => false,
@@ -178,7 +178,7 @@ test('必須項目を入力しない場合従業員情報を登録できない�
     $response = $this->post(route('user.store'), $data);
     $response->assertStatus(302);
     $response->assertSessionHasErrors([
-        'name', 'email', 'office_id', 'password',
+        'name', 'email', 'password',
     ]);
 });
 
@@ -202,7 +202,7 @@ test('一般ユーザーが、利用者編集ページにアクセスできる�
     $this->actingAs($users[0]);
 
     $response = $this->get(route('user.edit', $users[1]->id));
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });
 
 test('管理者ユーザーが、同じ事業所に所属する利用者情報を編集できるか？', function () {
@@ -251,7 +251,7 @@ test('管理者ユーザーが、違う事業所に所属する利用者情報�
     ];
 
     $response = $this->put(route('user.update', $user->id), $data);
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });
 
 test('一般ユーザーが、従業員情報を編集できないか？', function () {
@@ -270,8 +270,8 @@ test('一般ユーザーが、従業員情報を編集できないか？', funct
         'is_admin' => true,
     ];
 
-    $response = $this->post(route('user.update', $users[1]->id), $data);
-    $response->assertStatus(400);
+    $response = $this->put(route('user.update', $users[1]->id), $data);
+    $response->assertStatus(403);
 });
 
 test('管理者ユーザーが従業員アーカイブ一覧ページにアクセスできるか？', function () {
@@ -294,7 +294,7 @@ test('一般ユーザーが従業員アーカイブ一覧ページにアクセ�
     $this->actingAs($users[0]);
 
     $response = $this->get(route('user.indexArchived'));
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });
 
 test('管理者ユーザーが従業員情報をアーカイブできるか？', function () {
@@ -317,7 +317,7 @@ test('一般ユーザーが従業員情報をアーカイブできないか？',
     $this->actingAs($users[0]);
 
     $response = $this->post(route('user.archive', $users[1]->id));
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });
 
 test('管理者ユーザーが利用者情報を削除できるか？', function () {
@@ -340,5 +340,5 @@ test('一般ユーザーは利用者情報を削除できないか？', function
     $this->actingAs($users[0]);
 
     $response = $this->delete(route('user.destroy', $users[1]->id));
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });

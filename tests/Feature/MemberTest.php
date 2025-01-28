@@ -150,7 +150,7 @@ test('違う事業所に所属する利用者情報を登録できるか？', fu
     ];
 
     $response = $this->post(route('member.store'), $data);
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });
 
 test('利用者編集ページにアクセスできるか？', function () {
@@ -231,7 +231,7 @@ test('違う事業所に所属する利用者情報を編集できるか？', fu
     ];
 
     $response = $this->put(route('member.update', $member->id),$data);
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });
 
 test('管理者ユーザーが利用者情報を削除できるか？', function () {
@@ -268,5 +268,5 @@ test('一般ユーザーが利用者情報を削除できないか？', function
     $this->actingAs($user);
 
     $response = $this->delete(route('member.destroy', $member->id));
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });

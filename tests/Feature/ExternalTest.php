@@ -77,7 +77,7 @@ test('違う事業所に所属する外部対応者情報を登録できない�
     ];
 
     $response = $this->post(route('external.store'), $data);
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });
 
 test('必須項目を入力しなかった場合登録できないか？', function () {
@@ -170,7 +170,7 @@ test('違う事業所に所属する外部対応者情報を編集できない�
     ];
 
     $response = $this->put(route('external.update', $external->id), $data);
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });
 
 test('必須項目を入力しなかった場合編集できないか？', function () {
@@ -241,5 +241,5 @@ test('一般ユーザーは外部対応情報を削除できないか？', funct
     $this->actingAs($user);
 
     $response = delete(route('external.destroy', $external->id));
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });

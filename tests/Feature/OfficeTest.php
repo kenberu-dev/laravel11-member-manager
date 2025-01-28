@@ -24,7 +24,7 @@ test('管理者ユーザーが、事業所一覧ページにアクセスでき�
     $this->actingAs($admin);
 
     $response = $this->get(route('office.index'));
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });
 
 test('一般ユーザーが、事業所一覧ページにアクセスできないか？', function () {
@@ -34,7 +34,7 @@ test('一般ユーザーが、事業所一覧ページにアクセスできな�
     $this->actingAs($user);
 
     $response = $this->get(route('office.index'));
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });
 
 test('最上位管理者ユーザーが、事業所詳細ページにアクセスできるか？', function () {
@@ -58,7 +58,7 @@ test('管理者ユーザーが、事業所詳細ページにアクセスでき�
     $this->actingAs($admin);
 
     $response = $this->get(route('office.show', $office->id));
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });
 
 test('一般ユーザーが、事業所詳細ページにアクセスできないか？', function () {
@@ -68,7 +68,7 @@ test('一般ユーザーが、事業所詳細ページにアクセスできな�
     $this->actingAs($user);
 
     $response = $this->get(route('office.show', $office->id));
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });
 
 test('最上位管理者ユーザーが、事業所登録ページにアクセスできるか？', function () {
@@ -92,7 +92,7 @@ test('管理者ユーザーが、事業所登録ページにアクセスでき�
     $this->actingAs($admin);
 
     $response = $this->get(route('office.create'));
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });
 
 test('一般ユーザーが、事業所登録ページにアクセスできないか？', function () {
@@ -102,7 +102,7 @@ test('一般ユーザーが、事業所登録ページにアクセスできな�
     $this->actingAs($user);
 
     $response = $this->get(route('office.create'));
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });
 
 test('最上位管理者ユーザーが、事業所情報を登録できるか？', function () {
@@ -140,7 +140,7 @@ test('管理者ユーザーが、事業所情報を登録できないか？', fu
     ];
 
     $response = $this->post(route('office.store'), $data);
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });
 
 test('一般ユーザーが、事業所情報を登録できないか？', function () {
@@ -157,7 +157,7 @@ test('一般ユーザーが、事業所情報を登録できないか？', funct
     ];
 
     $response = $this->post(route('office.store'), $data);
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });
 
 test('必須項目を入力しない場合、事業所情報を登録できないか？', function () {
@@ -222,7 +222,7 @@ test('管理者ユーザーが、事業所編集ページにアクセスでき�
     $this->actingAs($admin);
 
     $response = $this->get(route('office.edit', $office->id));
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });
 
 test('一般ユーザーが、事業所編集ページにアクセスできないか？', function () {
@@ -232,7 +232,7 @@ test('一般ユーザーが、事業所編集ページにアクセスできな�
     $this->actingAs($user);
 
     $response = $this->get(route('office.edit', $office->id));
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });
 
 test('最上位管理者ユーザーが、事業所情報を編集できるか？', function () {
@@ -270,7 +270,7 @@ test('管理者ユーザーが、事業所情報を編集できないか？', fu
     ];
 
     $response = $this->put(route('office.update', $office->id), $data);
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });
 
 test('一般ユーザーが、事業所情報を編集できないか？', function () {
@@ -287,7 +287,7 @@ test('一般ユーザーが、事業所情報を編集できないか？', funct
     ];
 
     $response = $this->put(route('office.update', $office->id), $data);
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });
 
 test('必須項目を入力しない場合、事業所情報を編集できないか？', function () {
@@ -353,7 +353,7 @@ test('管理者ユーザーが、事業所をアーカイブできないか？',
     $this->actingAs($admin);
 
     $response = $this->post(route('office.archive', $offices[1]->id));
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });
 
 test('一般ユーザーが、事業所をアーカイブできないか？', function () {
@@ -365,7 +365,7 @@ test('一般ユーザーが、事業所をアーカイブできないか？', fu
     $this->actingAs($user);
 
     $response = $this->post(route('office.archive', $offices[1]->id));
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });
 
 test('最上位管理者ユーザーが、事業所情報を削除できるか？', function () {
@@ -391,7 +391,7 @@ test('管理者ユーザーが、事業所情報を削除できるか？', funct
     $this->actingAs($admin);
 
     $response = $this->delete(route('office.destroy', $offices[1]->id));
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });
 
 test('一般ユーザーが、事業所情報を削除できるか？', function () {
@@ -403,5 +403,5 @@ test('一般ユーザーが、事業所情報を削除できるか？', function
     $this->actingAs($user);
 
     $response = $this->delete(route('office.destroy', $offices[1]->id));
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });

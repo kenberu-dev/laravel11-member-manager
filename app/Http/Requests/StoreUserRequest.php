@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
@@ -14,7 +15,13 @@ class StoreUserRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        if (Auth::user()->is_global_admin) {
+            return true;
+        }
+        
+        if (Auth::user()->is_admin && Auth::user()->office_id == $this->input('office_id')) return true;
+        
+        return false;
     }
 
     /**

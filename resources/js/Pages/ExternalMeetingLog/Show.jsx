@@ -51,12 +51,6 @@ export default function Show({ auth, meetingLog, messages }) {
 
   useEffect(() => {
     let channel = `external.message.meetinglog.${meetingLog.id}`;
-    externalConversations.forEach((conversation) => {
-      if (channel === `external.message.meetinglog.${conversation.id}`) {
-        channel = [];
-        return;
-      }
-    });
 
     if (channel.length != 0) {
       Echo.private(channel)

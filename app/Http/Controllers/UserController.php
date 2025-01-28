@@ -13,7 +13,6 @@ use App\Models\Member;
 use App\Models\Office;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
@@ -23,6 +22,8 @@ class UserController extends Controller
      */
     public function index()
     {
+        $this->isAdmin();
+
         $query = User::where("is_archive", "=", false);
 
         if (!Auth::user()->is_global_admin) {
@@ -35,21 +36,7 @@ class UserController extends Controller
 
         $offices = Office::all();
 
-        if (request("id")) {
-            $query->where("id", "=", request("id"));
-        }
-
-        if (request("name")) {
-            $query->where("name", "like", "%" . request("name") . "%");
-        }
-
-        if (request("email")) {
-            $query->where("email", "like", "%" . request("email") . "%");
-        }
-
-        if (request("office")) {
-            $query->where("office_id", "=", request("office"));
-        }
+        $query = $this->applyFilters($query, request());
 
         $users = $query->orderBy($sortField, $sortDirection)->paginate(10);
 
@@ -67,6 +54,8 @@ class UserController extends Controller
      */
     public function create()
     {
+        $this->isAdmin();
+
         $offices = Office::all();
 
         return inertia("User/Create", [
@@ -96,6 +85,8 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
+        $this->isAdmin();
+
         $query = MeetingLog::where("user_id", "=", $user->id);
 
         $sortField = request("sort_field", "created_at");
@@ -124,6 +115,8 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
+        $this->isAdmin();
+
         $offices = Office::all();
 
         return inertia("User/Edit", [
@@ -157,6 +150,8 @@ class UserController extends Controller
 
     public function archive(User $user)
     {
+        $this->isAdmin();
+
         $user->update(['is_archive' => true]);
 
         return to_route("user.index");
@@ -164,6 +159,8 @@ class UserController extends Controller
 
     public function indexArchived()
     {
+        $this->isAdmin();
+
         $query = User::where("is_archive", "=", true);
 
         if (!Auth::user()->is_global_admin) {
@@ -176,21 +173,7 @@ class UserController extends Controller
 
         $offices = Office::all();
 
-        if (request("id")) {
-            $query->where("id", "=", request("id"));
-        }
-
-        if (request("name")) {
-            $query->where("name", "like", "%" . request("name") . "%");
-        }
-
-        if (request("email")) {
-            $query->where("email", "like", "%" . request("email") . "%");
-        }
-
-        if (request("office")) {
-            $query->where("office_id", "=", request("office"));
-        }
+        $query = $this->applyFilters($query, request());
 
         $users = $query->orderBy($sortField, $sortDirection)->paginate(10);
         $queryParams = request()->query();
@@ -204,6 +187,8 @@ class UserController extends Controller
 
     public function restore(User $user)
     {
+        $this->isAdmin();
+
         $user->update(['is_archive' => false]);
 
         return to_route("user.indexArchived");
@@ -214,11 +199,41 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        $this->isAdmin();
+        
         if ($user->avatar) {
             Storage::disk('public')->delete($user->avatar);
         }
         $user->delete();
 
         return to_route("user.indexArchived");
+    }
+
+    private function isAdmin()
+    {
+        if (!(Auth::user()->is_admin || Auth::user()->is_global_admin)) {
+            return abort(403);
+        }
+    }
+
+    private function applyFilters($query, $request)
+    {
+        if ($request["id"]) {
+            $query->where("id", "=", request("id"));
+        }
+
+        if ($request["name"]) {
+            $query->where("name", "like", "%" . request("name") . "%");
+        }
+
+        if ($request["email"]) {
+            $query->where("email", "like", "%" . request("email") . "%");
+        }
+
+        if ($request["office"]) {
+            $query->where("office_id", "=", request("office"));
+        }
+
+        return $query;
     }
 }

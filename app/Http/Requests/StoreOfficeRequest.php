@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class StoreOfficeRequest extends FormRequest
 {
@@ -11,7 +12,7 @@ class StoreOfficeRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return Auth::user()->is_global_admin ?? false;
     }
 
     /**
@@ -25,7 +26,7 @@ class StoreOfficeRequest extends FormRequest
             "name" => ["required", "string"],
             "zip_code" => ["required", "string", "regex:/^[0-9-]+$/"],
             "address" => ["required", "string"],
-            "phone_number" => ["required", "string", "regex:/^[0-9-]+$/"],
+            "phone_number" => ["nullable", "string", "regex:/^[0-9-]+$/"],
         ];
     }
 }

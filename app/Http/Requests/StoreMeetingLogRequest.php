@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Member;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class StoreMeetingLogRequest extends FormRequest
@@ -12,7 +14,8 @@ class StoreMeetingLogRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        if(!$this->input('member_id')) return false;
+        return Auth::user()->office_id == Member::find($this->input('member_id'))->office_id;
     }
 
     /**

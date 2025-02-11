@@ -107,6 +107,7 @@ export default function Create ({ auth, members, meetingLogs, queryParams = null
                   value={queryParams.member}
                   className="mt-1 block w-full"
                   onChange={(e) => {memberChanged(e.target.value) }}
+                  required
                 >
                   <option value="">利用者名を選択してください</option>
                   {members.data.map(member => (

@@ -77,10 +77,31 @@ test('違う事業所に所属する外部対応者の面談記録を登録で�
     ];
 
     $response = $this->post(route('external.meetinglog.store'), $data);
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });
 
-test('必須項目を入力しなかった場合登録できないか？', function () {
+test('external_id以外の必須項目を入力しなかった場合登録できないか？', function () {
+    $office = Office::factory()->create();
+    $user = User::factory()->create();
+    $external = External::factory()->create();
+
+    $this->actingAs($user);
+
+    $data = [
+        'title' => null,
+        'user_id' => null,
+        'external_id' => $external->id,
+        'meeting_log' => null,
+    ];
+
+    $response = $this->post(route('external.meetinglog.store', $external->id), $data);
+    $response->assertStatus(302);
+    $response->assertSessionHasErrors([
+        'title', 'user_id', 'meeting_log',
+    ]);
+});
+
+test('external_idを入力しなかった場合登録できないか？', function () {
     $office = Office::factory()->create();
     $user = User::factory()->create();
     $external = External::factory()->create();
@@ -94,10 +115,8 @@ test('必須項目を入力しなかった場合登録できないか？', funct
         'meeting_log' => null,
     ];
 
-    $response = $this->post(route('external.meetinglog.store'), $data);
-    $response->assertSessionHasErrors([
-        'title', 'user_id', 'external_id', 'meeting_log',
-    ]);
+    $response = $this->post(route('external.meetinglog.store', $external->id), $data);
+    $response->assertStatus(403);
 });
 
 test('同じ事業所に所属する外部対応の面談記録を編集できるか？', function () {
@@ -145,10 +164,32 @@ test('違う事業所に所属する外部対応の面談記録を編集でき�
     ];
 
     $response = $this->put(route('external.meetinglog.update', $meetingLog->id), $data);
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });
 
-test('必須項目を入力しなかった場合、外部対応の面談記録を編集できないか？', function () {
+test('external_id以外の必須項目を入力しなかった場合、外部対応の面談記録を編集できないか？', function () {
+    $office = Office::factory()->create();
+    $user = User::factory()->create();
+    $external = External::factory()->create();
+    $meetingLog = ExternalMeetingLog::factory()->create();
+
+    $this->actingAs($user);
+
+    $data = [
+        'title' => null,
+        'user_id' => null,
+        'external_id' => $external->id,
+        'meeting_log' => null,
+    ];
+
+    $response = $this->put(route('external.meetinglog.update', $meetingLog->id), $data);
+    $response->assertStatus(302);
+    $response->assertSessionHasErrors([
+        'title', 'user_id', 'meeting_log',
+    ]);
+});
+
+test('external_idを入力しなかった場合、外部対応の面談記録を編集できないか？', function () {
     $office = Office::factory()->create();
     $user = User::factory()->create();
     $external = External::factory()->create();
@@ -163,11 +204,8 @@ test('必須項目を入力しなかった場合、外部対応の面談記録�
         'meeting_log' => null,
     ];
 
-    $response = $this->put(route('external.meetinglog.update', $external->id), $data);
-    $response->assertStatus(302);
-    $response->assertSessionHasErrors([
-        'title', 'user_id', 'external_id', 'meeting_log',
-    ]);
+    $response = $this->put(route('external.meetinglog.update', $meetingLog->id), $data);
+    $response->assertStatus(403);
 });
 
 test('管理者ユーザーが外部対応の面談記録を削除できるか？', function () {
@@ -193,5 +231,5 @@ test('一般ユーザーは外部対応の面談記録を削除できないか�
     $this->actingAs($user);
 
     $response = $this->delete(route('external.meetinglog.destroy', $meetingLog->id));
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });

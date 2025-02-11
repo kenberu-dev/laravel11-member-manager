@@ -101,6 +101,7 @@ export default function Create ({ auth, externals, meetingLogs, queryParams = nu
                   value={queryParams.external}
                   className="mt-1 block w-full"
                   onChange={(e) => {externalChanged(e.target.value) }}
+                  required
                 >
                   <option value="">会社名を選択してください</option>
                   {externals.data.map(external => (

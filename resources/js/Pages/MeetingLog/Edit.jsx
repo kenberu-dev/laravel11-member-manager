@@ -11,7 +11,7 @@ export default function Edit({ auth, members, currentLog, meetingLogs, queryPara
   queryParams = queryParams || {}
   const { data, setData, post, errors, reset } = useForm({
     title: currentLog.title || "",
-    user_id: auth.user.id,
+    user_id: currentLog.user.id,
     member_id: queryParams.member || currentLog.member.id,
     condition: currentLog.condition || "",
     meeting_log: currentLog.meeting_log || "",
@@ -109,6 +109,7 @@ export default function Edit({ auth, members, currentLog, meetingLogs, queryPara
                   value={data.member_id}
                   className="mt-1 block w-full"
                   onChange={(e) => { memberChanged(e.target.value) }}
+                  required
                 >
                   <option value="">利用者名を選択してください</option>
                   {members.data.map(member => (

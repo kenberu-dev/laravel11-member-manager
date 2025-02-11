@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\External;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class StoreExternalMeetingLogRequest extends FormRequest
 {
@@ -11,7 +13,8 @@ class StoreExternalMeetingLogRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        if(!$this->input('external_id')) return false;
+        return Auth::user()->office_id == External::find($this->input('external_id'))->office_id;
     }
 
     /**

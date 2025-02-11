@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class UpdateMemberRequest extends FormRequest
 {
@@ -11,7 +12,8 @@ class UpdateMemberRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        if(Auth::user()->office_id == $this->input('office_id')) return true;
+        return false;
     }
 
     /**

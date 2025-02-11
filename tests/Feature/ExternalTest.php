@@ -77,7 +77,7 @@ test('違う事業所に所属する外部対応者情報を登録できない�
     ];
 
     $response = $this->post(route('external.store'), $data);
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });
 
 test('必須項目を入力しなかった場合登録できないか？', function () {
@@ -89,7 +89,7 @@ test('必須項目を入力しなかった場合登録できないか？', funct
     $data = [
         'company_name' => null,
         'manager_name' => null,
-        'office_id' => null,
+        'office_id' => $office->id,
         'status' => null,
         'address' => null,
         'phone_number' => null,
@@ -100,7 +100,7 @@ test('必須項目を入力しなかった場合登録できないか？', funct
     $response = $this->post(route('external.store'), $data);
     $response->assertStatus(302);
     $response->assertSessionHasErrors([
-        'company_name', 'office_id', 'status'
+        'company_name', 'status', 
     ]);
 });
 
@@ -161,7 +161,7 @@ test('違う事業所に所属する外部対応者情報を編集できない�
     $data = [
         'company_name' => '株式会社編集テスト',
         'manager_name' => '編集されたテスト',
-        'office_id' => $office->id,
+        'office_id' => $office[1]->id,
         'status' => '見学',
         'address' => '編集されたテスト',
         'phone_number' => '0904445555',
@@ -170,7 +170,7 @@ test('違う事業所に所属する外部対応者情報を編集できない�
     ];
 
     $response = $this->put(route('external.update', $external->id), $data);
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });
 
 test('必須項目を入力しなかった場合編集できないか？', function () {
@@ -183,7 +183,7 @@ test('必須項目を入力しなかった場合編集できないか？', funct
     $data = [
         'company_name' => null,
         'manager_name' => '編集されたテスト',
-        'office_id' => null,
+        'office_id' => $office->id,
         'status' => null,
         'address' => '編集されたテスト',
         'phone_number' => '0904445555',
@@ -194,7 +194,7 @@ test('必須項目を入力しなかった場合編集できないか？', funct
     $response = $this->put(route('external.update', $external->id), $data);
     $response->assertStatus(302);
     $response->assertSessionHasErrors([
-        'company_name', 'office_id', 'status',
+        'company_name', 'status',
     ]);
 });
 
@@ -241,5 +241,5 @@ test('一般ユーザーは外部対応情報を削除できないか？', funct
     $this->actingAs($user);
 
     $response = delete(route('external.destroy', $external->id));
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });

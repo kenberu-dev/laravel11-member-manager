@@ -14,7 +14,6 @@ use App\Models\Office;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 class MemberController extends Controller
 {
@@ -34,29 +33,7 @@ class MemberController extends Controller
 
         $offices = Office::all();
 
-        if (request("id")) {
-            $query->where("id", "=", request("id"));
-        }
-
-        if (request("name")) {
-            $query->where("name", "like", "%" . request("name") . "%");
-        }
-
-        if (request("sex")) {
-            $query->where("sex", "=", request("sex"));
-        }
-
-        if (request("status")) {
-            $query->where("status", "=", request("status"));
-        }
-
-        if (request("office")) {
-            $query->where("office_id", "=", request("office"));
-        }
-
-        if (request("characteristics")) {
-            $query->where("characteristics", "like", "%" . request("characteristics") . "%");
-        }
+        $query = $this->applyFilters($query, request());
 
         $members = $query->orderBy($sortField, $sortDirection)->paginate(10);
 
@@ -114,21 +91,7 @@ class MemberController extends Controller
         $sortField = request("sort_field", "created_at");
         $sortDirection = request("sort_direction", "desc");
 
-        if (request("id")) {
-            $query->where("id", "=", request("id"));
-        }
-
-        if (request("title")) {
-            $query->where("title", "like", "%" . request("title") . "%");
-        }
-
-        if (request("user")) {
-            $query->where("user_id", "=", request("user"));
-        }
-
-        if (request("condition")) {
-            $query->where("condition", "=", request("condition"));
-        }
+        $query = $this->applyFilters($query, request());
 
         $meetingLogs = $query->orderBy($sortField, $sortDirection)->paginate(10);
         $users = User::select("users.id", "users.name")
@@ -197,7 +160,52 @@ class MemberController extends Controller
      */
     public function destroy(Member $member)
     {
+        if (!(Auth::user()->is_admin || Auth::user()->is_global_admin)) {
+            abort(403);
+        }
+
         $member->delete();
         return to_route('member.index');
+    }
+
+    private function applyFilters($query, $request)
+    {
+        if ($request["id"]){
+            $query->where("id", "=", request("id"));
+        }
+
+        if ($request["name"]) {
+            $query->where("name", "like", "%" . request("name") . "%");
+        }
+
+        if ($request["sex"]) {
+            $query->where("sex", "=", request("sex"));
+        }
+
+        if ($request["status"]) {
+            $query->where("status", "=", request("status"));
+        }
+
+        if ($request["office"]) {
+            $query->where("office_id", "=", request("office"));
+        }
+
+        if ($request["characteristics"]) {
+            $query->where("characteristics", "like", "%" . request("characteristics") . "%");
+        }
+
+        if ($request["title"]) {
+            $query->where("title", "like", "%" . request("title") . "%");
+        }
+
+        if ($request["user"]) {
+            $query->where("user_id", "=", request("user"));
+        }
+
+        if ($request["condition"]) {
+            $query->where("condition", "=", request("condition"));
+        }
+        
+        return $query;
     }
 }

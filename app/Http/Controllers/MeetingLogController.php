@@ -193,6 +193,10 @@ class MeetingLogController extends Controller
      */
     public function destroy(MeetingLog $meetingLog)
     {
+        if (!(Auth::user()->is_admin || Auth::user()->is_global_admin)) {
+            abort(403);
+        }
+        
         $meetingLog->delete();
         return to_route('meetinglog.index');
     }

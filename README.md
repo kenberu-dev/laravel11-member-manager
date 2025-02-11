@@ -45,7 +45,7 @@ https://meemane.online/
 - データーベース
     - MariaDB 10.5.22
 - インフラ
-    - Apache
+    - Apache 2.4.57
 - サーバーOS
     - Rocky Linux 9.4
 

@@ -83,10 +83,32 @@ test('違う事業所に所属する利用者の面談記録を登録できる�
     ];
 
     $response = $this->post(route('meetinglog.store'), $data);
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });
 
-test('必須項目を入力しなかった場合、面談記録を登録できないか？', function () {
+test('member_id以外の必須項目を入力しなかった場合、面談記録を登録できないか？', function () {
+    $office = Office::factory()->create();
+    $user = User::factory()->create(['office_id' => $office->id]);
+    $member = Member::factory()->create(['office_id' => $office->id]);
+
+    $this->actingAs($user);
+
+    $data = [
+        'title' => null,
+        'member_id' => $member->id,
+        'user_id' => null,
+        'condition' => null,
+        'meeting_log' => null,
+    ];
+
+    $response = $this->post(route('meetinglog.store'), $data);
+    $response->assertStatus(302);
+    $response->assertSessionHasErrors([
+        'title', 'user_id', 'condition', 'meeting_log',
+    ]);
+});
+
+test('member_idを入力しなかった場合、面談記録を登録できないか？', function () {
     $office = Office::factory()->create();
     $user = User::factory()->create(['office_id' => $office->id]);
     $member = Member::factory()->create(['office_id' => $office->id]);
@@ -102,10 +124,7 @@ test('必須項目を入力しなかった場合、面談記録を登録でき�
     ];
 
     $response = $this->post(route('meetinglog.store'), $data);
-    $response->assertStatus(302);
-    $response->assertSessionHasErrors([
-        'title', 'member_id', 'user_id', 'condition', 'meeting_log',
-    ]);
+    $response->assertStatus(403);
 });
 
 test('面談記録編集画面にアクセスできるか？', function () {
@@ -157,10 +176,33 @@ test('違う事業所に所属する利用者の面談記録を編集できな�
     ];
 
     $response = $this->put(route('meetinglog.update', $meetingLog->id), $data);
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });
 
-test('必須項目を入力しなかった場合、面談記録を編集できないか？', function () {
+test('member_id以外の必須項目を入力しなかった場合、面談記録を編集できないか？', function () {
+    $office = Office::factory()->create();
+    $user = User::factory()->create(['office_id' => $office->id]);
+    $member = Member::factory()->create(['office_id' => $office->id]);
+    $meetingLog = MeetingLog::factory()->create(['user_id' => $user->id, 'member_id' => $member->id]);
+
+    $this->actingAs($user);
+
+    $data = [
+        'title' => null,
+        'member_id' => $member->id,
+        'user_id' => null,
+        'condition' => null,
+        'meeting_log' => null,
+    ];
+
+    $response = $this->put(route('meetinglog.update', $meetingLog->id), $data);
+    $response->assertStatus(302);
+    $response->assertSessionHasErrors([
+        'title', 'user_id', 'condition', 'meeting_log',
+    ]);
+});
+
+test('member_idを入力しなかった場合、面談記録を編集できないか？', function () {
     $office = Office::factory()->create();
     $user = User::factory()->create(['office_id' => $office->id]);
     $member = Member::factory()->create(['office_id' => $office->id]);
@@ -177,10 +219,7 @@ test('必須項目を入力しなかった場合、面談記録を編集でき�
     ];
 
     $response = $this->put(route('meetinglog.update', $meetingLog->id), $data);
-    $response->assertStatus(302);
-    $response->assertSessionHasErrors([
-        'title', 'member_id', 'user_id', 'condition', 'meeting_log',
-    ]);
+    $response->assertStatus(403);
 });
 
 test('管理者ユーザーは面談記録を削除できるか？', function () {
@@ -209,5 +248,5 @@ test('一般ユーザーは面談記録を削除できるか？', function () {
     $this->actingAs($user);
 
     $response = $this->delete(route('meetinglog.destroy', $meetingLog->id));
-    $response->assertStatus(400);
+    $response->assertStatus(403);
 });

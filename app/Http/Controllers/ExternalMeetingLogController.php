@@ -188,6 +188,10 @@ class ExternalMeetingLogController extends Controller
      */
     public function destroy(ExternalMeetingLog $externalMeetingLog)
     {
+        if (!(Auth::user()->is_admin || Auth::user()->is_global_admin)) {
+            abort(403);
+        }
+        
         $externalMeetingLog->delete();
 
         return to_route("external.meetinglog.index");

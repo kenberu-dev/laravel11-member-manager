@@ -11,7 +11,7 @@ export default function Edit({ auth, externals, currentLog, meetingLogs, queryPa
   queryParams = queryParams || {}
   const { data, setData, post, errors, reset } = useForm({
     title: currentLog.title || "",
-    user_id: auth.user.id,
+    user_id: currentLog.user.id,
     external_id: queryParams.external || currentLog.external.id,
     meeting_log: currentLog.meeting_log || "",
     _method: "PUT"
@@ -104,6 +104,7 @@ export default function Edit({ auth, externals, currentLog, meetingLogs, queryPa
                   value={data.external_id}
                   className="mt-1 block w-full"
                   onChange={(e) => { externalChanged(e.target.value) }}
+                  required
                 >
                   <option value="">会社名を選択してください</option>
                   {externals.data.map(external => (

@@ -163,6 +163,10 @@ class ExternalController extends Controller
      */
     public function destroy(External $external)
     {
+        if (!(Auth::user()->is_admin || Auth::user()->is_global_admin)) {
+            abort(403);
+        }
+        
         $external->delete();
 
         return to_route("external.index");

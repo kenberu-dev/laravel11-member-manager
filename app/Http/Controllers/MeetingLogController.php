@@ -44,7 +44,7 @@ class MeetingLogController extends Controller
         $sortDirection = request("sort_direction", "desc");
 
         if (request("id")) {
-            $query->where("id", "=", request("id"));
+            $query->where("meeting_logs.id", "=", request("id"));
         }
 
         if (request("title")) {

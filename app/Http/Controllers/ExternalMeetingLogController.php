@@ -43,7 +43,7 @@ class ExternalMeetingLogController extends Controller
         }
 
         if(request("id")) {
-            $query->where("id", "like", "%" . request("id") . "%");
+            $query->where("external_meeting_logs.id", "=" ,request("id"));
         }
 
         if(request("title")) {

@@ -143,7 +143,7 @@ class OfficeController extends Controller
     private function applyFilters($query, $request)
     {
         if ($request["id"]) {
-            $query->where("id", "like", "%" . request("id") . "%");
+            $query->where("id", "=" ,request("id"));
         }
 
         if ($request["name"]) {

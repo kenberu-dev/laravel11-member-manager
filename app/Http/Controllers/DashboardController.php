@@ -27,7 +27,7 @@ class DashboardController extends Controller
         $startWeek = Carbon::now()->startOfWeek()->format('Y-m-d');
         $endWeek = Carbon::now()->endOfWeek()->format('Y-m-d');
 
-        $members = Member::all();
+        $members = Member::where("office_id", "=", Auth::user()->office_id)->get();
         $messageCount = Message::select("messages.id")
                             ->leftJoin("meeting_logs", "messages.meeting_logs_id", "meeting_logs.id")
                             ->whereDate("messages.created_at", "=", $yesterday)
@@ -44,7 +44,6 @@ class DashboardController extends Controller
                                 ->WhereDate("created_at", "<", $endWeek)
                                 ->orWhereDate("created_at", "=", $endWeek)
                                 ->count();
-        // dd($meetingLogCount);
         if (request("id")) {
             $query->where("id", "=", request("id"));
         }

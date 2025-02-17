@@ -14,6 +14,7 @@ use App\Models\Office;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class MemberController extends Controller
 {
@@ -130,8 +131,8 @@ class MemberController extends Controller
     {
         $data = $request->validated();
 
-        if($data["started_at"] != $data["update_limit"]) {
-            if(!$data["update_limit"]) {
+        if($data["started_at"] != (new Carbon($member->created_at))->format('Y-m-d')) {
+            if($data["update_limit"] == (new Carbon($member->created_at))->format('Y-m-d')) {
                 $startAt = new Carbon($data["started_at"]);
                 $updateLimit = $startAt->addMonth(3);
                 $member->fill($data);

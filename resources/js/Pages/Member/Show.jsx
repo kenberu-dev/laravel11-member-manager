@@ -123,7 +123,7 @@ export default function Show({ auth, member, meetingLogs, users, queryParams = n
                       <p className="mt-1">{member.update_limit}</p>
                     </div>
                     <div>
-                      {member.started_at != member.update_limit ? (
+                      {member.started_at != member.created_at ? (
                         <button
                           onClick={(e) => updateLimit(member)}
                           className="btn btn-success text-white"
